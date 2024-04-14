@@ -1,0 +1,11 @@
+{
+    "name": "com.boronnikov.games.red-cat-engine",
+    "version": "1.0.0",
+    "displayName": "Red Cat Engine",
+    "description": "Pack extensions for Unity.",
+    "unity": "2021.3.33",
+    "author": {
+        "name": "Boronnikov Games",
+        "url": "https://github.com/Red-Cat-Fat"
+    }
+}
