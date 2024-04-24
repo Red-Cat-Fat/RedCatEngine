@@ -1,31 +1,37 @@
-using Unity.Collections;
 using UnityEditor;
 using UnityEngine;
 
 namespace RedCatEngine.Configs
 {
-	public class BaseConfig : ScriptableObject
+	public abstract class BaseConfig : ScriptableObject
 	{
-		[ReadOnly]
-		public int ConfigId;
-		
-		public bool Equals(BaseConfig other)
-		{
-			return ConfigId == other.ConfigId;
-		}
-		
+		private int _id;
+
+		public int ID
+			=> _id;
+
 		private void OnValidate()
 		{
 #if UNITY_EDITOR
 			if (!EditorUtility.IsPersistent(this))
 				return;
-			ConfigId = AssetDatabase.AssetPathToGUID(AssetDatabase.GetAssetPath(this)).GetHashCode();
+			if (_id == 0)
+				_id = AssetDatabase.AssetPathToGUID(AssetDatabase.GetAssetPath(this)).GetHashCode();
 #endif
+			DoValidate();
 		}
 
-		public override int GetHashCode()
+		protected virtual void DoValidate()
 		{
-			return ConfigId.GetHashCode();
+
 		}
+
+		public bool Equals(BaseConfig other)
+		{
+			return _id == other._id;
+		}
+
+		public override int GetHashCode() 
+			=> _id;
 	}
 }
