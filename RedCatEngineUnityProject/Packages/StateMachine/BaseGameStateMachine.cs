@@ -5,8 +5,11 @@ namespace RedCatEngine.StateMachine
 {
 	public abstract class BaseGameStateMachine : IGameStateMachine
 	{
-		protected readonly Dictionary<Type, IExitableState> _states = new();
+		private readonly Dictionary<Type, IExitableState> _states = new();
 		private IExitableState _activeState;
+
+		protected void AddState<TType>(IExitableState state)
+			=> _states.Add(typeof(TType), state);
 
 		public void Enter<TState>() where TState : class, IState
 		{
