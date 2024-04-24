@@ -1,0 +1,16 @@
+{
+    "name": "Windows",
+    "rootNamespace": "RedCatEngine.Windows",
+    "references": [
+        "GUID:687b69a268bf4402bb854a43d7732d8a"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}
