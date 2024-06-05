@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace RedCatEngine.DependencyInjection
 {
-	public class ApplicationApplicationContainer : IApplicationContainer
+	public class ServiceLocatorApplicationContainer : IApplicationContainer
 	{
 		private readonly Dictionary<Type, object> _objects = new();
 
@@ -20,6 +20,14 @@ namespace RedCatEngine.DependencyInjection
 
 			data = (T)instance;
 			return true;
+		}
+		
+		public T Get<T>()
+		{
+			if (!_objects.TryGetValue(typeof(T), out var instance))
+				throw new Exception($"Not found {typeof(T)}");
+
+			return (T)instance;
 		}
 	}
 }
