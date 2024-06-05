@@ -11,7 +11,6 @@ using UnityEngine;
 
 namespace Editor.Attributes
 {
-#endif
 
     [AttributeUsage(AttributeTargets.Field)]
     public class ConditionalFieldAttribute : PropertyAttribute

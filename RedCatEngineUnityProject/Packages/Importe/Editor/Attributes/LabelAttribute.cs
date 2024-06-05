@@ -9,7 +9,6 @@ using UnityEngine;
 
 namespace Editor.Attributes
 {
-#endif
 
     [AttributeUsage(AttributeTargets.Field)]
     public class LabelAttribute : PropertyAttribute
