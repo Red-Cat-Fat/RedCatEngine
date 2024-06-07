@@ -1,5 +1,5 @@
 {
-    "name": "Tests",
+    "name": "StateMachineTests",
     "rootNamespace": "RedCatEngine.StateMachine",
     "references": [
         "UnityEngine.TestRunner",
