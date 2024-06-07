@@ -38,7 +38,7 @@ jobs:
       - name: Restore Library cache
         uses: actions/cache@v2
         with:
-          path: Library
+          path: RedCatEngineUnityProject/Library
           key: Library-test-project-${{ matrix.targetPlatform }}
           restore-keys: |
             Library-test-project-
@@ -48,6 +48,7 @@ jobs:
         uses: game-ci/unity-test-runner@v2
         id: testRunner
         with:
+          projectPath: RedCatEngineUnityProject
           testMode: ${{ matrix.testMode }}
           checkName: ${{ matrix.testMode }} test results
           githubToken: ${{ secrets.GITHUB_TOKEN }}
@@ -86,7 +87,7 @@ jobs:
       - name: Restore Library cache
         uses: actions/cache@v2
         with:
-          path: Library
+          path: RedCatEngineUnityProject/Library
           key: Library-build-WebGL
           restore-keys: |
             Library-build-
@@ -130,7 +131,7 @@ jobs:
       - name: Restore Library cache
         uses: actions/cache@v2
         with:
-          path: Library
+          path: RedCatEngineUnityProject/Library
           key: Library-build-StandaloneWindows64
           restore-keys: |
             Library-build-
@@ -174,7 +175,7 @@ jobs:
       - name: Restore Library cache
         uses: actions/cache@v2
         with:
-          path: Library
+          path: RedCatEngineUnityProject/Library
           key: Library-build-Android
           restore-keys: |
             Library-build-
