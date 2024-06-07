@@ -70,7 +70,6 @@ jobs:
           path: ${{ steps.testRunner.outputs.artifactsPath }}
 
       - uses: actions/upload-artifact@v3
-        if: always()
         with:
           name: Coverage results (${{ matrix.package }})
           path: ${{ steps.testRunner.outputs.coveragePath }}
