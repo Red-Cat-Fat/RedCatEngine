@@ -9,7 +9,7 @@ env:
 
 jobs:
   testRunner:
-    name: Test in ${{ matrix.testMode }} ✨
+    name: Test in ${{ matrix.testMode }}
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
@@ -17,6 +17,8 @@ jobs:
         testMode:
           - EditMode
           - PlayMode
+    permissions:
+      checks: write
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
