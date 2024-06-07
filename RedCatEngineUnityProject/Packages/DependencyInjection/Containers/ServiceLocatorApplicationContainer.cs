@@ -46,7 +46,6 @@ namespace RedCatEngine.DependencyInjection.Containers
 				return true;
 			}
 
-
 			data = default;
 			return false;
 		}
@@ -54,16 +53,36 @@ namespace RedCatEngine.DependencyInjection.Containers
 		public bool TryGetArray<T>(out IEnumerable<T> data)
 		{
 			if (!_arrayObjects.TryGetValue(typeof(T), out var instances))
-			{
-				data = ArraySegment<T>.Empty;
-				return false;
-			}
+				return TryGetAndCachedArrayByOtherKeys(out data) || TryGetAndCachedArrayByParenFromSingle(out data);
 
 			data = instances.Select(instance => (T)instance);
 			return true;
 		}
 
-		public bool TryGetByParenArrayFromSingle<T>(out IEnumerable<T> data)
+		private bool TryGetAndCachedArrayByOtherKeys<T>(out IEnumerable<T> data)
+		{
+			var childElements = new List<T>();
+			foreach (var arraysType in _arrayObjects.Keys)
+			{
+				foreach (var instance in _arrayObjects[arraysType])
+				{
+					if (instance is T tInstance)
+						childElements.Add(tInstance);
+				}
+			}
+
+			if (childElements.Any())
+			{
+				_arrayObjects.Add(typeof(T), childElements.Select(instance => (object)instance).ToList());
+				data = childElements;
+				return true;
+			}
+
+			data = ArraySegment<T>.Empty;
+			return false;
+		}
+
+		private bool TryGetAndCachedArrayByParenFromSingle<T>(out IEnumerable<T> data)
 		{
 			var findSomething = TryFindAllChildByType<T>(out var findElements);
 			var findEnumerable = findElements.ToList();
@@ -114,8 +133,8 @@ namespace RedCatEngine.DependencyInjection.Containers
 
 		private bool TryFindFirstChildByType<T>(out T data)
 		{
-			var list = GetChildTypes(typeof(T));
-			foreach (var type in list)
+			var listTypes = GetChildTypes(typeof(T));
+			foreach (var type in listTypes)
 			{
 				if (!_objects.TryGetValue(type, out var instance))
 					continue;
