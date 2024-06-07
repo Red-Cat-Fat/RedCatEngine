@@ -45,7 +45,7 @@ jobs:
             Library-
 
       - name: Run tests
-        uses: game-ci/unity-test-runner@v2
+        uses: game-ci/unity-test-runner@v4.3.0
         id: testRunner
         with:
           projectPath: RedCatEngineUnityProject
