@@ -1,0 +1,151 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Reflection;
+using RedCatEngine.DependencyInjection.Exceptions;
+
+namespace RedCatEngine.DependencyInjection.Containers
+{
+	public class ServiceLocatorApplicationContainer : IApplicationContainer
+	{
+		private static readonly Dictionary<Type, Type[]> ChildTypeCache = new();
+
+		private readonly Dictionary<Type, object> _objects = new();
+		private readonly Dictionary<Type, List<object>> _arrayObjects = new();
+
+		public void BindAsSingle<T>(T instance)
+		{
+			var type = typeof(T);
+			if (_objects.TryGetValue(type, out var alreadyInstance))
+				throw new BindDuplicateWithoutArrayMarkException(typeof(T), alreadyInstance);
+
+			_objects.Add(type, instance);
+		}
+
+		public void BindAsArray<T>(T instance)
+		{
+			var type = typeof(T);
+			if (!_arrayObjects.ContainsKey(type))
+				_arrayObjects.Add(type, new List<object>());
+
+			_arrayObjects[type].Add(instance);
+		}
+
+		public bool TryGetSingle<T>(out T data)
+		{
+			var type = typeof(T);
+			if (_objects.TryGetValue(type, out var instance))
+			{
+				data = (T)instance;
+				return true;
+			}
+
+			if (TryFindFirstChildByType<T>(out var parent))
+			{
+				data = parent;
+				return true;
+			}
+
+
+			data = default;
+			return false;
+		}
+
+		public bool TryGetArray<T>(out IEnumerable<T> data)
+		{
+			if (!_arrayObjects.TryGetValue(typeof(T), out var instances))
+			{
+				data = ArraySegment<T>.Empty;
+				return false;
+			}
+
+			data = instances.Select(instance => (T)instance);
+			return true;
+		}
+
+		public bool TryGetByParenArrayFromSingle<T>(out IEnumerable<T> data)
+		{
+			var findSomething = TryFindAllChildByType<T>(out var findElements);
+			var findEnumerable = findElements.ToList();
+
+			if (findSomething)
+				_arrayObjects.Add(typeof(T), findEnumerable.Select(element => (object)element).ToList());
+
+			data = findEnumerable;
+			return findSomething;
+		}
+
+		private bool TryFindAllChildByType<T>(out IEnumerable<T> data)
+		{
+			var childTypes = GetChildTypes(typeof(T));
+			List<T> findTypes = new();
+
+			foreach (var type in childTypes)
+			{
+				if (!_objects.TryGetValue(type, out var instance))
+					continue;
+
+				var targetInstance = (T)instance;
+				if (targetInstance == null)
+					continue;
+
+				findTypes.Add(targetInstance);
+			}
+
+			data = findTypes;
+			return findTypes.Count > 0;
+		}
+
+		public T GetSingle<T>()
+		{
+			if (!_objects.TryGetValue(typeof(T), out var instance))
+				throw new NotFoundInstanceException(typeof(T));
+
+			return (T)instance;
+		}
+
+		public IEnumerable<T> GetArray<T>()
+		{
+			if (!_arrayObjects.TryGetValue(typeof(T), out var instanceEnumerable))
+				throw new NotFoundInstanceException(typeof(T));
+
+			return instanceEnumerable.Select(instance => (T)instance);
+		}
+
+		private bool TryFindFirstChildByType<T>(out T data)
+		{
+			var list = GetChildTypes(typeof(T));
+			foreach (var type in list)
+			{
+				if (!_objects.TryGetValue(type, out var instance))
+					continue;
+
+				var targetInstance = (T)instance;
+				if (targetInstance == null)
+					continue;
+
+				data = targetInstance;
+				return true;
+			}
+
+			data = default;
+			return false;
+		}
+
+		private static IEnumerable<Type> GetChildTypes(Type type)
+		{
+			if (ChildTypeCache.TryGetValue(type, out var result))
+				return result;
+
+			if (type.IsInterface)
+				result = AppDomain.CurrentDomain.GetAssemblies().SelectMany(s => s.GetTypes())
+					.Where(p => p != type && type.IsAssignableFrom(p)).ToArray();
+			else
+				result = Assembly.GetAssembly(type).GetTypes().Where(t => t.IsSubclassOf(type)).ToArray();
+
+			ChildTypeCache[type] = result;
+
+			return result;
+		}
+	}
+}
