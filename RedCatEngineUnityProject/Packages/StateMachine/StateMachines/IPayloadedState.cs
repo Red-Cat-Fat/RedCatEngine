@@ -7,9 +7,6 @@
 
 	public interface IPayloadedState<in TPayload> : IPayloadedState
 	{
-		new void Enter(object payload)
-			=> Enter((TPayload)payload);
-
 		void Enter(TPayload payload);
 	}
 }
