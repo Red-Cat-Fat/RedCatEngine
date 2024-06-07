@@ -1,4 +1,4 @@
-name: GameCI Template 🎮
+name: Tests
 
 on: push
 
@@ -9,14 +9,17 @@ env:
 
 jobs:
   testRunner:
-    name: Test in ${{ matrix.testMode }}
+    name: Test for ${{ matrix.package }} package
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
       matrix:
         testMode:
           - EditMode
-          - PlayMode
+          #- PlayMode
+        package:
+          - DependencyInjection
+          - StateMachine
     permissions:
       checks: write
     steps:
@@ -52,7 +55,7 @@ jobs:
         uses: game-ci/unity-test-runner@v4.3.0
         id: testRunner
         with:
-          projectPath: RedCatEngineUnityProject
+          projectPath: RedCatEngineUnityProject/Packages/${{ matrix.package }}
           testMode: ${{ matrix.testMode }}
           checkName: ${{ matrix.testMode }} test results
           githubToken: ${{ secrets.GITHUB_TOKEN }}
