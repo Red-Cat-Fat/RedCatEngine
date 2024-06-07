@@ -50,6 +50,17 @@ namespace RedCatEngine.DependencyInjection.Containers
 			return false;
 		}
 
+		public T GetSingle<T>()
+		{
+			if (_objects.TryGetValue(typeof(T), out var instance))
+				return (T)instance;
+
+			if (TryFindFirstChildByType<T>(out var typedInstance))
+				return typedInstance;
+
+			throw new NotFoundInstanceException(typeof(T));
+		}
+
 		public bool TryGetArray<T>(out IEnumerable<T> data)
 		{
 			if (!_arrayObjects.TryGetValue(typeof(T), out var instances))
@@ -57,6 +68,57 @@ namespace RedCatEngine.DependencyInjection.Containers
 
 			data = instances.Select(instance => (T)instance);
 			return true;
+		}
+
+		public IEnumerable<T> GetArray<T>()
+		{
+			if (_arrayObjects.TryGetValue(typeof(T), out var instanceEnumerable))
+				return instanceEnumerable.Select(instance => (T)instance);
+
+			if (TryGetAndCachedArrayByOtherKeys<T>(out var newTypes))
+				return newTypes;
+
+			if (TryGetAndCachedArrayByParenFromSingle<T>(out var singleVariants))
+				return singleVariants;
+			
+			throw new NotFoundInstanceException(typeof(T));
+
+		}
+
+		private bool TryFindFirstChildByType<T>(out T data)
+		{
+			var listTypes = GetChildTypes(typeof(T));
+			foreach (var type in listTypes)
+			{
+				if (!_objects.TryGetValue(type, out var instance))
+					continue;
+
+				var targetInstance = (T)instance;
+				if (targetInstance == null)
+					continue;
+
+				data = targetInstance;
+				return true;
+			}
+
+			data = default;
+			return false;
+		}
+
+		private static IEnumerable<Type> GetChildTypes(Type type)
+		{
+			if (ChildTypeCache.TryGetValue(type, out var result))
+				return result;
+
+			if (type.IsInterface)
+				result = AppDomain.CurrentDomain.GetAssemblies().SelectMany(s => s.GetTypes())
+					.Where(p => p != type && type.IsAssignableFrom(p)).ToArray();
+			else
+				result = Assembly.GetAssembly(type).GetTypes().Where(t => t.IsSubclassOf(type)).ToArray();
+
+			ChildTypeCache[type] = result;
+
+			return result;
 		}
 
 		private bool TryGetAndCachedArrayByOtherKeys<T>(out IEnumerable<T> data)
@@ -113,58 +175,6 @@ namespace RedCatEngine.DependencyInjection.Containers
 
 			data = findTypes;
 			return findTypes.Count > 0;
-		}
-
-		public T GetSingle<T>()
-		{
-			if (!_objects.TryGetValue(typeof(T), out var instance))
-				throw new NotFoundInstanceException(typeof(T));
-
-			return (T)instance;
-		}
-
-		public IEnumerable<T> GetArray<T>()
-		{
-			if (!_arrayObjects.TryGetValue(typeof(T), out var instanceEnumerable))
-				throw new NotFoundInstanceException(typeof(T));
-
-			return instanceEnumerable.Select(instance => (T)instance);
-		}
-
-		private bool TryFindFirstChildByType<T>(out T data)
-		{
-			var listTypes = GetChildTypes(typeof(T));
-			foreach (var type in listTypes)
-			{
-				if (!_objects.TryGetValue(type, out var instance))
-					continue;
-
-				var targetInstance = (T)instance;
-				if (targetInstance == null)
-					continue;
-
-				data = targetInstance;
-				return true;
-			}
-
-			data = default;
-			return false;
-		}
-
-		private static IEnumerable<Type> GetChildTypes(Type type)
-		{
-			if (ChildTypeCache.TryGetValue(type, out var result))
-				return result;
-
-			if (type.IsInterface)
-				result = AppDomain.CurrentDomain.GetAssemblies().SelectMany(s => s.GetTypes())
-					.Where(p => p != type && type.IsAssignableFrom(p)).ToArray();
-			else
-				result = Assembly.GetAssembly(type).GetTypes().Where(t => t.IsSubclassOf(type)).ToArray();
-
-			ChildTypeCache[type] = result;
-
-			return result;
 		}
 	}
 }

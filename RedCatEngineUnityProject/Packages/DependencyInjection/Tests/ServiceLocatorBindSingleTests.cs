@@ -1,0 +1,40 @@
+using NUnit.Framework;
+using RedCatEngine.DependencyInjection.Containers;
+using RedCatEngine.DependencyInjection.Tests.SpecialSubClasses;
+
+namespace RedCatEngine.DependencyInjection.Tests
+{
+    public class ServiceLocatorBindSingleTests
+    {
+	    private IApplicationContainer _applicationContainer;
+
+	    [SetUp]
+	    public void SetUp()
+	    {
+		    _applicationContainer = new ServiceLocatorApplicationContainer();
+	    }
+
+        [Test]
+        public void GivenServiceLocatorContainer_WhenBindOnce_ThenAllCorrect()
+        {
+	        _applicationContainer.BindAsSingle(new SimpleDemoParentClass());
+	        Assert.IsTrue(_applicationContainer.TryGetSingle<SimpleDemoParentClass>(out _), "Not found instance");
+        }
+
+        [Test]
+        public void GivenServiceLocatorContainer_WhenBindOnce_ThenGetCorrectInstance()
+        {
+	        const int checkValue = 42;
+	        _applicationContainer.BindAsSingle(new SimpleDemoDataParentClass(checkValue));
+	        var instance = _applicationContainer.GetSingle<SimpleDemoDataParentClass>();
+	        Assert.AreEqual(instance.Value, checkValue, "Not correct instance");
+        }
+
+		[Test]
+		public void GivenServiceLocatorContainer_WhenBindChild_ThenCanGetByParentType()
+		{
+			_applicationContainer.BindAsSingle(new SimpleDemoChildFirstClass());
+			Assert.IsTrue(_applicationContainer.TryGetSingle<SimpleDemoParentClass>(out _), "Not found instance");
+		}
+    }
+}
