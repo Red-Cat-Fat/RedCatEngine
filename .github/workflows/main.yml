@@ -1,0 +1,75 @@
+name: Tests
+
+on: push
+
+env:
+  UNITY_LICENSE: ${{ secrets.UNITY_LICENSE }}
+  UNITY_EMAIL: ${{ secrets.UNITY_EMAIL }}
+  UNITY_PASSWORD: ${{ secrets.UNITY_PASSWORD }}
+
+jobs:
+  testRunner:
+    name: Test for ${{ matrix.package }} package
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        testMode:
+          - EditMode
+          #- PlayMode
+        package:
+          - DependencyInjection
+          - StateMachine
+        targetPlatform:
+          - WebGL
+    permissions:
+      checks: write
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Create LFS file list
+        run: git lfs ls-files -l | cut -d' ' -f1 | sort > .lfs-assets-id
+
+      - name: Restore LFS cache
+        uses: actions/cache@v4.0.2
+        id: lfs-cache
+        with:
+          path: .git/lfs
+          key: ${{ runner.os }}-lfs-${{ hashFiles('.lfs-assets-id') }}
+
+      - name: Git LFS Pull
+        run: |
+          git lfs pull
+          git add .
+          git reset --hard
+
+      - name: Restore Library cache
+        uses: actions/cache@v4.0.2
+        with:
+          path: RedCatEngineUnityProject/Library
+          key: Library-test-project-${{ matrix.targetPlatform }}
+          restore-keys: |
+            Library-test-project-
+            Library-
+
+      - name: Run tests
+        uses: game-ci/unity-test-runner@v4.3.0
+        id: testRunner
+        with:
+          unityVersion: 2021.3.31f1
+          packageMode: true
+          projectPath: RedCatEngineUnityProject/Packages/${{ matrix.package }}
+          testMode: ${{ matrix.testMode }}
+          checkName: ${{ matrix.package }} package test results
+          githubToken: ${{ secrets.GITHUB_TOKEN }}
+
+      - uses: actions/upload-artifact@v3
+        with:
+          name: Test results (${{ matrix.package }})
+          path: ${{ steps.testRunner.outputs.artifactsPath }}
+
+      - uses: actions/upload-artifact@v3
+        with:
+          name: Coverage results (${{ matrix.package }})
+          path: ${{ steps.testRunner.outputs.coveragePath }}
