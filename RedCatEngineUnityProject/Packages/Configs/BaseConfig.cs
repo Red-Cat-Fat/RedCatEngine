@@ -1,4 +1,6 @@
+#if UNITY_EDITOR
 using UnityEditor;
+#endif
 using UnityEngine;
 
 namespace RedCatEngine.Configs
@@ -17,8 +19,8 @@ namespace RedCatEngine.Configs
 				return;
 			if (_id == 0)
 				_id = AssetDatabase.AssetPathToGUID(AssetDatabase.GetAssetPath(this)).GetHashCode();
-#endif
 			DoValidate();
+#endif
 		}
 
 		protected virtual void DoValidate()
@@ -26,7 +28,14 @@ namespace RedCatEngine.Configs
 
 		}
 
-		public bool Equals(BaseConfig other)
+		public override bool Equals(object other)
+		{
+			return other as BaseConfig != null 
+				&& other.GetType() == this.GetType() 
+				&& Equals((BaseConfig) other);
+		}
+
+		private bool Equals(BaseConfig other)
 		{
 			return _id == other._id;
 		}
