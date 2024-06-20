@@ -5,6 +5,7 @@ namespace RedCatEngine.Configs
 {
 	public abstract class BaseConfig : ScriptableObject
 	{
+		[SerializeField]
 		private int _id;
 
 		public int ID
