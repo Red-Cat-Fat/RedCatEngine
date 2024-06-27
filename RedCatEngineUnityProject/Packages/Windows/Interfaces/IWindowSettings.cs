@@ -1,4 +1,4 @@
-using RedCatEngine.DependencyInjection.Containers;
+using RedCatEngine.DependencyInjection.Containers.Interfaces;
 
 namespace RedCatEngine.Windows.Interfaces
 {
