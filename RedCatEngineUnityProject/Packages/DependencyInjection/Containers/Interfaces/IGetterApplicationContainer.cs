@@ -1,11 +1,9 @@
 using System.Collections.Generic;
 
-namespace RedCatEngine.DependencyInjection.Containers
+namespace RedCatEngine.DependencyInjection.Containers.Interfaces
 {
-	public interface IApplicationContainer
+	public interface IGetterApplicationContainer
 	{
-		void BindAsSingle<T>(T instance);
-		void BindAsArray<T>(T instance);
 		bool TryGetSingle<T>(out T data);
 		bool TryGetArray<T>(out IEnumerable<T> data);
 		T GetSingle<T>();

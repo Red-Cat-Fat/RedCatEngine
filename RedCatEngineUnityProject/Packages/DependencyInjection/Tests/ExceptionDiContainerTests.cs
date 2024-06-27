@@ -1,6 +1,7 @@
 ﻿using System;
 using NUnit.Framework;
 using RedCatEngine.DependencyInjection.Containers;
+using RedCatEngine.DependencyInjection.Containers.Interfaces;
 using RedCatEngine.DependencyInjection.Exceptions;
 using RedCatEngine.DependencyInjection.Tests.SpecialSubClasses;
 
@@ -13,7 +14,7 @@ namespace RedCatEngine.DependencyInjection.Tests
 		[SetUp]
 		public void SetUp()
 		{
-			_applicationContainer = new ServiceLocatorApplicationContainer();
+			_applicationContainer = new ApplicationContainer();
 		}
 
 		[Test]
@@ -47,7 +48,7 @@ namespace RedCatEngine.DependencyInjection.Tests
 		[Test]
 		public void GivenServiceLocatorContainer_WhenAddDuplicateAsSingle_ThenCatchBindDuplicateWithoutArrayMarkException()
 		{
-			var applicationContainer = new ServiceLocatorApplicationContainer();
+			var applicationContainer = new ApplicationContainer();
 			applicationContainer.BindAsSingle(new SimpleDemoDataParentClass(42));
 			try
 			{

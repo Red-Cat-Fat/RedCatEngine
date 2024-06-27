@@ -1,5 +1,6 @@
 using NUnit.Framework;
 using RedCatEngine.DependencyInjection.Containers;
+using RedCatEngine.DependencyInjection.Containers.Interfaces;
 using RedCatEngine.DependencyInjection.Tests.SpecialSubClasses;
 
 namespace RedCatEngine.DependencyInjection.Tests
@@ -11,7 +12,7 @@ namespace RedCatEngine.DependencyInjection.Tests
 	    [SetUp]
 	    public void SetUp()
 	    {
-		    _applicationContainer = new ServiceLocatorApplicationContainer();
+		    _applicationContainer = new ApplicationContainer();
 	    }
 
         [Test]
