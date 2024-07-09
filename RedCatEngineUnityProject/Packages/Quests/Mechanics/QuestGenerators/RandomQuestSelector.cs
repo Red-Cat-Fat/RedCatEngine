@@ -11,6 +11,9 @@ namespace RedCatEngine.Quests.Mechanics.QuestGenerators
 		public string Name
 			=> $"RandomQuestSelectorGenerator from {_collection.name}";
 
+		public int TotalQuestVariants
+			=> _collection.QuestConfigs.Length;
+
 		private readonly QuestCollectionConfig _collection;
 
 		public RandomQuestSelector(QuestCollectionConfig collection)
@@ -18,14 +21,17 @@ namespace RedCatEngine.Quests.Mechanics.QuestGenerators
 			_collection = collection;
 		}
 
-		public QuestConfig GetNextQuest()
+		public bool TryGetNextQuest(out QuestConfig questConfig)
 		{
 			if (_collection.QuestConfigs.Length == 0)
-				throw new NotFoundQuestException(this);
+			{
+				questConfig = null;
+				return false;
+			}
 
 			var index = Random.Range(0, _collection.QuestConfigs.Length); //todo: make RandomService
-			var questConfig = _collection.QuestConfigs[index];
-			return questConfig;
+			questConfig = _collection.QuestConfigs[index];
+			return questConfig != null;
 		}
 
 		public bool TryLoad(ConfigID<QuestConfig> questId, out QuestConfig questConfig)

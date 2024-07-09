@@ -8,6 +8,10 @@ namespace RedCatEngine.Quests.Mechanics.Quests
 	public abstract class BaseQuest : IQuest
 	{
 		public event Action CompleteEvent;
+
+		public ConfigID<QuestConfig> ID
+			=> Config;
+
 		public abstract QuestState QuestState { get; }
 		public abstract float Progress { get; }
 		public abstract string ProcessProgressText { get; }
@@ -20,14 +24,10 @@ namespace RedCatEngine.Quests.Mechanics.Quests
 		}
 
 		public void Start(DateTime time)
-		{
-			DoStart(time);
-		}
+			=> DoStart(time);
 
 		public void Close()
-		{
-			DoClose();
-		}
+			=> DoClose();
 
 		protected virtual void SendComplete() 
 			=> CompleteEvent?.Invoke();

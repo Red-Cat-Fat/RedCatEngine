@@ -1,4 +1,6 @@
+using RedCatEngine.Configs;
 using RedCatEngine.DependencyInjection.Containers;
+using RedCatEngine.Quests.Configs.Quests;
 using RedCatEngine.Quests.Exceptions;
 using RedCatEngine.Quests.Mechanics.QuestGenerators;
 using RedCatEngine.Quests.Mechanics.Quests;
@@ -17,16 +19,24 @@ namespace RedCatEngine.Quests.Mechanics.Factories
 			_randomQuestSelector = selector;
 		}
 
+		public IQuest MakeFromConfig(ConfigID<QuestConfig> questConfig)
+		{
+			_randomQuestSelector.TryLoad(questConfig, out var quest);
+			return quest.Make(_applicationContainer);
+		}
+
 		public IQuest MakeNewQuest()
 		{
-			var quest = _randomQuestSelector.GetNextQuest();
-			return quest.Make(_applicationContainer);
+			if (_randomQuestSelector.TryGetNextQuest(out var quest))
+				return quest.Make(_applicationContainer);
+
+			throw new NotFoundQuestException(_randomQuestSelector);
 		}
 
 		public IQuest LoadFrom(IQuestData saveData)
 		{
 			return _randomQuestSelector.TryLoad(saveData.Config, out var quest)
-				? quest.Make(_applicationContainer) 
+				? quest.Make(_applicationContainer, saveData)
 				: throw new CantLoadFromDataException(saveData, _randomQuestSelector);
 		}
 	}

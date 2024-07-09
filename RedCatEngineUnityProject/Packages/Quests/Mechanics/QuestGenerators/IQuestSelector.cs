@@ -6,7 +6,8 @@ namespace RedCatEngine.Quests.Mechanics.QuestGenerators
 	public interface IQuestSelector
 	{
 		string Name { get; }
-		QuestConfig GetNextQuest();
+		int TotalQuestVariants { get; }
+		bool TryGetNextQuest(out QuestConfig questConfig);
 		bool TryLoad(ConfigID<QuestConfig> questId, out QuestConfig questConfig);
 	}
 }
