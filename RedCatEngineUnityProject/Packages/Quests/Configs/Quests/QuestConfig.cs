@@ -6,8 +6,7 @@ namespace RedCatEngine.Quests.Configs.Quests
 {
 	public abstract class QuestConfig : BaseConfig
 	{
-		public string Title;
-		public string Description;
+		public string DescriptionKey;
 
 		public IQuest Make(IApplicationContainer applicationContainer) 
 			=> DoMake(applicationContainer);

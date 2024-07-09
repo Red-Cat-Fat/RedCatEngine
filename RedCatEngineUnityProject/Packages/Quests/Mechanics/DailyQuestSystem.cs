@@ -9,7 +9,7 @@ namespace RedCatEngine.Quests.Mechanics
 {
 	public class DailyQuestSystem
 	{
-		public Action<IQuest> NewQuestEvent;
+		public event Action<IQuest> NewQuestEvent;
 		private readonly IQuestFactory _questFactory;
 		private readonly int _countQuests;
 		private readonly int _dailyTimeLiveSeconds;
@@ -17,7 +17,7 @@ namespace RedCatEngine.Quests.Mechanics
 		private static DateTime CurrentTime => DateTime.UtcNow; //todo: make time service
 
 		public DailyQuestSystem(
-			DailyQuestData data,
+			DailyQuestsData data,
 			IQuestFactory questFactory,
 			int countQuests,
 			int dailyTimeLiveSeconds
@@ -29,10 +29,10 @@ namespace RedCatEngine.Quests.Mechanics
 			LoadData(data);
 		}
 
-		private void LoadData(DailyQuestData dailyQuestData)
+		private void LoadData(DailyQuestsData dailyQuestsData)
 		{
 			_activeQuest.AddRange(
-				dailyQuestData.ActiveQuests
+				dailyQuestsData.ActiveQuests
 					.Select(questData => _questFactory.LoadFrom(questData))
 					.Where(quest => quest != null));
 			CheckExpireQuests();
@@ -45,9 +45,9 @@ namespace RedCatEngine.Quests.Mechanics
 				_activeQuest.Add(CreateAndStartNewQuest());
 		}
 
-		public DailyQuestData GetData()
+		public DailyQuestsData GetData()
 		{
-			var data = new DailyQuestData();
+			var data = new DailyQuestsData();
 			foreach (var quest in _activeQuest)
 				data.ActiveQuests.Add(quest.GetData());
 

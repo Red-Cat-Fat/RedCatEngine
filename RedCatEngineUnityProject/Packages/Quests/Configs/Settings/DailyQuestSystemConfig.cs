@@ -3,6 +3,7 @@ using RedCatEngine.DependencyInjection.Containers;
 using RedCatEngine.Quests.Mechanics;
 using RedCatEngine.Quests.Mechanics.Data;
 using RedCatEngine.Quests.Mechanics.Factories;
+using RedCatEngine.Quests.Mechanics.QuestGenerators;
 
 namespace RedCatEngine.Quests.Configs.Settings
 {
@@ -12,12 +13,12 @@ namespace RedCatEngine.Quests.Configs.Settings
 		public int QuestPerDay = 3;
 		public int DailyTimeLiveSeconds = 60 * 60 * 24;
 
-		public DailyQuestSystem Make(IApplicationContainer applicationContainer, DailyQuestData data)
+		public DailyQuestSystem Make(IApplicationContainer applicationContainer, DailyQuestsData data)
 		{
 			var questFactory
-				= new QuestCollectionSelectorQuestFactory(
+				= new CollectionSelectorQuestFactory(
 					applicationContainer,
-					new QuestSelectorContainer(DailyQuestPack));
+					new RandomQuestSelector(DailyQuestPack));
 
 			return new DailyQuestSystem(
 				data,

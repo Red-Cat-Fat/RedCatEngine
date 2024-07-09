@@ -3,9 +3,9 @@ using RedCatEngine.Quests.Mechanics.Quests.QuestDatas;
 
 namespace RedCatEngine.Quests.Mechanics.Data
 {
-	public class DailyQuestData
+	public class DailyQuestsData
 	{
-		public static DailyQuestData Empty => new();
+		public static DailyQuestsData Empty => new();
 		public List<IQuestData> ActiveQuests = new();
 	}
 }
