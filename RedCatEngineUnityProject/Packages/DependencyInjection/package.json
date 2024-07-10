@@ -1,6 +1,6 @@
 {
     "name": "com.boronnikov.games.red-cat-engine.di",
-    "version": "1.0.0",
+    "version": "1.0.1",
     "displayName": "Red Cat Engine: Dependency Injection",
     "description": "Simple dependency injection system",
     "unity": "2021.3",
