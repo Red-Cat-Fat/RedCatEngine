@@ -5,7 +5,7 @@ using RedCatEngine.DependencyInjection.Tests.SpecialSubClasses;
 
 namespace RedCatEngine.DependencyInjection.Tests
 {
-	public class ServiceLocatorBindArrayTests
+	public class ApplicationContainerBindArrayTests
 	{
 		private IApplicationContainer _applicationContainer;
 
@@ -16,7 +16,7 @@ namespace RedCatEngine.DependencyInjection.Tests
 		}
 		
 		[Test]
-		public void GivenServiceLocatorContainer_WhenBindTwoChildAsArray_ThenCanGetArrayByParentType()
+		public void GivenApplicationContainer_WhenBindTwoChildAsArray_ThenCanGetArrayByParentType()
 		{
 			_applicationContainer.BindAsArray<SimpleDemoParentClass>(new SimpleDemoChildFirstClass());
 			_applicationContainer.BindAsArray<SimpleDemoParentClass>(new SimpleDemoChildSecondClass());
@@ -24,7 +24,7 @@ namespace RedCatEngine.DependencyInjection.Tests
 		}
 
 		[Test]
-		public void GivenServiceLocatorContainer_WhenBindTwoInstance_ThenGetCorrectArrayInstance()
+		public void GivenApplicationContainer_WhenBindTwoInstance_ThenGetCorrectArrayInstance()
 		{
 			const int checkValue = 42;
 			_applicationContainer.BindAsArray(new SimpleDemoDataParentClass(checkValue));
@@ -40,7 +40,7 @@ namespace RedCatEngine.DependencyInjection.Tests
 		}
 
 		[Test]
-		public void GivenServiceLocatorContainer_WhenBindTwoChildAsArrayWithTyped_ThenCanNotGetArrayByParentType()
+		public void GivenApplicationContainer_WhenBindTwoChildAsArrayWithTyped_ThenCanNotGetArrayByParentType()
 		{
 			_applicationContainer.BindAsArray<SimpleDemoParentClass>(new SimpleDemoChildFirstClass());
 			_applicationContainer.BindAsArray<SimpleDemoParentClass>(new SimpleDemoChildSecondClass());
@@ -51,7 +51,7 @@ namespace RedCatEngine.DependencyInjection.Tests
 		}
 
 		[Test]
-		public void GivenServiceLocatorContainer_WhenBindTwoChildAsArrayWithoutTyped_ThenCanGetArrayByParentTypeAndCanNotGetAsSingle()
+		public void GivenApplicationContainer_WhenBindTwoChildAsArrayWithoutTyped_ThenCanGetArrayByParentTypeAndCanNotGetAsSingle()
 		{
 			_applicationContainer.BindAsArray(new SimpleDemoChildFirstClass());
 			_applicationContainer.BindAsArray(new SimpleDemoChildSecondClass());
@@ -62,7 +62,7 @@ namespace RedCatEngine.DependencyInjection.Tests
 		}
 
 		[Test]
-		public void GivenServiceLocatorContainer_WhenBindTwoChildAsArray_ThenCanNotGetSingle()
+		public void GivenApplicationContainer_WhenBindTwoChildAsArray_ThenCanNotGetSingle()
 		{
 			_applicationContainer.BindAsArray<SimpleDemoParentClass>(new SimpleDemoChildFirstClass());
 			_applicationContainer.BindAsArray<SimpleDemoParentClass>(new SimpleDemoChildSecondClass());
@@ -71,7 +71,7 @@ namespace RedCatEngine.DependencyInjection.Tests
 		}
 
 		[Test]
-		public void GivenServiceLocatorContainer_WhenBindTwoChild_ThenCanNotGetArrayByParentType()
+		public void GivenApplicationContainer_WhenBindTwoChild_ThenCanNotGetArrayByParentType()
 		{
 			_applicationContainer.BindAsSingle(new SimpleDemoChildFirstClass());
 			_applicationContainer.BindAsSingle(new SimpleDemoChildSecondClass());

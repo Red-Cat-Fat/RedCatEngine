@@ -6,16 +6,31 @@ namespace RedCatEngine.DependencyInjection.Specials.Providers
 {
 	public class ProviderService : IBinderApplicationContainer
 	{
-		private readonly Dictionary<Type, List<IWait>> _waits = new();
+		private readonly Dictionary<Type, List<IWaiter>> _waits = new();
+		private readonly Dictionary<Type, List<IWaiter>> _arrayWaits = new();
 
-		public IProvider<TProvideType> RegisterProvider<TProvideType>() where TProvideType : class
+		public ISingleProvider<TProvideType> RegisterProvider<TProvideType>() where TProvideType : class
 		{
-			var provider = new Provider<TProvideType>();
+			var provider = new SingleProvider<TProvideType>();
 			var typeKey = typeof(TProvideType);
 			if (!_waits.TryGetValue(typeKey, out var waiterList))
 			{
-				waiterList = new List<IWait>();
+				waiterList = new List<IWaiter>();
 				_waits.Add(typeKey, waiterList);
+			}
+
+			waiterList.Add(provider);
+			return provider;
+		}
+
+		public ISingleProvider<TProvideType> RegisterArrayProvider<TProvideType>() where TProvideType : class
+		{
+			var provider = new SingleProvider<TProvideType>();
+			var typeKey = typeof(TProvideType);
+			if (!_arrayWaits.TryGetValue(typeKey, out var waiterList))
+			{
+				waiterList = new List<IWaiter>();
+				_arrayWaits.Add(typeKey, waiterList);
 			}
 
 			waiterList.Add(provider);
@@ -30,7 +45,9 @@ namespace RedCatEngine.DependencyInjection.Specials.Providers
 
 		public TBindType BindAsArray<TBindType>(TBindType instance)
 		{
-			OnNewBind(instance);
+			if (_arrayWaits.TryGetValue(typeof(TBindType), out var waiterList))
+				foreach (var waiter in waiterList)
+					waiter.Attach(instance);
 			return instance;
 		}
 

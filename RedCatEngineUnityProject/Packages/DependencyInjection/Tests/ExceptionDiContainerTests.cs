@@ -18,7 +18,7 @@ namespace RedCatEngine.DependencyInjection.Tests
 		}
 
 		[Test]
-		public void GivenServiceLocatorContainer_WhenGetNotContainInstance_ThenCatchNotFoundInstanceException()
+		public void GivenApplicationContainer_WhenGetNotContainInstance_ThenCatchNotFoundInstanceException()
 		{
 			try
 			{
@@ -32,7 +32,7 @@ namespace RedCatEngine.DependencyInjection.Tests
 		}
 
 		[Test]
-		public void GivenServiceLocatorContainer_WhenGetAllNotContainInstance_ThenCatchNotFoundInstanceException()
+		public void GivenApplicationContainer_WhenGetAllNotContainInstance_ThenCatchNotFoundInstanceException()
 		{
 			try
 			{
@@ -46,7 +46,7 @@ namespace RedCatEngine.DependencyInjection.Tests
 		}
 
 		[Test]
-		public void GivenServiceLocatorContainer_WhenAddDuplicateAsSingle_ThenCatchBindDuplicateWithoutArrayMarkException()
+		public void GivenApplicationContainer_WhenAddDuplicateAsSingle_ThenCatchBindDuplicateWithoutArrayMarkException()
 		{
 			var applicationContainer = new ApplicationContainer();
 			applicationContainer.BindAsSingle(new SimpleDemoDataParentClass(42));

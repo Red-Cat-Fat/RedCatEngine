@@ -6,7 +6,7 @@ using RedCatEngine.DependencyInjection.Tests.SpecialSubClasses;
 
 namespace RedCatEngine.DependencyInjection.Tests
 {
-	public class ServiceLocatorGettersTests
+	public class ApplicationContainerGettersTests
 	{
 		private IApplicationContainer _applicationContainer;
 
@@ -17,7 +17,7 @@ namespace RedCatEngine.DependencyInjection.Tests
 		}
 
 		[Test]
-		public void GivenServiceLocatorContainer_WhenGetAndTryGetInvoke_ThenInstancesAreEquals()
+		public void GivenApplicationContainer_WhenGetAndTryGetInvoke_ThenInstancesAreEquals()
 		{
 			_applicationContainer.BindAsSingle(new SimpleDemoDataParentClass(42));
 			var justGetSingle = _applicationContainer.GetSingle<SimpleDemoDataParentClass>();
@@ -29,7 +29,7 @@ namespace RedCatEngine.DependencyInjection.Tests
 		}
 		
 		[Test]
-		public void GivenServiceLocatorContainer_WhenGetAndTryGetInvokeByParentClass_ThenInstancesAreEquals()
+		public void GivenApplicationContainer_WhenGetAndTryGetInvokeByParentClass_ThenInstancesAreEquals()
 		{
 			_applicationContainer.BindAsSingle(new SimpleDemoFirstDataChildClass(42));
 			var justGetSingle = _applicationContainer.GetSingle<SimpleDemoDataParentClass>();
@@ -41,7 +41,7 @@ namespace RedCatEngine.DependencyInjection.Tests
 		}
 		
 		[Test]
-		public void GivenServiceLocatorContainer_WhenGetArrayAndTryGetArrayInvoke_ThenInstancesAreEquals()
+		public void GivenApplicationContainer_WhenGetArrayAndTryGetArrayInvoke_ThenInstancesAreEquals()
 		{
 			_applicationContainer.BindAsArray(new SimpleDemoDataParentClass(42));
 			_applicationContainer.BindAsArray(new SimpleDemoDataParentClass(43));
@@ -57,7 +57,7 @@ namespace RedCatEngine.DependencyInjection.Tests
 		}
 		
 		[Test]
-		public void GivenServiceLocatorContainer_WhenGetArrayAndTryGetArrayInvokeByParentClass_ThenInstancesAreEquals()
+		public void GivenApplicationContainer_WhenGetArrayAndTryGetArrayInvokeByParentClass_ThenInstancesAreEquals()
 		{
 			_applicationContainer.BindAsArray(new SimpleDemoFirstDataChildClass(42));
 			_applicationContainer.BindAsArray(new SimpleDemoSecondDataChildClass(43));
@@ -73,7 +73,7 @@ namespace RedCatEngine.DependencyInjection.Tests
 		}
 
 		[Test]
-		public void GivenServiceLocatorContainerWithSingleBinds_WhenGetArrayAndTryGetArrayInvokeByParentClass_ThenInstancesAreEquals()
+		public void GivenApplicationContainerWithSingleBinds_WhenGetArrayAndTryGetArrayInvokeByParentClass_ThenInstancesAreEquals()
 		{
 			_applicationContainer.BindAsSingle(new SimpleDemoFirstDataChildClass(42));
 			_applicationContainer.BindAsSingle(new SimpleDemoSecondDataChildClass(43));

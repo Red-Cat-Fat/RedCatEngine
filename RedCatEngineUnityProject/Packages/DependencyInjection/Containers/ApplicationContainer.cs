@@ -12,17 +12,18 @@ namespace RedCatEngine.DependencyInjection.Containers
 		private readonly Dictionary<Type, object> _objects = new();
 		private readonly CashContainer _cashContainer;
 		private readonly ProviderService _providerService;
-		
+
 		public ApplicationContainer()
 		{
 			_cashContainer = new CashContainer();
 			_providerService = new ProviderService();
 		}
 
-		public IProvider<TProvideType> RegisterProvider<TProvideType>() where TProvideType : class
-		{
-			return _providerService.RegisterProvider<TProvideType>();
-		}
+		public ISingleProvider<TProvideType> RegisterProvider<TProvideType>() where TProvideType : class
+			=> _providerService.RegisterProvider<TProvideType>();
+
+		public ISingleProvider<TProvideType> RegisterArrayProvider<TProvideType>() where TProvideType : class
+			=> _providerService.RegisterArrayProvider<TProvideType>();
 
 		public TBindType BindAsSingle<TBindType>(TBindType instance)
 		{
@@ -31,8 +32,7 @@ namespace RedCatEngine.DependencyInjection.Containers
 				throw new BindDuplicateWithoutArrayMarkException(typeof(TBindType), alreadyInstance);
 
 			_objects.Add(type, instance);
-			
-			return _providerService.BindAsSingle<TBindType>(instance);;
+			return _providerService.BindAsSingle(instance);
 		}
 
 		public TBindType BindAsArray<TBindType>(TBindType instance)
@@ -42,8 +42,7 @@ namespace RedCatEngine.DependencyInjection.Containers
 				_cashContainer.ArrayObjects.Add(type, new List<object>());
 
 			_cashContainer.ArrayObjects[type].Add(instance);
-			_providerService.BindAsArray<TBindType>(instance);
-			return instance;
+			return _providerService.BindAsArray(instance);
 		}
 
 		public bool TryGetSingle<T>(out T data)

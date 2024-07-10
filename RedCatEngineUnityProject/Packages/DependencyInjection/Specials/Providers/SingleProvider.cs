@@ -1,6 +1,6 @@
 namespace RedCatEngine.DependencyInjection.Specials.Providers
 {
-	public class Provider<TTypeProvide> : IProvider<TTypeProvide>, IWait<TTypeProvide> where TTypeProvide : class
+	public class SingleProvider<TTypeProvide> : ISingleProvider<TTypeProvide>, ISingleWaiter<TTypeProvide> where TTypeProvide : class
 	{
 		private TTypeProvide _instance;
 
