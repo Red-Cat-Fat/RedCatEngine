@@ -15,4 +15,5 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Rename DailyQuestsData to QuestsDataContainer
 - Add CreateAssetMenu for system configs
+- Add CreateAssetMenu for QuestCollectionConfig
 - Add SetStartValue to BaseDeltaChangeProgressQuests
