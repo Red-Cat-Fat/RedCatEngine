@@ -13,7 +13,7 @@ namespace RedCatEngine.Quests.Mechanics.QuestSystems
 		private readonly int _dailyTimeLiveSeconds;
 
 		public DailyQuestSystem(
-			DailyQuestsData data,
+			QuestsDataContainer data,
 			IQuestFactory questFactory,
 			int countQuests,
 			int dailyTimeLiveSeconds

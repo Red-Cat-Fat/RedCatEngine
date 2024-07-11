@@ -30,7 +30,7 @@ namespace RedCatEngine.Quests.Tests
 				new TestQuest()
 			});
 
-			var system = new DailyQuestSystem(DailyQuestsData.Empty,
+			var system = new DailyQuestSystem(QuestsDataContainer.Empty,
 				_testFactory,
 				questCount,
 				24 * 60 * 60);
@@ -55,7 +55,7 @@ namespace RedCatEngine.Quests.Tests
 				new TestQuest()
 			});
 
-			var system = new DailyQuestSystem(DailyQuestsData.Empty,
+			var system = new DailyQuestSystem(QuestsDataContainer.Empty,
 				_testFactory,
 				3,
 				24 * 60 * 60);
@@ -80,7 +80,7 @@ namespace RedCatEngine.Quests.Tests
 				new TestQuest()
 			});
 
-			var system = new DailyQuestSystem(DailyQuestsData.Empty,
+			var system = new DailyQuestSystem(QuestsDataContainer.Empty,
 				_testFactory,
 				3,
 				24 * 60 * 60);

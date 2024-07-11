@@ -24,7 +24,7 @@ namespace RedCatEngine.Quests.Mechanics.QuestSystems
 			_questFactory = questFactory;
 		}
 
-		protected void LoadData(DailyQuestsData dailyQuestsData)
+		protected void LoadData(QuestsDataContainer dailyQuestsData)
 		{
 			_activeQuest.AddRange(
 				dailyQuestsData.ActiveQuests
@@ -32,9 +32,9 @@ namespace RedCatEngine.Quests.Mechanics.QuestSystems
 					.Where(quest => quest != null));
 		}
 
-		public DailyQuestsData GetData()
+		public QuestsDataContainer GetData()
 		{
-			var data = new DailyQuestsData();
+			var data = new QuestsDataContainer();
 			foreach (var quest in _activeQuest)
 				data.ActiveQuests.Add(quest.GetData());
 

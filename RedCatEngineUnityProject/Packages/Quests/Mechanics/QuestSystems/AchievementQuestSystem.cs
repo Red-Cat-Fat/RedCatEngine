@@ -10,7 +10,7 @@ namespace RedCatEngine.Quests.Mechanics.QuestSystems
 		private readonly QuestCollectionConfig _achievementPack;
 
 		public AchievementQuestSystem(
-			DailyQuestsData data,
+			QuestsDataContainer data,
 			QuestCollectionConfig achievementPack,
 			IQuestFactory questFactory
 		)
