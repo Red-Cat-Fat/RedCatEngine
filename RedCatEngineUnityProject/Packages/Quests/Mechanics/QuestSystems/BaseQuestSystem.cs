@@ -41,6 +41,19 @@ namespace RedCatEngine.Quests.Mechanics.QuestSystems
 			return data;
 		}
 
+		public bool TryGetQuest(ConfigID<QuestConfig> config, out IQuest quest)
+		{
+			foreach (var activeQuest in _activeQuest)
+			{
+				if (activeQuest.Config != config)
+					continue;
+				quest = activeQuest;
+				return true;
+			}
+			quest = null;
+			return false;
+		}
+
 		public List<IQuest> GetActiveQuest()
 		{
 			return _activeQuest;
