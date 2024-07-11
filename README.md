@@ -16,6 +16,20 @@ Base configs
 https://github.com/Red-Cat-Fat/RedCatEngine.git?path=/RedCatEngineUnityProject/Packages/Configs
 ```
 
+## Quests
+
+Base quests
+
+### Installation Quests
+
+1. Open Package Manager from Window > Package Manager
+2. Click on the "+" button > Add package from git URL
+3. Enter the following URL
+
+```text
+https://github.com/Red-Cat-Fat/RedCatEngine.git?path=/RedCatEngineUnityProject/Packages/Quests
+```
+
 ## Resources
 
 This is a package that provides a basic system for work with Addresables
