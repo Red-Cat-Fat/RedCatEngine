@@ -1,5 +1,7 @@
+using System.Linq;
 using NUnit.Framework;
 using RedCatEngine.Quests.Mechanics.Data;
+using RedCatEngine.Quests.Mechanics.Quests;
 using RedCatEngine.Quests.Mechanics.QuestSystems;
 using RedCatEngine.Quests.Tests.SpecialSubClasses;
 
@@ -21,7 +23,12 @@ namespace RedCatEngine.Quests.Tests
 		{
 			var questCount = 3;
 
-			_testFactory.ReturnQuest = new TestQuest();
+			_testFactory.SetReturnQuest(new IQuest[]
+			{
+				new TestQuest(),
+				new TestQuest(),
+				new TestQuest()
+			});
 
 			var system = new DailyQuestSystem(DailyQuestsData.Empty,
 				_testFactory,
@@ -33,22 +40,55 @@ namespace RedCatEngine.Quests.Tests
 				questCount,
 				"Incorrect Count quest");
 		}
-		[Test]
-		public void GivenDailyQuestSystemWithQuests_WhenSkipQuest_ThenActiveQuestLess()
-		{
-			var questCount = 3;
 
-			_testFactory.ReturnQuest = new TestQuest();
+		[Test]
+		public void GivenDailyQuestSystemWithQuests_WhenSkipQuest_ThenActiveQuestIsRestore()
+		{
+			var skipQuest = new TestQuest();
+			_testFactory.SetReturnQuest(new IQuest[]
+			{
+				skipQuest,
+				new TestQuest(),
+				new TestQuest(),
+				new TestQuest(),
+				new TestQuest(),
+				new TestQuest()
+			});
 
 			var system = new DailyQuestSystem(DailyQuestsData.Empty,
 				_testFactory,
-				questCount,
+				3,
 				24 * 60 * 60);
+			skipQuest.Skip();
 			var activeQuests = system.GetActiveQuest();
 
-			Assert.AreEqual(activeQuests.Count,
-				42,
-				"Incorrect Count quest");
+			Assert.AreEqual(activeQuests.Sum(quest=>quest.QuestState == QuestState.Skip ? 1 : 0), 0, "Skip quest not remove");
+			Assert.AreEqual(activeQuests.Count, 3, "Incorrect count quest after skip one");
+		}
+
+		[Test]
+		public void GivenDailyQuestSystemWithQuests_WhenFinishedQuest_ThenActiveQuestLess()
+		{
+			var skipQuest = new TestQuest();
+			_testFactory.SetReturnQuest(new IQuest[]
+			{
+				skipQuest,
+				new TestQuest(),
+				new TestQuest(),
+				new TestQuest(),
+				new TestQuest(),
+				new TestQuest()
+			});
+
+			var system = new DailyQuestSystem(DailyQuestsData.Empty,
+				_testFactory,
+				3,
+				24 * 60 * 60);
+			skipQuest.Close();
+			var activeQuests = system.GetActiveQuest();
+
+			Assert.AreEqual(activeQuests.Sum(quest=>quest.QuestState == QuestState.Skip ? 1 : 0), 0, "Skip quest not remove");
+			Assert.AreEqual(activeQuests.Count, 3, "Incorrect count quest after skip one");
 		}
 	}
 }

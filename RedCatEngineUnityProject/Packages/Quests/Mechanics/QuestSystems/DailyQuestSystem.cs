@@ -7,7 +7,7 @@ using RedCatEngine.Quests.Mechanics.Quests;
 
 namespace RedCatEngine.Quests.Mechanics.QuestSystems
 {
-	public class DailyQuestSystem : BaseQuestSystem
+	public class DailyQuestSystem : BaseQuestSystem, IDisposable
 	{
 		private readonly int _countQuests;
 		private readonly int _dailyTimeLiveSeconds;
@@ -26,14 +26,10 @@ namespace RedCatEngine.Quests.Mechanics.QuestSystems
 			DoAfterLoadData();
 		}
 
-		private void AddToNeedCountQuest()
+		private void DoAfterLoadData()
 		{
-			for (var i = _activeQuest.Count; i < _countQuests; i++)
-			{
-				var newQuest = CreateAndStartNewQuest();
-				newQuest.ChangeQuestStateEvent += OnChangeQuestState;
-				_activeQuest.Add(newQuest);
-			}
+			CheckExpireQuestsAndUpdate();
+			AddToNeedCountQuest();
 		}
 
 		private void OnChangeQuestState(ConfigID<QuestConfig> configID)
@@ -42,6 +38,15 @@ namespace RedCatEngine.Quests.Mechanics.QuestSystems
 				=> quest.QuestState is QuestState.Fail or QuestState.Finished);
 			CheckExpireQuestsAndUpdate();
 			UpdateSkipQuests();
+		}
+
+		private void UpdateSkipQuests()
+		{
+			for (var i = 0; i < _activeQuest.Count; i++)
+			{
+				if(_activeQuest[i].QuestState == QuestState.Skip)
+					_activeQuest[i] = CreateAndStartNewQuest();
+			}
 		}
 
 		private void CheckExpireQuestsAndUpdate()
@@ -63,19 +68,20 @@ namespace RedCatEngine.Quests.Mechanics.QuestSystems
 			return (currentTime - questData.CreateTime).TotalSeconds > _dailyTimeLiveSeconds;
 		}
 
-		private void DoAfterLoadData()
+		private void AddToNeedCountQuest()
 		{
-			CheckExpireQuestsAndUpdate();
-			AddToNeedCountQuest();
+			for (var i = _activeQuest.Count; i < _countQuests; i++)
+			{
+				var newQuest = CreateAndStartNewQuest();
+				newQuest.ChangeQuestStateEvent += OnChangeQuestState;
+				_activeQuest.Add(newQuest);
+			}
 		}
 
-		private void UpdateSkipQuests()
+		public void Dispose()
 		{
-			for (var i = 0; i < _activeQuest.Count; i++)
-			{
-				if(_activeQuest[i].QuestState == QuestState.Skip)
-					_activeQuest[i] = CreateAndStartNewQuest();
-			}
+			foreach (var quest in _activeQuest)
+				quest.ChangeQuestStateEvent -= OnChangeQuestState;
 		}
 	}
 }

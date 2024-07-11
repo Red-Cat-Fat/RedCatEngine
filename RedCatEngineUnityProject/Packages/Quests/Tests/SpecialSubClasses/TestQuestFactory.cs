@@ -8,8 +8,14 @@ namespace RedCatEngine.Quests.Tests.SpecialSubClasses
 {
 	public class TestQuestFactory : IQuestFactory
 	{
-		public IQuest ReturnQuest;
+		private IQuest[] _returnQuest;
+		private int _index = 0;
 
+		public void SetReturnQuest(IQuest[] returnQuest)
+		{
+			_returnQuest = returnQuest;
+			_index = 0;
+		}
 		public IQuest MakeFromConfig(ConfigID<QuestConfig> questConfig)
 		{
 			throw new System.NotImplementedException();
@@ -17,12 +23,16 @@ namespace RedCatEngine.Quests.Tests.SpecialSubClasses
 
 		public IQuest MakeNewQuest()
 		{
-			return ReturnQuest;
+			var result = _returnQuest[_index];
+			_index++;
+			return result;
 		}
 
 		public IQuest LoadFrom(IQuestData saveData)
 		{
-			return ReturnQuest;
+			var result = _returnQuest[_index];
+			_index++;
+			return result;
 		}
 	}
 }
