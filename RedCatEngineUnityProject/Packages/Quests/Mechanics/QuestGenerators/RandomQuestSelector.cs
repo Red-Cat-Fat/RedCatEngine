@@ -1,7 +1,6 @@
 using RedCatEngine.Configs;
 using RedCatEngine.Quests.Configs;
 using RedCatEngine.Quests.Configs.Quests;
-using RedCatEngine.Quests.Exceptions;
 using Random = UnityEngine.Random;
 
 namespace RedCatEngine.Quests.Mechanics.QuestGenerators

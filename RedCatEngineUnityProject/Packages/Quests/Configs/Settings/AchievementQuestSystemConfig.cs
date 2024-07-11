@@ -1,6 +1,6 @@
 ﻿using JetBrains.Annotations;
 using RedCatEngine.Configs;
-using RedCatEngine.DependencyInjection.Containers;
+using RedCatEngine.DependencyInjection.Containers.Interfaces;
 using RedCatEngine.Quests.Mechanics.Data;
 using RedCatEngine.Quests.Mechanics.Factories;
 using RedCatEngine.Quests.Mechanics.QuestGenerators;
