@@ -26,7 +26,7 @@ namespace RedCatEngine.Quests.Mechanics.QuestSystems
 			var activeQuests = GetActiveQuest();
 			foreach (var questConfig in _achievementPack.QuestConfigs)
 			{
-				if (activeQuests.Any(quest => quest.ID == questConfig))
+				if (activeQuests.Any(quest => quest.Config == questConfig))
 					continue;
 
 				_activeQuest.Add(_questFactory.MakeFromConfig(questConfig));

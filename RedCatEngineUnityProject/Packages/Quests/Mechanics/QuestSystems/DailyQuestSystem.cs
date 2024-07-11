@@ -1,4 +1,6 @@
 using System;
+using RedCatEngine.Configs;
+using RedCatEngine.Quests.Configs.Quests;
 using RedCatEngine.Quests.Mechanics.Data;
 using RedCatEngine.Quests.Mechanics.Factories;
 using RedCatEngine.Quests.Mechanics.Quests;
@@ -27,10 +29,22 @@ namespace RedCatEngine.Quests.Mechanics.QuestSystems
 		private void AddToNeedCountQuest()
 		{
 			for (var i = _activeQuest.Count; i < _countQuests; i++)
-				_activeQuest.Add(CreateAndStartNewQuest());
+			{
+				var newQuest = CreateAndStartNewQuest();
+				newQuest.ChangeQuestStateEvent += OnChangeQuestState;
+				_activeQuest.Add(newQuest);
+			}
 		}
 
-		private void CheckExpireQuests()
+		private void OnChangeQuestState(ConfigID<QuestConfig> configID)
+		{
+			_activeQuest.RemoveAll(quest
+				=> quest.QuestState is QuestState.Fail or QuestState.Finished);
+			CheckExpireQuestsAndUpdate();
+			UpdateSkipQuests();
+		}
+
+		private void CheckExpireQuestsAndUpdate()
 		{
 			var currentTime = CurrentTime;
 			for (var i = 0; i < _activeQuest.Count; i++)
@@ -51,8 +65,17 @@ namespace RedCatEngine.Quests.Mechanics.QuestSystems
 
 		private void DoAfterLoadData()
 		{
-			CheckExpireQuests();
+			CheckExpireQuestsAndUpdate();
 			AddToNeedCountQuest();
+		}
+
+		private void UpdateSkipQuests()
+		{
+			for (var i = 0; i < _activeQuest.Count; i++)
+			{
+				if(_activeQuest[i].QuestState == QuestState.Skip)
+					_activeQuest[i] = CreateAndStartNewQuest();
+			}
 		}
 	}
 }

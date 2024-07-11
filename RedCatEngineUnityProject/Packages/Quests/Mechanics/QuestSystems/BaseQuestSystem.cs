@@ -53,6 +53,7 @@ namespace RedCatEngine.Quests.Mechanics.QuestSystems
 			NewQuestEvent?.Invoke(newQuest);
 			return newQuest;
 		}
+
 		protected IQuest CreateAndStartNewQuest(ConfigID<QuestConfig> questConfig)
 		{
 			var newQuest = _questFactory.MakeFromConfig(questConfig);

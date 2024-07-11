@@ -7,13 +7,14 @@ namespace RedCatEngine.Quests.Mechanics.Quests
 {
 	public interface IQuest
 	{
-		event Action CompleteEvent;
-		ConfigID<QuestConfig> ID { get; }
+		event Action<ConfigID<QuestConfig>> ChangeQuestStateEvent;
+		ConfigID<QuestConfig> Config { get; }
 		QuestState QuestState { get; }
 		float Progress { get; }
 		string ProcessProgressText { get; }
 		void Start(DateTime time);
 		void Close();
+		void Skip();
 		IQuest LoadSave(IQuestData data);
 		IQuestData GetData();
 	}

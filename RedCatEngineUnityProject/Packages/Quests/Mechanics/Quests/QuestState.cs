@@ -3,6 +3,9 @@ namespace RedCatEngine.Quests.Mechanics.Quests
 	public enum QuestState
 	{
 		InProgress,
-		Complete
+		Complete,
+		Finished,
+		Fail,
+		Skip
 	}
 }
