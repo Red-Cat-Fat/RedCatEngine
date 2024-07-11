@@ -13,8 +13,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - CreateAssetMenu for system configs
 - CreateAssetMenu for QuestCollectionConfig
 - SetStartValue to BaseDeltaChangeProgressQuests
-- Localization from @elmortem (Makar Osokin)
 
 ### Changed
 
 - Rename DailyQuestsData to QuestsDataContainer
+- Change QuestConfig.DescriptionKey from field to abstract property

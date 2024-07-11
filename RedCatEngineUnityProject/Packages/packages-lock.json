@@ -36,13 +36,6 @@
       "source": "embedded",
       "dependencies": {}
     },
-    "com.elmortem.localization": {
-      "version": "https://github.com/elmortem/localization.git?path=Packages/localization",
-      "depth": 0,
-      "source": "git",
-      "dependencies": {},
-      "hash": "f896af4aa2b16dec64e59d79dd9048a7cf132cbb"
-    },
     "com.unity.addressables": {
       "version": "1.19.19",
       "depth": 0,
@@ -151,24 +144,6 @@
         "com.unity.settings-manager": "1.0.1"
       },
       "url": "https://packages.unity.com"
-    },
-    "com.unity.textmeshpro": {
-      "version": "3.0.9",
-      "depth": 0,
-      "source": "registry",
-      "dependencies": {
-        "com.unity.ugui": "1.0.0"
-      },
-      "url": "https://packages.unity.com"
-    },
-    "com.unity.ugui": {
-      "version": "1.0.0",
-      "depth": 1,
-      "source": "builtin",
-      "dependencies": {
-        "com.unity.modules.ui": "1.0.0",
-        "com.unity.modules.imgui": "1.0.0"
-      }
     },
     "com.unity.modules.ai": {
       "version": "1.0.0",

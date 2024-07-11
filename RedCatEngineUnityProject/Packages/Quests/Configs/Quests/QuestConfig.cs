@@ -1,4 +1,3 @@
-using Localization;
 using RedCatEngine.Configs;
 using RedCatEngine.DependencyInjection.Containers.Interfaces;
 using RedCatEngine.Quests.Mechanics.Quests;
@@ -8,8 +7,7 @@ namespace RedCatEngine.Quests.Configs.Quests
 {
 	public abstract class QuestConfig : BaseConfig
 	{
-		[LocalizeString]
-		public string DescriptionKey;
+		public abstract string DescriptionKey { get; }
 
 		public IQuest Make(IApplicationContainer applicationContainer) 
 			=> DoMake(applicationContainer);
