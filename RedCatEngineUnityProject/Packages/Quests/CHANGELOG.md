@@ -10,10 +10,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 
 - CHANGELOG.md
+- CreateAssetMenu for system configs
+- CreateAssetMenu for QuestCollectionConfig
+- SetStartValue to BaseDeltaChangeProgressQuests
+- Localization from @elmortem (Makar Osokin)
 
 ### Changed
 
 - Rename DailyQuestsData to QuestsDataContainer
-- Add CreateAssetMenu for system configs
-- Add CreateAssetMenu for QuestCollectionConfig
-- Add SetStartValue to BaseDeltaChangeProgressQuests

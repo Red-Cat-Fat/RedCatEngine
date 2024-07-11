@@ -1,7 +1,11 @@
 {
     "name": "Quests",
     "rootNamespace": "RedCatEngine.Quests",
-    "references": ["GUID:bc1a77b6bbee94316b30d47e73c29c41","DependencyInjection"],
+    "references": [
+        "GUID:bc1a77b6bbee94316b30d47e73c29c41",
+        "GUID:687b69a268bf4402bb854a43d7732d8a",
+        "GUID:9c545a6a0a353cd479a317c06bb109b1"
+    ],
     "includePlatforms": [],
     "excludePlatforms": [],
     "allowUnsafeCode": false,
