@@ -7,8 +7,10 @@ namespace RedCatEngine.Quests.Mechanics.Quests
 {
 	public abstract class BaseDeltaChangeProgressQuest : BaseSavedQuest<DeltaChangeProgressQuestData>
 	{
-		public override float Progress => Mathf.Max(0, Mathf.Min(1, (CurrentDeltaValue - StartValue) / DeltaValue));
-		public override string ProcessProgressText => $"{Mathf.Min((CurrentDeltaValue - StartValue), DeltaValue)} / {DeltaValue}";
+		public override float Progress
+			=> Mathf.Max(0, Mathf.Min(1, (CurrentDeltaValue - StartValue) / DeltaValue));
+		public override string ProcessProgressText
+			=> $"{Mathf.Min((CurrentDeltaValue - StartValue), DeltaValue)} / {DeltaValue}";
 
 		private float DeltaValue { get; }
 		private float CurrentDeltaValue { get; set; }
@@ -18,7 +20,6 @@ namespace RedCatEngine.Quests.Mechanics.Quests
 		{
 			DeltaValue = deltaValue;
 		}
-
 
 		protected sealed override IQuest DoLoadData(DeltaChangeProgressQuestData questData)
 		{
@@ -34,12 +35,15 @@ namespace RedCatEngine.Quests.Mechanics.Quests
 			return saveData;
 		}
 
+		protected void SetStartValue(float startValue)
+			=> StartValue = startValue;
+
 		protected void SetCurrentValue(float value)
 			=> CurrentDeltaValue = value;
 
 		protected void IncrementCurrentValue()
 		{
-			SetCurrentValue(CurrentDeltaValue+1);
+			SetCurrentValue(CurrentDeltaValue + 1);
 			if (StartValue + DeltaValue <= CurrentDeltaValue)
 				SendComplete();
 		}
