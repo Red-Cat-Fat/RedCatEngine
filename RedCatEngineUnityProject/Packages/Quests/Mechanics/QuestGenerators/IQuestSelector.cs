@@ -1,5 +1,7 @@
-﻿using RedCatEngine.Configs;
+﻿using System.Collections.Generic;
+using RedCatEngine.Configs;
 using RedCatEngine.Quests.Configs.Quests;
+using RedCatEngine.Quests.Mechanics.Quests;
 
 namespace RedCatEngine.Quests.Mechanics.QuestGenerators
 {
@@ -7,7 +9,7 @@ namespace RedCatEngine.Quests.Mechanics.QuestGenerators
 	{
 		string Name { get; }
 		int TotalQuestVariants { get; }
-		bool TryGetNextQuest(out QuestConfig questConfig);
+		bool TryGetNextQuest(List<IQuest> currentActiveQuests, out QuestConfig questConfig);
 		bool TryLoad(ConfigID<QuestConfig> questId, out QuestConfig questConfig);
 	}
 }

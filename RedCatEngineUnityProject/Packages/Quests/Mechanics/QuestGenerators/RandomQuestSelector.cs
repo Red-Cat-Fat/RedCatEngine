@@ -1,6 +1,9 @@
+using System.Collections.Generic;
+using System.Linq;
 using RedCatEngine.Configs;
-using RedCatEngine.Quests.Configs;
+using RedCatEngine.Quests.Configs.QuestCollections;
 using RedCatEngine.Quests.Configs.Quests;
+using RedCatEngine.Quests.Mechanics.Quests;
 using Random = UnityEngine.Random;
 
 namespace RedCatEngine.Quests.Mechanics.QuestGenerators
@@ -8,32 +11,44 @@ namespace RedCatEngine.Quests.Mechanics.QuestGenerators
 	public class RandomQuestSelector : IQuestSelector
 	{
 		public string Name
-			=> $"RandomQuestSelectorGenerator from {_collection.name}";
+			=> $"RandomQuestSelectorGenerator from {_collection.GetName()}";
 
 		public int TotalQuestVariants
-			=> _collection.QuestConfigs.Length;
+			=> _collection.Count;
 
-		private readonly QuestCollectionConfig _collection;
+		private readonly IQuestCollection _collection;
 
-		public RandomQuestSelector(QuestCollectionConfig collection)
+		public RandomQuestSelector(SimpleQuestCollectionConfig collection)
+			=> _collection = collection;
+
+		public bool TryGetNextQuest(List<IQuest> currentActiveQuests, out QuestConfig questConfig)
 		{
-			_collection = collection;
-		}
-
-		public bool TryGetNextQuest(out QuestConfig questConfig)
-		{
-			if (_collection.QuestConfigs.Length == 0)
+			if (_collection.Count == 0)
 			{
 				questConfig = null;
 				return false;
 			}
 
-			var index = Random.Range(0, _collection.QuestConfigs.Length); //todo: make RandomService
-			questConfig = _collection.QuestConfigs[index];
+			var tryCount = 10;
+			do
+			{
+				var index = Random.Range(0, _collection.Count); //todo: make RandomService
+				while (currentActiveQuests.Count(quest => quest.Config == _collection[index]) > 0 &&
+				       tryCount > 0)
+				{
+					index++;
+					index %= currentActiveQuests.Count;
+					tryCount--;
+				}
+
+				questConfig = _collection[index];
+				tryCount--;
+			} while (questConfig == null && tryCount > 0);
+
 			return questConfig != null;
 		}
 
 		public bool TryLoad(ConfigID<QuestConfig> questId, out QuestConfig questConfig)
-			=> _collection.QuestConfigs.TryFindById(questId, out questConfig);
+			=> _collection.TryFindById(questId, out questConfig);
 	}
 }

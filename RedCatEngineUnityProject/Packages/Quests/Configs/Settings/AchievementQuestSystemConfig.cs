@@ -1,19 +1,21 @@
 ﻿using JetBrains.Annotations;
 using RedCatEngine.Configs;
 using RedCatEngine.DependencyInjection.Containers.Interfaces;
-using RedCatEngine.Quests.Mechanics.Data;
+using RedCatEngine.Quests.Configs.QuestCollections;
 using RedCatEngine.Quests.Mechanics.Factories;
 using RedCatEngine.Quests.Mechanics.QuestGenerators;
 using RedCatEngine.Quests.Mechanics.QuestSystems;
+using UnityEngine;
 
 namespace RedCatEngine.Quests.Configs.Settings
 {
+	[CreateAssetMenu(menuName = "Configs/Quests/AchievementQuestSystemConfig", fileName = nameof(AchievementQuestSystemConfig))]
 	public class AchievementQuestSystemConfig : BaseConfig
 	{
-		public QuestCollectionConfig AchievementPack;
+		public SimpleQuestCollectionConfig AchievementPack;
 
 		[NotNull]
-		public AchievementQuestSystem Make(IApplicationContainer applicationContainer, DailyQuestsData data)
+		public AchievementQuestSystem Make(IApplicationContainer applicationContainer)
 		{
 			var questFactory
 				= new CollectionSelectorQuestFactory(
@@ -21,7 +23,6 @@ namespace RedCatEngine.Quests.Configs.Settings
 					new QueueQuestSelector(AchievementPack));
 
 			return new AchievementQuestSystem(
-				data,
 				AchievementPack,
 				questFactory);
 		}

@@ -6,8 +6,11 @@ namespace RedCatEngine.Quests.Mechanics.Quests.QuestDatas
 {
 	public interface IQuestData
 	{
-		public ConfigID<QuestConfig> Config { get; }
-		public DateTime CreateTime { get; }
-		public QuestState QuestState { get; }
+		ConfigID<QuestConfig> GetConfig();
+		DateTime GetCreateTime();
+		QuestState GetQuestState();
+		
+		void SetQuestState(QuestState newQuestState);
+		void ConstructSerialization(ConfigID<QuestConfig> config, DateTime createTime, QuestState questState);
 	}
 }
