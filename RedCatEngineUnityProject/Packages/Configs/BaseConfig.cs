@@ -7,8 +7,7 @@ namespace RedCatEngine.Configs
 {
 	public abstract class BaseConfig : ScriptableObject
 	{
-		[SerializeField]
-		private int _id;
+		[SerializeField] private int _id;
 
 		public int ID
 			=> _id;
@@ -18,22 +17,16 @@ namespace RedCatEngine.Configs
 #if UNITY_EDITOR
 			if (!EditorUtility.IsPersistent(this))
 				return;
-			if (_id == 0)
-				_id = AssetDatabase.AssetPathToGUID(AssetDatabase.GetAssetPath(this)).GetHashCode();
+			_id = AssetDatabase.AssetPathToGUID(AssetDatabase.GetAssetPath(this)).GetHashCode();
 			DoValidate();
 #endif
 		}
 
-		protected virtual void DoValidate()
-		{
-
-		}
+		protected virtual void DoValidate() { }
 
 		public override bool Equals(object other)
 		{
-			return other as BaseConfig != null 
-				&& other.GetType() == this.GetType() 
-				&& Equals((BaseConfig) other);
+			return other as BaseConfig != null && other.GetType() == this.GetType() && Equals((BaseConfig)other);
 		}
 
 		private bool Equals(BaseConfig other)
@@ -41,7 +34,12 @@ namespace RedCatEngine.Configs
 			return _id == other._id;
 		}
 
-		public override int GetHashCode() 
+		public override int GetHashCode()
 			=> _id;
+
+		public override string ToString()
+		{
+			return $"{name} ({_id})";
+		}
 	}
 }
