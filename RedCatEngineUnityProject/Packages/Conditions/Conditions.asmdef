@@ -2,10 +2,10 @@
     "name": "Conditions",
     "rootNamespace": "RedCatEngine.Conditions",
     "references": [
-        "GUID:bc1a77b6bbee94316b30d47e73c29c41",
-        "GUID:687b69a268bf4402bb854a43d7732d8a",
         "GUID:79ad2193969254fbd829729521e3eee3",
-        "GUID:bbde3178fd05c8d478a9b2b47af2fb54"
+        "GUID:687b69a268bf4402bb854a43d7732d8a",
+        "GUID:bbde3178fd05c8d478a9b2b47af2fb54",
+        "GUID:bc1a77b6bbee94316b30d47e73c29c41"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],

@@ -5,8 +5,8 @@
         "UnityEngine.TestRunner",
         "UnityEditor.TestRunner",
         "Quests",
-        "Configs",
-        "Rewards"
+        "Rewards",
+        "Configs"
     ],
     "includePlatforms": [
         "Editor"
