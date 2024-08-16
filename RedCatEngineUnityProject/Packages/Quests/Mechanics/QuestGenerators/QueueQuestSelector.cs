@@ -1,39 +1,41 @@
-﻿using RedCatEngine.Configs;
-using RedCatEngine.Quests.Configs;
+﻿using System.Collections.Generic;
+using RedCatEngine.Configs;
+using RedCatEngine.Quests.Configs.QuestCollections;
 using RedCatEngine.Quests.Configs.Quests;
+using RedCatEngine.Quests.Mechanics.Quests;
 
 namespace RedCatEngine.Quests.Mechanics.QuestGenerators
 {
 	public class QueueQuestSelector : IQuestSelector
 	{
-		private readonly QuestCollectionConfig _achievementPack;
+		private readonly IQuestCollection _questPack;
 
 		public string Name
-			=> string.Format("QueueQuestSelector from {0}", _achievementPack.name);
+			=> $"QueueQuestSelector from {_questPack.GetName()}";
 
 		public int TotalQuestVariants
-			=> _achievementPack.QuestConfigs.Length;
+			=> _questPack.Count;
 
 		private int _index = 0;
 
-		public QueueQuestSelector(QuestCollectionConfig achievementPack)
-			=> _achievementPack = achievementPack;
+		public QueueQuestSelector(IQuestCollection questPack)
+			=> _questPack = questPack;
 
-		public bool TryGetNextQuest(out QuestConfig questConfig)
+		public bool TryGetNextQuest(List<IQuest> currentActiveQuests, out QuestConfig questConfig)
 		{
-			if (_achievementPack.QuestConfigs.Length == 0)
+			if (_questPack.Count == 0)
 			{
 				questConfig = null;
 				return false;
 			}
 
-			questConfig = _achievementPack.QuestConfigs[_index];
+			questConfig = _questPack[_index];
 			_index++;
-			_index %= _achievementPack.QuestConfigs.Length;
+			_index %= _questPack.Count;
 			return questConfig != null;
 		}
 
 		public bool TryLoad(ConfigID<QuestConfig> questId, out QuestConfig questConfig)
-			=> _achievementPack.QuestConfigs.TryFindById(questId, out questConfig);
+			=> _questPack.TryFindById(questId, out questConfig);
 	}
 }

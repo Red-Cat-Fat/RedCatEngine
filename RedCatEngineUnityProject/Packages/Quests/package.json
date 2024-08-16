@@ -1,6 +1,6 @@
 {
-  "name": "com.boronnikov_games.games.red-cat-engine.quests",
-  "version": "1.0.0",
+  "name": "com.boronnikov.games.red-cat-engine.quests",
+  "version": "1.0.2",
   "displayName": "Red Cat Engine: Quests",
   "description": "Simple Quests system",
   "unity": "2021.3",

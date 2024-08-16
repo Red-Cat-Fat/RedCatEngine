@@ -1,24 +1,30 @@
+using System;
 using RedCatEngine.Configs;
 using RedCatEngine.Quests.Configs.Quests;
 using RedCatEngine.Quests.Mechanics.Quests.QuestDatas;
-using UnityEngine;
+using RedCatEngine.Rewards.Base;
 
 namespace RedCatEngine.Quests.Mechanics.Quests
 {
 	public abstract class BaseDeltaChangeProgressQuest : BaseSavedQuest<DeltaChangeProgressQuestData>
 	{
-		public override float Progress => Mathf.Max(0, Mathf.Min(1, (CurrentDeltaValue - StartValue) / DeltaValue));
-		public override string ProcessProgressText => $"{Mathf.Min((CurrentDeltaValue - StartValue), DeltaValue)} / {DeltaValue}";
+		public override double Progress
+			=> Math.Max(0, Math.Min(1, (CurrentDeltaValue - StartValue) / DeltaValue));
+		public override string ProcessProgressText
+			=> $"{Math.Min(Math.Max(0, CurrentDeltaValue - StartValue), DeltaValue)} / {DeltaValue}";
 
-		private float DeltaValue { get; }
-		private float CurrentDeltaValue { get; set; }
-		private float StartValue { get; set; }
+		protected double DeltaValue { get; }
+		protected double CurrentDeltaValue { get; private set; }
+		protected double StartValue { get; private set; }
 
-		protected BaseDeltaChangeProgressQuest(ConfigID<QuestConfig> config, float deltaValue) : base(config)
+		protected BaseDeltaChangeProgressQuest(
+			ConfigID<QuestConfig> config,
+			IReward reward,
+			double deltaValue
+		) : base(config, reward)
 		{
 			DeltaValue = deltaValue;
 		}
-
 
 		protected sealed override IQuest DoLoadData(DeltaChangeProgressQuestData questData)
 		{
@@ -34,19 +40,30 @@ namespace RedCatEngine.Quests.Mechanics.Quests
 			return saveData;
 		}
 
-		protected void SetCurrentValue(float value)
-			=> CurrentDeltaValue = value;
-
-		protected void IncrementCurrentValue()
+		protected void SetStartAndCurrentValue(double startValue)
 		{
-			SetCurrentValue(CurrentDeltaValue+1);
-			if (StartValue + DeltaValue <= CurrentDeltaValue)
-				SendComplete();
+			StartValue = startValue;
+			CurrentDeltaValue = startValue;
+			CheckComplete();
 		}
 
-		protected void AddCurrentValue(float delta)
+		protected void SetCurrentValue(double value)
 		{
-			SetCurrentValue(CurrentDeltaValue + delta);
+			CurrentDeltaValue = value;
+			UpdateProgress();
+			CheckComplete();
+		}
+
+		protected void IncrementCurrentValue()
+			=> SetCurrentValue(CurrentDeltaValue + 1);
+
+		protected void AddDeltaCurrentValue(double delta)
+			=> SetCurrentValue(CurrentDeltaValue + delta);
+
+		protected override void CheckComplete()
+		{
+			if(QuestState is not QuestState.InProgress)
+				return;
 			if (StartValue + DeltaValue <= CurrentDeltaValue)
 				SendComplete();
 		}

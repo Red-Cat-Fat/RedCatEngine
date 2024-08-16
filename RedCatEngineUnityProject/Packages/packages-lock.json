@@ -1,5 +1,11 @@
 {
   "dependencies": {
+    "com.boronnikov.games.red-cat-engine.conditions": {
+      "version": "file:Conditions",
+      "depth": 0,
+      "source": "embedded",
+      "dependencies": {}
+    },
     "com.boronnikov.games.red-cat-engine.configs": {
       "version": "file:Configs",
       "depth": 0,
@@ -12,8 +18,20 @@
       "source": "embedded",
       "dependencies": {}
     },
+    "com.boronnikov.games.red-cat-engine.quests": {
+      "version": "file:Quests",
+      "depth": 0,
+      "source": "embedded",
+      "dependencies": {}
+    },
     "com.boronnikov.games.red-cat-engine.resources": {
       "version": "file:ResourceSystem",
+      "depth": 0,
+      "source": "embedded",
+      "dependencies": {}
+    },
+    "com.boronnikov.games.red-cat-engine.rewards": {
+      "version": "file:Rewards",
       "depth": 0,
       "source": "embedded",
       "dependencies": {}
@@ -24,17 +42,24 @@
       "source": "embedded",
       "dependencies": {}
     },
+    "com.boronnikov.games.red-cat-engine.values": {
+      "version": "file:Values",
+      "depth": 0,
+      "source": "embedded",
+      "dependencies": {}
+    },
     "com.boronnikov.games.red-cat-engine.windows": {
       "version": "file:Windows",
       "depth": 0,
       "source": "embedded",
       "dependencies": {}
     },
-    "com.boronnikov_games.games.red-cat-engine.quests": {
-      "version": "file:Quests",
+    "com.elmortem.serializereferenceeditor": {
+      "version": "https://github.com/elmortem/serializereferenceeditor.git",
       "depth": 0,
-      "source": "embedded",
-      "dependencies": {}
+      "source": "git",
+      "dependencies": {},
+      "hash": "655e2beec040cae85fc4a15f12db97bc89dcee49"
     },
     "com.unity.addressables": {
       "version": "1.19.19",

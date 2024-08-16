@@ -1,0 +1,18 @@
+{
+    "name": "Values",
+    "rootNamespace": "RedCatEngine.Values",
+    "references": [
+        "GUID:bc1a77b6bbee94316b30d47e73c29c41",
+        "GUID:79ad2193969254fbd829729521e3eee3",
+        "GUID:687b69a268bf4402bb854a43d7732d8a"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

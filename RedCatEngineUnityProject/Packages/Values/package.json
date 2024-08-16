@@ -1,0 +1,11 @@
+{
+  "name": "com.boronnikov.games.red-cat-engine.values",
+  "version": "1.0.2",
+  "displayName": "Red Cat Engine: Values",
+  "description": "Simple Values system",
+  "unity": "2021.3",
+  "author": {
+    "name": "Boronnikov Games",
+    "url": "https://github.com/Red-Cat-Fat"
+  }
+}

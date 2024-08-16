@@ -1,19 +1,16 @@
 using System;
-using RedCatEngine.Configs;
-using RedCatEngine.Quests.Configs.Quests;
-using RedCatEngine.Quests.Mechanics.Data;
+using System.Linq;
 using RedCatEngine.Quests.Mechanics.Factories;
 using RedCatEngine.Quests.Mechanics.Quests;
 
 namespace RedCatEngine.Quests.Mechanics.QuestSystems
 {
-	public class DailyQuestSystem : BaseQuestSystem, IDisposable
+	public class DailyQuestSystem : BaseQuestSystem
 	{
 		private readonly int _countQuests;
 		private readonly int _dailyTimeLiveSeconds;
 
 		public DailyQuestSystem(
-			DailyQuestsData data,
 			IQuestFactory questFactory,
 			int countQuests,
 			int dailyTimeLiveSeconds
@@ -22,66 +19,64 @@ namespace RedCatEngine.Quests.Mechanics.QuestSystems
 		{
 			_countQuests = countQuests;
 			_dailyTimeLiveSeconds = dailyTimeLiveSeconds;
-			LoadData(data);
-			DoAfterLoadData();
 		}
 
-		private void DoAfterLoadData()
+		protected override void DoAfterLoadData()
 		{
-			CheckExpireQuestsAndUpdate();
-			AddToNeedCountQuest();
+			SubscribeAfterLoadQuests();
+			UpdateQuestList();
 		}
 
-		private void OnChangeQuestState(ConfigID<QuestConfig> configID)
+		private void SubscribeAfterLoadQuests()
 		{
-			_activeQuest.RemoveAll(quest
-				=> quest.QuestState is QuestState.Fail or QuestState.Finished);
-			CheckExpireQuestsAndUpdate();
-			UpdateSkipQuests();
+			foreach (var quest in ActiveQuests)
+				quest.ChangeQuestStateEvent += OnChangeQuestState;
 		}
 
-		private void UpdateSkipQuests()
+		private void OnChangeQuestState(IQuest quest)
 		{
-			for (var i = 0; i < _activeQuest.Count; i++)
-			{
-				if(_activeQuest[i].QuestState == QuestState.Skip)
-					_activeQuest[i] = CreateAndStartNewQuest();
-			}
+			UpdateQuestList();
 		}
 
-		private void CheckExpireQuestsAndUpdate()
+		private void UpdateQuestList()
 		{
 			var currentTime = CurrentTime;
-			for (var i = 0; i < _activeQuest.Count; i++)
-			{
-				var checkQuest = _activeQuest[i];
-				if (!QuestIsExpireTime(currentTime, checkQuest))
-					continue;
 
-				_activeQuest[i] = CreateAndStartNewQuest();
+			Func<IQuest, bool> PredicateForRemoveQuests()
+				=> quest => IsNeedChangeQuest(quest) || QuestIsExpireTime(currentTime, quest);
+
+			var toRemove = ActiveQuests.Where(PredicateForRemoveQuests()).ToArray();
+			foreach (var quest in toRemove)
+			{
+				quest.Close();
+				quest.ChangeQuestStateEvent -= OnChangeQuestState;
+				ActiveQuests.Remove(quest);
 			}
+
+			for (var i = ActiveQuests.Count; i < _countQuests; i++)
+				AddNewQuest();
 		}
+
+		private static bool IsNeedChangeQuest(IQuest quest)
+			=> quest.QuestState is QuestState.Fail or QuestState.Finished or QuestState.Skip;
 
 		private bool QuestIsExpireTime(DateTime currentTime, IQuest checkQuest)
 		{
 			var questData = checkQuest.GetData();
-			return (currentTime - questData.CreateTime).TotalSeconds > _dailyTimeLiveSeconds;
+			return (currentTime - questData.GetCreateTime()).TotalSeconds > _dailyTimeLiveSeconds;
 		}
 
-		private void AddToNeedCountQuest()
+		protected override void DoClear()
 		{
-			for (var i = _activeQuest.Count; i < _countQuests; i++)
-			{
-				var newQuest = CreateAndStartNewQuest();
-				newQuest.ChangeQuestStateEvent += OnChangeQuestState;
-				_activeQuest.Add(newQuest);
-			}
-		}
-
-		public void Dispose()
-		{
-			foreach (var quest in _activeQuest)
+			foreach (var quest in ActiveQuests)
 				quest.ChangeQuestStateEvent -= OnChangeQuestState;
+		}
+
+		private void AddNewQuest()
+		{
+			var newQuest = CreateAndStartNewQuest();
+			newQuest.ChangeQuestStateEvent += OnChangeQuestState;
+			ActiveQuests.Add(newQuest);
 		}
 	}
 }
