@@ -10,15 +10,15 @@ namespace RedCatEngine.DependencyInjection.Specials.Providers
 		private readonly Dictionary<Type, List<IWaiter>> _arrayWaits = new();
 
 		private void AddWaiter(
-			Dictionary<Type, List<IWaiter>> waiterCash,
+			IDictionary<Type, List<IWaiter>> waitersCashList,
 			Type key,
 			IWaiter provider
 		)
 		{
-			if (!waiterCash.TryGetValue(key, out var waiterList))
+			if (!waitersCashList.TryGetValue(key, out var waiterList))
 			{
 				waiterList = new List<IWaiter>();
-				waiterCash.Add(key, waiterList);
+				waitersCashList.Add(key, waiterList);
 			}
 
 			waiterList.Add(provider);
@@ -66,7 +66,11 @@ namespace RedCatEngine.DependencyInjection.Specials.Providers
 
 		public TBindType BindAsSingle<TBindType>(TBindType instance)
 		{
-			OnNewSingleBind(instance);
+			if (!_singleWaits.TryGetValue(typeof(TBindType), out var waiterList))
+				return instance;
+
+			foreach (var waiter in waiterList)
+				waiter.Attach(instance);
 			return instance;
 		}
 
@@ -78,24 +82,6 @@ namespace RedCatEngine.DependencyInjection.Specials.Providers
 			foreach (var waiter in waiterList)
 				waiter.Attach(instance);
 			return instance;
-		}
-
-		private void OnNewSingleBind<TBindType>(TBindType instance)
-		{
-			if (!_singleWaits.TryGetValue(typeof(TBindType), out var waiterList))
-				return;
-
-			foreach (var waiter in waiterList)
-				waiter.Attach(instance);
-		}
-
-		private void OnNewArrayBind<TBindType>(TBindType instance)
-		{
-			if (!_arrayWaits.TryGetValue(typeof(TBindType), out var waiterList))
-				return;
-
-			foreach (var waiter in waiterList)
-				waiter.Attach(instance);
 		}
 	}
 }

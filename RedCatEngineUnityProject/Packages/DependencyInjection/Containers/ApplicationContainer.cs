@@ -108,11 +108,12 @@ namespace RedCatEngine.DependencyInjection.Containers
 			{
 				if (constructor.GetParameters().Length == 0)
 					emptyParameterConstructor = constructor;
-				
+
 				if (Attribute.GetCustomAttribute(
 					    constructor,
 					    typeof(InjectAttribute),
-					    true) == null)
+					    true) ==
+				    null)
 					continue;
 
 				return InjectContextToConstructor(
@@ -144,6 +145,7 @@ namespace RedCatEngine.DependencyInjection.Containers
 					parameters.Add(_providerService.RegisterProvider(expectedSingleWaiterGenericType[0]));
 					continue;
 				}
+
 				if (typeof(IArrayProvider<>).IsAssignableFromGeneric(
 					    parameterInfo.ParameterType,
 					    out var expectedArrayWaiterGenericType))
@@ -167,16 +169,26 @@ namespace RedCatEngine.DependencyInjection.Containers
 			if (_objects.TryGetValue(type, out var instance))
 				return instance;
 
-			if (_cashContainer.TryFindFirstChildByType(type, _objects, out var typedInstance))
+			if (_cashContainer.TryFindFirstChildByType(
+				    type,
+				    _objects,
+				    out var typedInstance))
 				return typedInstance;
-			
-			if(TryCreate(type, out instance, context))
+
+			if (TryCreate(
+				    type,
+				    out instance,
+				    context))
 				return instance;
-			
+
 			throw new NotFoundInstanceException(type);
 		}
 
-		private bool TryCreate(Type type, out object instance, params object[] context)
+		private bool TryCreate(
+			Type type,
+			out object instance,
+			params object[] context
+		)
 		{
 			if (type.IsAbstract || type.IsInterface)
 			{
@@ -188,5 +200,9 @@ namespace RedCatEngine.DependencyInjection.Containers
 			BindAsSingle(instance);
 			return true;
 		}
+
+		public TBindType BindType<TBindType, TInstanceType>()
+			where TInstanceType : TBindType
+			=> BindAsSingle<TBindType>(((ICreator)this).Create<TInstanceType>());
 	}
 }

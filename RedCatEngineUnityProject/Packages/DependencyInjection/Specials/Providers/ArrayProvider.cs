@@ -9,7 +9,7 @@ namespace RedCatEngine.DependencyInjection.Specials.Providers
 		public bool TryGet(out TTypeProvide[] instance)
 		{
 			instance = _instances.ToArray();
-			return instance != null;
+			return instance.Length > 0;
 		}
 
 		public void Attach(TTypeProvide waitType)
