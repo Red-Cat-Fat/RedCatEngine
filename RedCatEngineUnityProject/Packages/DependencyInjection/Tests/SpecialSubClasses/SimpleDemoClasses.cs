@@ -1,4 +1,6 @@
-﻿namespace RedCatEngine.DependencyInjection.Tests.SpecialSubClasses
+﻿using RedCatEngine.DependencyInjection.Containers.Attributes;
+
+namespace RedCatEngine.DependencyInjection.Tests.SpecialSubClasses
 {
 	public class SimpleDemoDataParentClass
 	{
@@ -10,9 +12,7 @@
 		}
 
 		public override bool Equals(object obj)
-			=> obj is SimpleDemoDataParentClass other 
-			   && other.GetType() == GetType() 
-			   && Equals(other);
+			=> obj is SimpleDemoDataParentClass other && other.GetType() == GetType() && Equals(other);
 
 		private bool Equals(SimpleDemoDataParentClass other)
 			=> Value == other.Value;
@@ -38,4 +38,30 @@
 	public class SimpleDemoChildFirstClass : SimpleDemoParentClass { }
 
 	public class SimpleDemoChildSecondClass : SimpleDemoParentClass { }
+
+	public class SimpleInjectedDemoParentClass
+	{
+		private readonly SimpleDemoFirstDataChildClass _demoFirstData;
+		private readonly SimpleDemoSecondDataChildClass _demoSecondData;
+
+		[Inject]
+		public SimpleInjectedDemoParentClass(
+			SimpleDemoFirstDataChildClass demoFirstData,
+			SimpleDemoSecondDataChildClass demoSecondData
+		)
+		{
+			_demoFirstData = demoFirstData;
+			_demoSecondData = demoSecondData;
+		}
+
+		public bool ContainData()
+		{
+			return _demoFirstData != null && _demoSecondData != null;
+		}
+
+		public bool IsCorrect(int firstData, int secondData)
+		{
+			return _demoFirstData.Value == firstData && _demoSecondData.Value == secondData;
+		}
+	}
 }

@@ -2,12 +2,12 @@
 
 namespace RedCatEngine.DependencyInjection.Exceptions
 {
-	public class NotFoundInstanceException : Exception
+	public class NotFoundInstanceOrCreateException : Exception
 	{
 		public readonly Type NotFoundType;
-		private const string ErrorMessageFormat = "Not found instances for Type {0}";
+		private const string ErrorMessageFormat = "Not found instances or create for Type {0}";
 
-		public NotFoundInstanceException(Type notFoundType)
+		public NotFoundInstanceOrCreateException(Type notFoundType)
 			: base(string.Format(ErrorMessageFormat, notFoundType))
 		{
 			NotFoundType = notFoundType;

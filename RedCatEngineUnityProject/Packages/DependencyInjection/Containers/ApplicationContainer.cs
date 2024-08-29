@@ -97,7 +97,7 @@ namespace RedCatEngine.DependencyInjection.Containers
 			if (_cashContainer.TryGetAndCachedArrayByParenFromSingle<T>(_objects, out var singleVariants))
 				return singleVariants;
 
-			throw new NotFoundInstanceException(typeof(T));
+			throw new NotFoundInstanceOrCreateException(typeof(T));
 		}
 
 		public object Create(Type type, params object[] context)
@@ -154,11 +154,28 @@ namespace RedCatEngine.DependencyInjection.Containers
 					continue;
 				}
 
-				var fieldType = parameterInfo.ParameterType;
-				parameters.Add(GetSingle(fieldType, context));
+				parameters.Add(GetSingle(parameterInfo.ParameterType, context));
 			}
 
-			return Activator.CreateInstance(type, parameters);
+			return Activator.CreateInstance(type, parameters.ToArray());
+		}
+
+		private bool ContainTypeInContext(
+			Type fieldType,
+			IEnumerable<object> context,
+			out object target
+		)
+		{
+			foreach (var contextElement in context)
+			{
+				if (contextElement.GetType() != fieldType)
+					continue;
+
+				target = contextElement;
+				return true;
+			}
+			target = default;
+			return false;
 		}
 
 		private object GetSingle(
@@ -166,6 +183,11 @@ namespace RedCatEngine.DependencyInjection.Containers
 			params object[] context
 		)
 		{
+			foreach (var contextParameter in context)
+			{
+				if (type.IsInstanceOfType(contextParameter))
+					return contextParameter;
+			}
 			if (_objects.TryGetValue(type, out var instance))
 				return instance;
 
@@ -181,7 +203,7 @@ namespace RedCatEngine.DependencyInjection.Containers
 				    context))
 				return instance;
 
-			throw new NotFoundInstanceException(type);
+			throw new NotFoundInstanceOrCreateException(type);
 		}
 
 		private bool TryCreate(
@@ -201,8 +223,11 @@ namespace RedCatEngine.DependencyInjection.Containers
 			return true;
 		}
 
-		public TBindType BindType<TBindType, TInstanceType>()
+		public TBindType BindType<TBindType, TInstanceType>(params object[] context)
 			where TInstanceType : TBindType
-			=> BindAsSingle<TBindType>(((ICreator)this).Create<TInstanceType>());
+			=> BindAsSingle<TBindType>(((ICreator)this).Create<TInstanceType>(context));
+
+		public TInstanceBindType BindType<TInstanceBindType>(params object[] context)
+			=> BindAsSingle(((ICreator)this).Create<TInstanceBindType>(context));
 	}
 }
