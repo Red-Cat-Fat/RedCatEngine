@@ -7,6 +7,7 @@ using RedCatEngine.DependencyInjection.Containers.Interfaces;
 using RedCatEngine.DependencyInjection.Exceptions;
 using RedCatEngine.DependencyInjection.Specials.Providers;
 using RedCatEngine.DependencyInjection.Utils;
+using UnityEngine;
 
 namespace RedCatEngine.DependencyInjection.Containers
 {
@@ -37,10 +38,15 @@ namespace RedCatEngine.DependencyInjection.Containers
 		public TBindType BindAsSingle<TBindType>(TBindType instance)
 		{
 			var type = typeof(TBindType);
-			if (_objects.TryGetValue(type, out var alreadyInstance))
+			return BindAsSingle(type, instance);
+		}
+
+		public TBindType BindAsSingle<TBindType>(Type typeKey, TBindType instance)
+		{
+			if (_objects.TryGetValue(typeKey, out var alreadyInstance))
 				throw new BindDuplicateWithoutArrayMarkException(typeof(TBindType), alreadyInstance);
 
-			_objects.Add(type, instance);
+			_objects.Add(typeKey, instance);
 			return _providerService.BindAsSingle(instance);
 		}
 
@@ -100,6 +106,61 @@ namespace RedCatEngine.DependencyInjection.Containers
 			throw new NotFoundInstanceOrCreateException(typeof(T));
 		}
 
+		public MonoBehaviour MonoConstruct(MonoBehaviour monoBehaviour, params object[] context)
+		{
+			var type = monoBehaviour.GetType();
+			var methods = type.GetMethods();
+			foreach (var method in methods)
+			{
+				if (Attribute.GetCustomAttribute(
+					    method,
+					    typeof(MonoInjectAttribute),
+					    true) ==
+				    null)
+					continue;
+
+				return InjectContextToMonoConstructor(
+					monoBehaviour,
+					method,
+					context);
+			}
+
+			throw new NotFountInjectAttributeForConstructorException(type);
+		}
+
+		private MonoBehaviour InjectContextToMonoConstructor(
+			MonoBehaviour monoBehaviour,
+			MethodBase method,
+			object[] context
+		)
+		{
+			var parameters = new List<object>();
+
+			foreach (var parameterInfo in method.GetParameters())
+			{
+				if (typeof(ISingleProvider<>).IsAssignableFromGeneric(
+					    parameterInfo.ParameterType,
+					    out var expectedSingleWaiterGenericType))
+				{
+					parameters.Add(_providerService.RegisterProvider(expectedSingleWaiterGenericType[0]));
+					continue;
+				}
+
+				if (typeof(IArrayProvider<>).IsAssignableFromGeneric(
+					    parameterInfo.ParameterType,
+					    out var expectedArrayWaiterGenericType))
+				{
+					parameters.Add(_providerService.RegisterArrayProvider(expectedArrayWaiterGenericType[0]));
+					continue;
+				}
+
+				parameters.Add(GetSingle(parameterInfo.ParameterType, context));
+			}
+
+			method.Invoke(monoBehaviour, parameters.ToArray());
+			return monoBehaviour;
+		}
+
 		public T Create<T>(params object[] context)
 			=> (T)Create(typeof(T), context);
 
@@ -130,7 +191,7 @@ namespace RedCatEngine.DependencyInjection.Containers
 
 			throw new NotFountInjectAttributeForConstructorException(type);
 		}
-
+		
 		private object InjectContextToConstructor(
 			Type type,
 			MethodBase constructor,
@@ -163,24 +224,6 @@ namespace RedCatEngine.DependencyInjection.Containers
 			return Activator.CreateInstance(type, parameters.ToArray());
 		}
 
-		private bool ContainTypeInContext(
-			Type fieldType,
-			IEnumerable<object> context,
-			out object target
-		)
-		{
-			foreach (var contextElement in context)
-			{
-				if (contextElement.GetType() != fieldType)
-					continue;
-
-				target = contextElement;
-				return true;
-			}
-			target = default;
-			return false;
-		}
-
 		private object GetSingle(
 			Type type,
 			params object[] context
@@ -191,6 +234,7 @@ namespace RedCatEngine.DependencyInjection.Containers
 				if (type.IsInstanceOfType(contextParameter))
 					return contextParameter;
 			}
+
 			if (_objects.TryGetValue(type, out var instance))
 				return instance;
 
@@ -222,8 +266,16 @@ namespace RedCatEngine.DependencyInjection.Containers
 			}
 
 			instance = Create(type, context);
-			BindAsSingle(instance);
+			BindAsSingle(type, instance);
 			return true;
+		}
+
+		public TInstanceBindType BindDummy<TInstanceBindType, TDummyType>(params object[] context)
+			where TDummyType : TInstanceBindType
+		{
+			if (!TryGetSingle<TInstanceBindType>(out var instance))
+				instance = BindType<TInstanceBindType, TDummyType>();
+			return instance;
 		}
 
 		public TBindType BindType<TBindType, TInstanceType>(params object[] context)

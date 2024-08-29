@@ -4,5 +4,8 @@ namespace RedCatEngine.DependencyInjection.Containers.Interfaces
 		IBinderApplicationContainer,
 		ITypeBinderApplicationContainer,
 		IGetterApplicationContainer,
-		ICreator { }
+		IMonoConstructor,
+		ICreator
+	{
+	}
 }
