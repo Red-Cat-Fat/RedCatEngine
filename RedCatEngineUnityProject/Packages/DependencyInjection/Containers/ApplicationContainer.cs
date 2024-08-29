@@ -100,6 +100,9 @@ namespace RedCatEngine.DependencyInjection.Containers
 			throw new NotFoundInstanceOrCreateException(typeof(T));
 		}
 
+		public T Create<T>(params object[] context)
+			=> (T)Create(typeof(T), context);
+
 		public object Create(Type type, params object[] context)
 		{
 			var constructors = type.GetConstructors();
