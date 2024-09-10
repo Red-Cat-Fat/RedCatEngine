@@ -1,5 +1,5 @@
 ﻿using System;
-using RedCatEngine.DependencyInjection.Containers.Interfaces;
+using RedCatEngine.DependencyInjection.Containers.Interfaces.Application;
 
 namespace RedCatEngine.Values.Base
 {

@@ -2,10 +2,11 @@
     "name": "Rewards",
     "rootNamespace": "RedCatEngine.Rewards",
     "references": [
-        "GUID:2a1cb7db0a8c79e47bda29872f7fe8e7",
+        "GUID:bc1a77b6bbee94316b30d47e73c29c41",
         "GUID:687b69a268bf4402bb854a43d7732d8a",
+        "GUID:9c545a6a0a353cd479a317c06bb109b1",
         "GUID:79ad2193969254fbd829729521e3eee3",
-        "GUID:bc1a77b6bbee94316b30d47e73c29c41"
+        "GUID:2a1cb7db0a8c79e47bda29872f7fe8e7"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],

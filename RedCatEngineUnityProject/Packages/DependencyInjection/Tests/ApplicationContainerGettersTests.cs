@@ -1,7 +1,6 @@
 ﻿using System.Linq;
 using NUnit.Framework;
 using RedCatEngine.DependencyInjection.Containers;
-using RedCatEngine.DependencyInjection.Containers.Interfaces;
 using RedCatEngine.DependencyInjection.Containers.Interfaces.Application;
 using RedCatEngine.DependencyInjection.Tests.SpecialSubClasses;
 

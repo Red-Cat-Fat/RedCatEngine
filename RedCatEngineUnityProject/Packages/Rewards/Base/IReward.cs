@@ -1,4 +1,4 @@
-﻿using RedCatEngine.DependencyInjection.Containers.Interfaces;
+﻿using RedCatEngine.DependencyInjection.Containers.Interfaces.Application;
 
 namespace RedCatEngine.Rewards.Base
 {

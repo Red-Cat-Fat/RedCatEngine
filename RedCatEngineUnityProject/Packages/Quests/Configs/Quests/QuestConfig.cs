@@ -1,5 +1,5 @@
 using RedCatEngine.Configs;
-using RedCatEngine.DependencyInjection.Containers.Interfaces;
+using RedCatEngine.DependencyInjection.Containers.Interfaces.Application;
 using RedCatEngine.Quests.Mechanics.Quests;
 using RedCatEngine.Quests.Mechanics.Quests.QuestDatas;
 

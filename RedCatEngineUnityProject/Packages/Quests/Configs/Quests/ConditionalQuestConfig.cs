@@ -4,7 +4,7 @@ using System.Linq;
 using RedCatEngine.Conditions;
 using RedCatEngine.Conditions.Base;
 using RedCatEngine.Conditions.Variants;
-using RedCatEngine.DependencyInjection.Containers.Interfaces;
+using RedCatEngine.DependencyInjection.Containers.Interfaces.Application;
 using RedCatEngine.Quests.Mechanics.Quests;
 using SerializeReferenceEditor;
 using UnityEngine;

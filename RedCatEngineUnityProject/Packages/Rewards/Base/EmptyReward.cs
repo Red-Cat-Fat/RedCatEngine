@@ -1,4 +1,4 @@
-﻿using RedCatEngine.DependencyInjection.Containers.Interfaces;
+﻿using RedCatEngine.DependencyInjection.Containers.Interfaces.Application;
 using SerializeReferenceEditor;
 
 namespace RedCatEngine.Rewards.Base

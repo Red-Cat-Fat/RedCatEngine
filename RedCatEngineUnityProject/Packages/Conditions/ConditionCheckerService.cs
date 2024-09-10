@@ -1,5 +1,5 @@
 ﻿using RedCatEngine.Conditions.Base;
-using RedCatEngine.DependencyInjection.Containers.Interfaces;
+using RedCatEngine.DependencyInjection.Containers.Interfaces.Application;
 using UnityEngine;
 
 namespace RedCatEngine.Conditions

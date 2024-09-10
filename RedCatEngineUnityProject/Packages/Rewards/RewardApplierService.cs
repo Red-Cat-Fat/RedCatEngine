@@ -1,4 +1,5 @@
-﻿using RedCatEngine.DependencyInjection.Containers.Interfaces;
+﻿using RedCatEngine.DependencyInjection.Containers.Attributes;
+using RedCatEngine.DependencyInjection.Containers.Interfaces.Application;
 using RedCatEngine.Rewards.Base;
 using UnityEngine;
 
@@ -8,6 +9,7 @@ namespace RedCatEngine.Rewards
 	{
 		private readonly IApplicationContainer _applicationContainer;
 
+		[Inject]
 		public RewardApplierService(IApplicationContainer applicationContainer)
 		{
 			_applicationContainer = applicationContainer;

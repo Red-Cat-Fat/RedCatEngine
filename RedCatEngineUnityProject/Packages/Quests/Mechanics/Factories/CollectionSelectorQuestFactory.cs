@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 using RedCatEngine.Configs;
-using RedCatEngine.DependencyInjection.Containers.Interfaces;
+using RedCatEngine.DependencyInjection.Containers.Interfaces.Application;
 using RedCatEngine.Quests.Configs.Quests;
 using RedCatEngine.Quests.Exceptions;
 using RedCatEngine.Quests.Mechanics.QuestGenerators;

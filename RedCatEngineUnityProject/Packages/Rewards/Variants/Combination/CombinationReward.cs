@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Text;
-using RedCatEngine.DependencyInjection.Containers.Interfaces;
+using RedCatEngine.DependencyInjection.Containers.Interfaces.Application;
 using RedCatEngine.Rewards.Base;
 using SerializeReferenceEditor;
 using UnityEngine;

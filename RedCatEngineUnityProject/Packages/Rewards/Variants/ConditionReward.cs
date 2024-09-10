@@ -2,7 +2,7 @@
 using RedCatEngine.Conditions;
 using RedCatEngine.Conditions.Base;
 using RedCatEngine.Conditions.Variants;
-using RedCatEngine.DependencyInjection.Containers.Interfaces;
+using RedCatEngine.DependencyInjection.Containers.Interfaces.Application;
 using RedCatEngine.Rewards.Base;
 using SerializeReferenceEditor;
 using UnityEngine;
