@@ -19,6 +19,13 @@ namespace RedCatEngine.StateMachine.StateMachines
 			_states.Add(typeof(TType), state);
 		}
 
+		protected void AddState<TType>(TType state) where TType : IExitableState
+		{
+			if (_states.ContainsKey(typeof(TType)))
+				throw new AlreadyContainStateException(typeof(TType));
+			_states.Add(typeof(TType), state);
+		}
+
 		public ITypedQueueStateMachine Enter<TState>() where TState : class, IState
 		{
 			IState state = SelectStateAsActive<TState>();

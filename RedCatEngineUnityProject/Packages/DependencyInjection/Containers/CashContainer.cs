@@ -12,13 +12,30 @@ namespace RedCatEngine.DependencyInjection.Containers
 
 		internal bool TryFindFirstChildByType<T>(Dictionary<Type, object> objects, out T data)
 		{
-			var listTypes = GetChildTypes(typeof(T));
+			data = default;
+			if (!TryFindFirstChildByType(
+				    typeof(T),
+				    objects,
+				    out var findData))
+				return false;
+
+			data = (T)findData;
+			return true;
+		}
+
+		internal bool TryFindFirstChildByType(
+			Type findType,
+			Dictionary<Type, object> objects,
+			out object data
+		)
+		{
+			var listTypes = GetChildTypes(findType);
 			foreach (var type in listTypes)
 			{
 				if (!objects.TryGetValue(type, out var instance))
 					continue;
 
-				var targetInstance = (T)instance;
+				var targetInstance = instance;
 				if (targetInstance == null)
 					continue;
 

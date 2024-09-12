@@ -6,7 +6,7 @@ namespace RedCatEngine.DependencyInjection.Containers.Interfaces
 	{
 		bool TryGetSingle<T>(out T data);
 		bool TryGetArray<T>(out IEnumerable<T> data);
-		T GetSingle<T>();
+		T GetSingle<T>(params object[] context);
 		IEnumerable<T> GetArray<T>();
 	}
 }
