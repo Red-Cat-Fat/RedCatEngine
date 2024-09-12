@@ -1,8 +1,7 @@
 namespace RedCatEngine.Windows.Interfaces
 {
-	public interface IPresenter
+	public interface IWindowData
 	{
 		void Open();
-		void Close();
 	}
 }
