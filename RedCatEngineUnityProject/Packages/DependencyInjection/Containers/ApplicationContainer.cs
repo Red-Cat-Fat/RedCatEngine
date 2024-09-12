@@ -3,11 +3,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using RedCatEngine.DependencyInjection.Containers.Attributes;
-using RedCatEngine.DependencyInjection.Containers.Interfaces;
+using RedCatEngine.DependencyInjection.Containers.Interfaces.Application;
 using RedCatEngine.DependencyInjection.Exceptions;
 using RedCatEngine.DependencyInjection.Specials.Providers;
 using RedCatEngine.DependencyInjection.Utils;
-using UnityEngine;
 
 namespace RedCatEngine.DependencyInjection.Containers
 {
@@ -15,7 +14,7 @@ namespace RedCatEngine.DependencyInjection.Containers
 	{
 		private readonly Dictionary<Type, object> _objects = new();
 		private readonly CashContainer _cashContainer;
-		private readonly ProviderService _providerService;
+		protected readonly ProviderService _providerService;
 
 		public ApplicationContainer()
 		{
@@ -34,31 +33,6 @@ namespace RedCatEngine.DependencyInjection.Containers
 
 		public object RegisterArrayProvider(Type providerType)
 			=> _providerService.RegisterArrayProvider(providerType);
-
-		public TBindType BindAsSingle<TBindType>(TBindType instance)
-		{
-			var type = typeof(TBindType);
-			return BindAsSingle(type, instance);
-		}
-
-		public TBindType BindAsSingle<TBindType>(Type typeKey, TBindType instance)
-		{
-			if (_objects.TryGetValue(typeKey, out var alreadyInstance))
-				throw new BindDuplicateWithoutArrayMarkException(typeof(TBindType), alreadyInstance);
-
-			_objects.Add(typeKey, instance);
-			return _providerService.BindAsSingle(instance);
-		}
-
-		public TBindType BindAsArray<TBindType>(TBindType instance)
-		{
-			var type = typeof(TBindType);
-			if (!_cashContainer.ArrayObjects.ContainsKey(type))
-				_cashContainer.ArrayObjects.Add(type, new List<object>());
-
-			_cashContainer.ArrayObjects[type].Add(instance);
-			return _providerService.BindAsArray(instance);
-		}
 
 		public bool TryGetSingle<T>(out T data)
 		{
@@ -79,14 +53,11 @@ namespace RedCatEngine.DependencyInjection.Containers
 			return false;
 		}
 
-		public T GetSingle<T>()
-			=> (T)GetSingle(typeof(T));
-
 		public bool TryGetArray<T>(out IEnumerable<T> data)
 		{
 			if (!_cashContainer.ArrayObjects.TryGetValue(typeof(T), out var instances))
 				return _cashContainer.TryGetAndCachedArrayByOtherKeys(out data) ||
-				       _cashContainer.TryGetAndCachedArrayByParenFromSingle(_objects, out data);
+					_cashContainer.TryGetAndCachedArrayByParenFromSingle(_objects, out data);
 
 			data = instances.Select(instance => (T)instance);
 			return true;
@@ -106,61 +77,6 @@ namespace RedCatEngine.DependencyInjection.Containers
 			throw new NotFoundInstanceOrCreateException(typeof(T));
 		}
 
-		public MonoBehaviour MonoConstruct(MonoBehaviour monoBehaviour, params object[] context)
-		{
-			var type = monoBehaviour.GetType();
-			var methods = type.GetMethods();
-			foreach (var method in methods)
-			{
-				if (Attribute.GetCustomAttribute(
-					    method,
-					    typeof(MonoInjectAttribute),
-					    true) ==
-				    null)
-					continue;
-
-				return InjectContextToMonoConstructor(
-					monoBehaviour,
-					method,
-					context);
-			}
-
-			throw new NotFountInjectAttributeForConstructorException(type);
-		}
-
-		private MonoBehaviour InjectContextToMonoConstructor(
-			MonoBehaviour monoBehaviour,
-			MethodBase method,
-			object[] context
-		)
-		{
-			var parameters = new List<object>();
-
-			foreach (var parameterInfo in method.GetParameters())
-			{
-				if (typeof(ISingleProvider<>).IsAssignableFromGeneric(
-					    parameterInfo.ParameterType,
-					    out var expectedSingleWaiterGenericType))
-				{
-					parameters.Add(_providerService.RegisterProvider(expectedSingleWaiterGenericType[0]));
-					continue;
-				}
-
-				if (typeof(IArrayProvider<>).IsAssignableFromGeneric(
-					    parameterInfo.ParameterType,
-					    out var expectedArrayWaiterGenericType))
-				{
-					parameters.Add(_providerService.RegisterArrayProvider(expectedArrayWaiterGenericType[0]));
-					continue;
-				}
-
-				parameters.Add(GetSingle(parameterInfo.ParameterType, context));
-			}
-
-			method.Invoke(monoBehaviour, parameters.ToArray());
-			return monoBehaviour;
-		}
-
 		public T Create<T>(params object[] context)
 			=> (T)Create(typeof(T), context);
 
@@ -174,10 +90,10 @@ namespace RedCatEngine.DependencyInjection.Containers
 					emptyParameterConstructor = constructor;
 
 				if (Attribute.GetCustomAttribute(
-					    constructor,
-					    typeof(InjectAttribute),
-					    true) ==
-				    null)
+						constructor,
+						typeof(InjectAttribute),
+						true) ==
+					null)
 					continue;
 
 				return InjectContextToConstructor(
@@ -191,7 +107,7 @@ namespace RedCatEngine.DependencyInjection.Containers
 
 			throw new NotFountInjectAttributeForConstructorException(type);
 		}
-		
+
 		private object InjectContextToConstructor(
 			Type type,
 			MethodBase constructor,
@@ -203,16 +119,16 @@ namespace RedCatEngine.DependencyInjection.Containers
 			foreach (var parameterInfo in constructor.GetParameters())
 			{
 				if (typeof(ISingleProvider<>).IsAssignableFromGeneric(
-					    parameterInfo.ParameterType,
-					    out var expectedSingleWaiterGenericType))
+					parameterInfo.ParameterType,
+					out var expectedSingleWaiterGenericType))
 				{
 					parameters.Add(_providerService.RegisterProvider(expectedSingleWaiterGenericType[0]));
 					continue;
 				}
 
 				if (typeof(IArrayProvider<>).IsAssignableFromGeneric(
-					    parameterInfo.ParameterType,
-					    out var expectedArrayWaiterGenericType))
+					parameterInfo.ParameterType,
+					out var expectedArrayWaiterGenericType))
 				{
 					parameters.Add(_providerService.RegisterArrayProvider(expectedArrayWaiterGenericType[0]));
 					continue;
@@ -224,7 +140,10 @@ namespace RedCatEngine.DependencyInjection.Containers
 			return Activator.CreateInstance(type, parameters.ToArray());
 		}
 
-		private object GetSingle(
+		public T GetSingle<T>(params object[] context)
+			=> (T)GetSingle(typeof(T), context);
+
+		public object GetSingle(
 			Type type,
 			params object[] context
 		)
@@ -233,21 +152,29 @@ namespace RedCatEngine.DependencyInjection.Containers
 			{
 				if (type.IsInstanceOfType(contextParameter))
 					return contextParameter;
+				if (contextParameter is not object[] arrayObjects)
+					continue;
+
+				foreach (var contextObject in arrayObjects)
+				{
+					if (type.IsInstanceOfType(contextObject))
+						return contextObject;
+				}
 			}
 
 			if (_objects.TryGetValue(type, out var instance))
 				return instance;
 
 			if (_cashContainer.TryFindFirstChildByType(
-				    type,
-				    _objects,
-				    out var typedInstance))
+				type,
+				_objects,
+				out var typedInstance))
 				return typedInstance;
 
 			if (TryCreate(
-				    type,
-				    out instance,
-				    context))
+				type,
+				out instance,
+				context))
 				return instance;
 
 			throw new NotFoundInstanceOrCreateException(type);
@@ -280,9 +207,53 @@ namespace RedCatEngine.DependencyInjection.Containers
 
 		public TBindType BindType<TBindType, TInstanceType>(params object[] context)
 			where TInstanceType : TBindType
-			=> BindAsSingle<TBindType>(((ICreator)this).Create<TInstanceType>(context));
+			=> BindAsSingle<TBindType>(Create<TInstanceType>(context));
+
+		public TBindArrayType BindArrayType<TBindArrayType, TInstanceType>(params object[] context)
+			where TInstanceType : TBindArrayType
+			=> BindAsArray(typeof(TBindArrayType), Create<TInstanceType>(context));
 
 		public TInstanceBindType BindType<TInstanceBindType>(params object[] context)
-			=> BindAsSingle(((ICreator)this).Create<TInstanceBindType>(context));
+			=> BindAsSingle(Create<TInstanceBindType>(context));
+
+		public object BindType(Type type, params object[] context)
+			=> BindAsSingle(type, Create(type, context));
+
+		public TInstanceBindType BindArrayType<TInstanceBindType>(params object[] context)
+			=> BindAsArray(Create<TInstanceBindType>(context));
+
+		public object BindArrayType(Type type, params object[] context)
+			=> BindAsArray(type, Create(type, context));
+
+		public TBindType BindAsSingle<TBindType>(TBindType instance)
+			=> BindAsSingle(typeof(TBindType), instance);
+
+		protected TBindType BindAsSingle<TBindType>(Type typeKey, TBindType instance)
+		{
+			if (_objects.TryGetValue(typeKey, out var alreadyInstance))
+				throw new BindDuplicateWithoutArrayMarkException(typeof(TBindType), alreadyInstance);
+
+			_objects.Add(typeKey, instance);
+			return _providerService.BindAsSingle(instance);
+		}
+
+		public TBindType BindAsArray<TBindType>(TBindType instance)
+		{
+			var type = typeof(TBindType);
+			if (!_cashContainer.ArrayObjects.ContainsKey(type))
+				_cashContainer.ArrayObjects.Add(type, new List<object>());
+
+			_cashContainer.ArrayObjects[type].Add(instance);
+			return _providerService.BindAsArray(instance);
+		}
+
+		protected TBindType BindAsArray<TBindType>(Type typeKey, TBindType instance)
+		{
+			if (!_cashContainer.ArrayObjects.ContainsKey(typeKey))
+				_cashContainer.ArrayObjects.Add(typeKey, new List<object>());
+
+			_cashContainer.ArrayObjects[typeKey].Add(instance);
+			return _providerService.BindAsArray(instance);
+		}
 	}
 }

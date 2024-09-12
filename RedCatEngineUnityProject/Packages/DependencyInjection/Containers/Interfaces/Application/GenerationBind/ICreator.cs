@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace RedCatEngine.DependencyInjection.Containers.Interfaces
+namespace RedCatEngine.DependencyInjection.Containers.Interfaces.Application.GenerationBind
 {
 	public interface ICreator
 	{

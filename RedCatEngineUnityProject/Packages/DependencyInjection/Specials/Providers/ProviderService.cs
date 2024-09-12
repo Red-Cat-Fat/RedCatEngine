@@ -1,6 +1,6 @@
 using System;
 using System.Collections.Generic;
-using RedCatEngine.DependencyInjection.Containers.Interfaces;
+using RedCatEngine.DependencyInjection.Containers.Interfaces.Application.Binders;
 
 namespace RedCatEngine.DependencyInjection.Specials.Providers
 {
