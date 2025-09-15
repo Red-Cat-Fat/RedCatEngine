@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Infrastructure.Windows.Components.Windows;
 using Infrastructure.Windows.Interfaces;
+using RedCatEngine.CommonServices.Extensions;
 using RedCatEngine.CommonServices.Services.Logs;
 using RedCatEngine.DependencyInjection.Containers.Attributes;
 
@@ -135,10 +136,10 @@ namespace RedCatEngine.Windows.Services
 			}
 
 			var sb = new System.Text.StringBuilder();
-			sb.AppendLineFormat(
-				"{1} Close {0} windows:",
+			sb.AppendLine(
+				string.Format("{1} Close {0} windows:",
 				windowsForClose.Count(),
-				windowConfig.name);
+				windowConfig.name));
 			foreach (var closeWindow in windowsForClose)
 			{
 				sb.AppendLine("\t" + closeWindow.Key.name);
