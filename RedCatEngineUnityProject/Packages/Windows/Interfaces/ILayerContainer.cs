@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace RedCatEngine.Windows.Interfaces
+namespace Infrastructure.Windows.Interfaces
 {
 	public interface ILayerContainer
 	{

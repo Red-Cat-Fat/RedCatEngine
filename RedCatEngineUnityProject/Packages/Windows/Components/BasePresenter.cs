@@ -1,36 +1,38 @@
-using RedCatEngine.Windows.Interfaces;
+using System;
+using Infrastructure.Windows.Interfaces;
 
-namespace RedCatEngine.Windows.Components
+namespace Infrastructure.Windows.Components
 {
 	public abstract class BasePresenter<TView, TModel> : IPresenter
 		where TView : IView
-		where TModel : IModel
+		where TModel : class, IModel
 	{
-		private readonly TView View;
-		protected readonly TModel Model;
+		public event Action CloseEvent;
 
-		protected BasePresenter(TView view, TModel model)
+		protected readonly TView View;
+
+		protected BasePresenter(TView view)
 		{
 			View = view;
-			Model = model;
 		}
 
-		public void Open()
+		public void Open(IModel model)
 		{
-			View.CloseEvent += Close;
-			DoOpen(View, Model);
+			View.ClickCloseEvent += Close;
+			DoOpen(model as TModel);
 			View.Open();
 		}
 
 		public void Close()
 		{
-			View.CloseEvent -= Close;
-			DoClose(View, Model);
+			View.ClickCloseEvent -= Close;
+			DoClose();
 			View.Close();
+			CloseEvent?.Invoke();
 		}
 
-		protected abstract void DoClose(TView view, TModel model);
+		protected abstract void DoClose();
 
-		protected abstract void DoOpen(TView view, TModel model);
+		protected abstract void DoOpen(TModel model);
 	}
 }

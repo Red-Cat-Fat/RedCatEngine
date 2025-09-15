@@ -1,5 +1,4 @@
 using RedCatEngine.Configs;
-using RedCatEngine.DependencyInjection.Containers.Interfaces;
 using RedCatEngine.DependencyInjection.Containers.Interfaces.Application;
 using RedCatEngine.Quests.Mechanics.Quests;
 using RedCatEngine.Quests.Mechanics.Quests.QuestDatas;
@@ -8,7 +7,7 @@ namespace RedCatEngine.Quests.Configs.Quests
 {
 	public abstract class QuestConfig : BaseConfig
 	{
-		public IQuest Make(IApplicationContainer applicationContainer) 
+		public IQuest Make(IApplicationContainer applicationContainer)
 			=> DoMake(applicationContainer);
 
 		protected abstract IQuest DoMake(IApplicationContainer applicationContainer);

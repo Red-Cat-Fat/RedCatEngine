@@ -1,6 +1,10 @@
+using System;
+using RedCatEngine.DependencyInjection.Specials.Providers.Waiters;
+
 namespace RedCatEngine.DependencyInjection.Specials.Providers
 {
-	public class SingleProvider<TTypeProvide> : ISingleProvider<TTypeProvide>, ISingleWaiter<TTypeProvide> where TTypeProvide : class
+	public class SingleProvider<TTypeProvide> : ISingleProvider<TTypeProvide>, ISingleWaiter<TTypeProvide>
+		where TTypeProvide : class
 	{
 		private TTypeProvide _instance;
 
@@ -9,6 +13,9 @@ namespace RedCatEngine.DependencyInjection.Specials.Providers
 			instance = _instance;
 			return instance != null;
 		}
+
+		public Type[] ExpectedTypes
+			=> new[] { typeof(TTypeProvide) };
 
 		public void Attach(TTypeProvide waitType)
 		{

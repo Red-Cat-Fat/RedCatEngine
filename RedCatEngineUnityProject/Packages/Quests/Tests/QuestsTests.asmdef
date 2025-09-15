@@ -6,7 +6,10 @@
         "UnityEditor.TestRunner",
         "Quests",
         "Configs",
-        "Rewards"
+        "Rewards",
+        "Conditions",
+        "DependencyInjection",
+        "Values"
     ],
     "includePlatforms": [
         "Editor"

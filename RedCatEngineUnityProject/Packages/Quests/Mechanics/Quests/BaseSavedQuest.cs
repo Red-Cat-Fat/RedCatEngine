@@ -1,13 +1,12 @@
 using RedCatEngine.Configs;
 using RedCatEngine.Quests.Configs.Quests;
 using RedCatEngine.Quests.Mechanics.Quests.QuestDatas;
-using RedCatEngine.Rewards.Base;
 
 namespace RedCatEngine.Quests.Mechanics.Quests
 {
 	public abstract class BaseSavedQuest<TQuestData> : BaseQuest where TQuestData : BaseQuestData, new()
 	{
-		protected BaseSavedQuest(ConfigID<QuestConfig> config, IReward reward) : base(config, reward)
+		protected BaseSavedQuest(ConfigID<QuestConfig> config) : base(config)
 		{
 		}
 
@@ -20,7 +19,7 @@ namespace RedCatEngine.Quests.Mechanics.Quests
 			SetQuestState(data.GetQuestState());
 
 			var result = DoLoadData(data as TQuestData);
-			
+
 			CheckComplete();
 			return result;
 		}

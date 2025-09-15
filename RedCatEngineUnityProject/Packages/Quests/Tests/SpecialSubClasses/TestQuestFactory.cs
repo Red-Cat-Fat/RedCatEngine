@@ -9,16 +9,10 @@ namespace RedCatEngine.Quests.Tests.SpecialSubClasses
 {
 	public class TestQuestFactory : IQuestFactory
 	{
-		private IQuest[] _returnQuest;
 		private int _index = 0;
+		private IQuest[] _returnQuest;
 
-		public void SetReturnQuest(IQuest[] returnQuest)
-		{
-			_returnQuest = returnQuest;
-			_index = 0;
-		}
-
-		public IQuest MakeFromConfig(ConfigID<QuestConfig> questConfig)
+		public IQuest MakeFromConfig(ConfigID<QuestConfig> questId)
 		{
 			throw new System.NotImplementedException();
 		}
@@ -26,13 +20,6 @@ namespace RedCatEngine.Quests.Tests.SpecialSubClasses
 		public IQuest MakeNewQuest(List<IQuest> currentActiveQuests)
 		{
 			throw new System.NotImplementedException();
-		}
-
-		public IQuest MakeNewQuest()
-		{
-			var result = _returnQuest[_index];
-			_index++;
-			return result;
 		}
 
 		public IQuest LoadFrom(IQuestData saveData)
@@ -46,6 +33,19 @@ namespace RedCatEngine.Quests.Tests.SpecialSubClasses
 		public bool TryLoad(ConfigID<QuestConfig> questId, out QuestConfig questConfig)
 		{
 			throw new System.NotImplementedException();
+		}
+
+		public void SetReturnQuest(IQuest[] returnQuest)
+		{
+			_returnQuest = returnQuest;
+			_index = 0;
+		}
+
+		public IQuest MakeNewQuest()
+		{
+			var result = _returnQuest[_index];
+			_index++;
+			return result;
 		}
 	}
 }

@@ -1,19 +1,18 @@
+using System;
+using Infrastructure.Windows.Factory;
+using Infrastructure.Windows.Interfaces;
 using RedCatEngine.DependencyInjection.Containers.Interfaces.Application.GenerationBind;
-using RedCatEngine.Windows.Factory;
-using RedCatEngine.Windows.Interfaces;
 
-namespace RedCatEngine.Windows.Components.Windows
+namespace Infrastructure.Windows.Components.Windows
 {
-	public abstract class BaseModelWindowConfig<TModel, TView, TPresenter, TFactory> : BaseWindowConfig
+	public abstract class BaseModelWindowConfig<TModel, TView, TPresenter, TFactory> : WindowConfig
 		where TModel : class, IModel
 		where TView : BaseView
 		where TPresenter : IPresenter
-		where TFactory : WindowCreatorFactory<TModel, TView, TPresenter>
+		where TFactory : WindowCreatorFactory<TView, TPresenter>
 	{
-		protected abstract TModel MakeModel();
-
-		public override IModel GetModel()
-			=> MakeModel();
+		public override Type ModelType
+			=> typeof(TModel);
 
 		public override IWindowData MakeWindowData(ICreator windowContainer, params object[] context)
 			=> windowContainer.Create<TFactory>(context).CreateWindow(this, context);

@@ -1,9 +1,11 @@
-﻿using RedCatEngine.Values.Base;
+﻿using RedCatEngine.Values.Base.BaseRealisations;
+using RedCatEngine.Values.Base.Interfaces;
 using SerializeReferenceEditor;
 using UnityEngine;
 
 namespace RedCatEngine.Values.Variants.Contents.Configs.Configs
 {
+	[SRHidden]
 	[CreateAssetMenu(menuName = "Configs/Values/Bool", fileName = nameof(BoolBaseValueConfig))]
 	public class BoolBaseValueConfig : BaseValueConfig<bool>
 	{

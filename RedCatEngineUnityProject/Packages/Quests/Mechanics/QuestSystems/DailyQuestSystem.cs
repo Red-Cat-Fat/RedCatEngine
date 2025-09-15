@@ -48,7 +48,7 @@ namespace RedCatEngine.Quests.Mechanics.QuestSystems
 			var toRemove = ActiveQuests.Where(PredicateForRemoveQuests()).ToArray();
 			foreach (var quest in toRemove)
 			{
-				quest.Close();
+				quest.Disable();
 				quest.ChangeQuestStateEvent -= OnChangeQuestState;
 				ActiveQuests.Remove(quest);
 			}

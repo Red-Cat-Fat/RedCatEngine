@@ -9,20 +9,30 @@ namespace RedCatEngine.Configs
 			IComparable<ConfigID<TBaseConfig>>
 		where TBaseConfig : BaseConfig
 	{
-		private const int InvalidId = 0;
-		public static ConfigID<TBaseConfig> Invalid
-			=> new(InvalidId);
+		public const int InvalidId = 0;
 		[SerializeField]
 		private int _id;
-
-		public string ID
-			=> _id.ToString();
 
 		private ConfigID(int id)
 			=> _id = id;
 
 		public ConfigID(TBaseConfig config)
 			=> _id = config.ID;
+
+		public static ConfigID<TBaseConfig> Invalid
+			=> new(InvalidId);
+
+		public string ID
+			=> _id.ToString();
+
+		public int CompareTo(ConfigID<TBaseConfig> other)
+		{
+			if (ReferenceEquals(this, other))
+				return 0;
+			if (ReferenceEquals(null, other))
+				return 1;
+			return _id.CompareTo(other._id);
+		}
 
 		public bool Equals(ConfigID<TBaseConfig> other)
 			=> _id == (other != null ? other._id : InvalidId);
@@ -56,15 +66,6 @@ namespace RedCatEngine.Configs
 
 		public static implicit operator ConfigID<TBaseConfig>(TBaseConfig config)
 			=> config != null ? new ConfigID<TBaseConfig>(config.ID) : Invalid;
-
-		public int CompareTo(ConfigID<TBaseConfig> other)
-		{
-			if (ReferenceEquals(this, other))
-				return 0;
-			if (ReferenceEquals(null, other))
-				return 1;
-			return _id.CompareTo(other._id);
-		}
 
 #if UNITY_EDITOR
 		public static ConfigID<TBaseConfig> MakeForTest(int id)

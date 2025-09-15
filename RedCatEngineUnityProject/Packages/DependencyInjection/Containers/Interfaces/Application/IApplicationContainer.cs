@@ -1,3 +1,4 @@
+using System;
 using RedCatEngine.DependencyInjection.Containers.Interfaces.Application.Binders;
 using RedCatEngine.DependencyInjection.Containers.Interfaces.Application.GenerationBind;
 
@@ -7,7 +8,9 @@ namespace RedCatEngine.DependencyInjection.Containers.Interfaces.Application
 		IBinderApplicationContainer,
 		ITypeBinderApplicationContainer,
 		IGetterApplicationContainer,
-		ICreator
+		ICreator,
+		IDisposable
 	{
+		IApplicationContainer CreateChildContainer();
 	}
 }

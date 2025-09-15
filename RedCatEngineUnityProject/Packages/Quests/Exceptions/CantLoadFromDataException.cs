@@ -6,7 +6,14 @@ namespace RedCatEngine.Quests.Exceptions
 {
 	public class CantLoadFromDataException : Exception
 	{
+		public CantLoadFromDataException(IQuestData questData)
+			: base($"Cant load {questData} data")
+		{
+		}
+
 		public CantLoadFromDataException(IQuestData questData, IQuestSelector questSelector)
-			: base($"Cant load {questData} data from {questSelector.Name} selector") { }
+			: base($"Cant load {questData} data from {questSelector.Name} selector")
+		{
+		}
 	}
 }

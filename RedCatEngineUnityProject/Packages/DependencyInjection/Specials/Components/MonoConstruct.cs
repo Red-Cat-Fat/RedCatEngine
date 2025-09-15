@@ -4,8 +4,10 @@ using UnityEngine;
 
 namespace RedCatEngine.DependencyInjection.Specials.Components
 {
-	public abstract class MonoConstruct : MonoBehaviour
+	public abstract class MonoConstruct : MonoBehaviour, IMonoConstruct, IDisposable
 	{
+		private bool _isInitialize;
+
 		private void OnValidate()
 		{
 #if UNITY_EDITOR
@@ -17,13 +19,13 @@ namespace RedCatEngine.DependencyInjection.Specials.Components
 			foreach (var method in methods)
 			{
 				if (Attribute.GetCustomAttribute(
-					    method,
-					    typeof(MonoInjectAttribute),
-					    true) !=
-				    null)
-				{
-					isHasInjectMethod = true;
-				}
+						method,
+						typeof(MonoInjectAttribute),
+						true) ==
+					null)
+					continue;
+
+				isHasInjectMethod = true;
 			}
 
 			if (!isHasInjectMethod)
@@ -31,6 +33,41 @@ namespace RedCatEngine.DependencyInjection.Specials.Components
 #endif
 		}
 
-		protected virtual void DoValidate() { }
+		protected virtual void DoValidate()
+		{
+		}
+
+		private void OnDisable()
+		{
+			Dispose();
+		}
+
+		protected virtual void DoInitialize()
+		{
+		}
+
+		protected virtual void DoDisposable()
+		{
+		}
+
+		public void Dispose()
+		{
+			if (!_isInitialize)
+			{
+#if UNITY_EDITOR
+				Debug.LogWarningFormat("Not initialize element try to dispose in {0}", gameObject.name);
+#endif
+				return;
+			}
+
+			_isInitialize = false;
+			DoDisposable();
+		}
+
+		public void FinishInitialize()
+		{
+			DoInitialize();
+			_isInitialize = true;
+		}
 	}
 }

@@ -1,9 +1,9 @@
 ﻿using System;
-using RedCatEngine.DependencyInjection.Containers.Interfaces;
-using RedCatEngine.DependencyInjection.Containers.Interfaces.Application;
-using RedCatEngine.Values.Base;
+using RedCatEngine.Values.Base.Interfaces;
 using SerializeReferenceEditor;
 using UnityEngine;
+using IGetterApplicationContainer =
+	RedCatEngine.DependencyInjection.Containers.Interfaces.Application.IGetterApplicationContainer;
 
 namespace RedCatEngine.Values.Variants.Operations
 {
@@ -13,9 +13,9 @@ namespace RedCatEngine.Values.Variants.Operations
 	{
 		[SR]
 		[SerializeReference]
-		private IFloatValue[] _values = {};
+		private IFloatValue[] _values = { };
 
-		public float GetValue(IApplicationContainer applicationContainer)
+		public float GetValue(IGetterApplicationContainer getterContainer)
 		{
 			if (_values.Length == 0)
 				return 0;
@@ -23,7 +23,7 @@ namespace RedCatEngine.Values.Variants.Operations
 			var resultValue = 0f;
 			foreach (var floatValue in _values)
 			{
-				resultValue += floatValue.GetValue(applicationContainer);
+				resultValue += floatValue.GetValue(getterContainer);
 			}
 
 			return resultValue;

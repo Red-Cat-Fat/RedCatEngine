@@ -15,9 +15,9 @@ namespace RedCatEngine.Conditions.Variants.Logic
 		[SerializeReference]
 		public ICondition[] Conditions;
 
-		public bool Check(IApplicationContainer applicationContainer)
+		public bool Check(IGetterApplicationContainer getter)
 		{
-			return Conditions.Any(condition => condition.Check(applicationContainer));
+			return Conditions.Any(condition => condition.Check(getter));
 		}
 	}
 }

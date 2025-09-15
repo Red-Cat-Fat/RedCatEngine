@@ -1,13 +1,17 @@
-﻿using RedCatEngine.Conditions.Base;
+﻿using JetBrains.Annotations;
+using RedCatEngine.Conditions.Base;
+using RedCatEngine.DependencyInjection.Containers.Attributes;
 using RedCatEngine.DependencyInjection.Containers.Interfaces.Application;
 using UnityEngine;
 
 namespace RedCatEngine.Conditions
 {
+	[UsedImplicitly]
 	public class ConditionCheckerService : IConditionCheckerService
 	{
 		private readonly IApplicationContainer _applicationContainer;
 
+		[Inject]
 		public ConditionCheckerService(IApplicationContainer applicationContainer)
 		{
 			_applicationContainer = applicationContainer;

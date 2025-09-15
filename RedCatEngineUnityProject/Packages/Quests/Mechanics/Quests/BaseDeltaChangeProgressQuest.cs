@@ -2,29 +2,28 @@ using System;
 using RedCatEngine.Configs;
 using RedCatEngine.Quests.Configs.Quests;
 using RedCatEngine.Quests.Mechanics.Quests.QuestDatas;
-using RedCatEngine.Rewards.Base;
 
 namespace RedCatEngine.Quests.Mechanics.Quests
 {
 	public abstract class BaseDeltaChangeProgressQuest : BaseSavedQuest<DeltaChangeProgressQuestData>
 	{
-		public override double Progress
-			=> Math.Max(0, Math.Min(1, (CurrentDeltaValue - StartValue) / DeltaValue));
-		public override string ProcessProgressText
-			=> $"{Math.Min(Math.Max(0, CurrentDeltaValue - StartValue), DeltaValue)} / {DeltaValue}";
+		protected BaseDeltaChangeProgressQuest(
+			ConfigID<QuestConfig> config,
+			double deltaValue
+		) : base(config)
+		{
+			DeltaValue = deltaValue;
+		}
 
 		protected double DeltaValue { get; }
 		protected double CurrentDeltaValue { get; private set; }
 		protected double StartValue { get; private set; }
 
-		protected BaseDeltaChangeProgressQuest(
-			ConfigID<QuestConfig> config,
-			IReward reward,
-			double deltaValue
-		) : base(config, reward)
-		{
-			DeltaValue = deltaValue;
-		}
+		public override double GetProgress()
+			=> Math.Max(0, Math.Min(1, (CurrentDeltaValue - StartValue) / DeltaValue));
+
+		public override string GetProcessProgressText()
+			=> $"{Math.Min(Math.Max(0, CurrentDeltaValue - StartValue), DeltaValue)} / {DeltaValue}";
 
 		protected sealed override IQuest DoLoadData(DeltaChangeProgressQuestData questData)
 		{
@@ -62,7 +61,7 @@ namespace RedCatEngine.Quests.Mechanics.Quests
 
 		protected override void CheckComplete()
 		{
-			if(QuestState is not QuestState.InProgress)
+			if (QuestState is not QuestState.InProgress)
 				return;
 			if (StartValue + DeltaValue <= CurrentDeltaValue)
 				SendComplete();

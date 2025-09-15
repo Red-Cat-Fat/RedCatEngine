@@ -5,22 +5,44 @@ using System.Reflection;
 using RedCatEngine.DependencyInjection.Containers.Attributes;
 using RedCatEngine.DependencyInjection.Containers.Interfaces.Application;
 using RedCatEngine.DependencyInjection.Exceptions;
+using RedCatEngine.DependencyInjection.Specials;
 using RedCatEngine.DependencyInjection.Specials.Providers;
-using RedCatEngine.DependencyInjection.Utils;
 
 namespace RedCatEngine.DependencyInjection.Containers
 {
 	public class ApplicationContainer : IApplicationContainer
 	{
-		private readonly Dictionary<Type, object> _objects = new();
+		private readonly IApplicationContainer _parent;
 		private readonly CashContainer _cashContainer;
-		protected readonly ProviderService _providerService;
+		private readonly Dictionary<Type, object> _objects = new();
+		private readonly ProviderService _providerService;
+		private readonly List<IApplicationContainer> _chilContainers = new();
+
+		private bool _isDisposed;
 
 		public ApplicationContainer()
 		{
 			_cashContainer = new CashContainer();
 			_providerService = new ProviderService();
+			Injector = new Injector(this, _providerService);
 		}
+
+		protected ApplicationContainer(IApplicationContainer parent)
+		{
+			_parent = parent;
+			_cashContainer = new CashContainer();
+			_providerService = new ProviderService();
+			Injector = new Injector(this, _providerService);
+		}
+
+		public virtual IApplicationContainer CreateChildContainer()
+		{
+			var childContainer = new ApplicationContainer(this);
+			_chilContainers.Add(childContainer);
+			return childContainer;
+		}
+
+		public Injector Injector { get; }
 
 		public ISingleProvider<TProvideType> RegisterProvider<TProvideType>() where TProvideType : class
 			=> _providerService.RegisterProvider<TProvideType>();
@@ -36,20 +58,41 @@ namespace RedCatEngine.DependencyInjection.Containers
 
 		public bool TryGetSingle<T>(out T data)
 		{
-			var type = typeof(T);
-			if (_objects.TryGetValue(type, out var instance))
+			if (TryGetSingle(typeof(T), out var obj)
+				&& obj is T typedObj)
 			{
-				data = (T)instance;
+				data = typedObj;
 				return true;
 			}
 
-			if (_cashContainer.TryFindFirstChildByType<T>(_objects, out var parent))
+			data = default;
+			return false;
+		}
+
+
+		public bool TryGetSingle(Type type, out object data)
+		{
+			if (_objects.TryGetValue(type, out var instance))
+			{
+				data = instance;
+				return true;
+			}
+
+			if (_cashContainer.TryFindFirstChildByType(
+					type,
+					_objects,
+					out var parent) &&
+				parent != null &&
+				type.IsAssignableFrom(parent.GetType()))
 			{
 				data = parent;
 				return true;
 			}
 
-			data = default;
+			if (_parent != null)
+				return _parent.TryGetSingle(type, out data);
+
+			data = null;
 			return false;
 		}
 
@@ -59,9 +102,14 @@ namespace RedCatEngine.DependencyInjection.Containers
 				return _cashContainer.TryGetAndCachedArrayByOtherKeys(out data) ||
 					_cashContainer.TryGetAndCachedArrayByParenFromSingle(_objects, out data);
 
-			data = instances.Select(instance => (T)instance);
-			return true;
+			data = instances.OfType<T>().ToList();
+
+			if (!data.Any() && _parent != null)
+				return _parent.TryGetArray(out data);
+
+			return data.Any();
 		}
+
 
 		public IEnumerable<T> GetArray<T>()
 		{
@@ -73,6 +121,9 @@ namespace RedCatEngine.DependencyInjection.Containers
 
 			if (_cashContainer.TryGetAndCachedArrayByParenFromSingle<T>(_objects, out var singleVariants))
 				return singleVariants;
+
+			if (_parent != null)
+				return _parent.GetArray<T>();
 
 			throw new NotFoundInstanceOrCreateException(typeof(T));
 		}
@@ -96,7 +147,7 @@ namespace RedCatEngine.DependencyInjection.Containers
 					null)
 					continue;
 
-				return InjectContextToConstructor(
+				return Injector.InjectContextToConstructor(
 					type,
 					constructor,
 					context);
@@ -105,43 +156,17 @@ namespace RedCatEngine.DependencyInjection.Containers
 			if (emptyParameterConstructor != default)
 				return Activator.CreateInstance(type);
 
-			throw new NotFountInjectAttributeForConstructorException(type);
-		}
-
-		private object InjectContextToConstructor(
-			Type type,
-			MethodBase constructor,
-			object[] context
-		)
-		{
-			var parameters = new List<object>();
-
-			foreach (var parameterInfo in constructor.GetParameters())
-			{
-				if (typeof(ISingleProvider<>).IsAssignableFromGeneric(
-					parameterInfo.ParameterType,
-					out var expectedSingleWaiterGenericType))
-				{
-					parameters.Add(_providerService.RegisterProvider(expectedSingleWaiterGenericType[0]));
-					continue;
-				}
-
-				if (typeof(IArrayProvider<>).IsAssignableFromGeneric(
-					parameterInfo.ParameterType,
-					out var expectedArrayWaiterGenericType))
-				{
-					parameters.Add(_providerService.RegisterArrayProvider(expectedArrayWaiterGenericType[0]));
-					continue;
-				}
-
-				parameters.Add(GetSingle(parameterInfo.ParameterType, context));
-			}
-
-			return Activator.CreateInstance(type, parameters.ToArray());
+			throw new NotFountInjectAttributeForConstructorException<InjectAttribute>(type);
 		}
 
 		public T GetSingle<T>(params object[] context)
-			=> (T)GetSingle(typeof(T), context);
+		{
+			if (GetSingle(typeof(T), context) is T result)
+				return result;
+
+			throw new InvalidCastException($"Object of type {typeof(T)} could not be cast.");
+		}
+
 
 		public object GetSingle(
 			Type type,
@@ -171,30 +196,16 @@ namespace RedCatEngine.DependencyInjection.Containers
 				out var typedInstance))
 				return typedInstance;
 
+			if (_parent != null && _parent.TryGetSingle(type, out var parentInstance))
+				return parentInstance;
+
 			if (TryCreate(
 				type,
-				out instance,
-				context))
-				return instance;
+				out var createdInstance,
+				context) && type.IsInstanceOfType(createdInstance))
+				return createdInstance;
 
 			throw new NotFoundInstanceOrCreateException(type);
-		}
-
-		private bool TryCreate(
-			Type type,
-			out object instance,
-			params object[] context
-		)
-		{
-			if (type.IsAbstract || type.IsInterface)
-			{
-				instance = default;
-				return false;
-			}
-
-			instance = Create(type, context);
-			BindAsSingle(type, instance);
-			return true;
 		}
 
 		public TInstanceBindType BindDummy<TInstanceBindType, TDummyType>(params object[] context)
@@ -228,13 +239,13 @@ namespace RedCatEngine.DependencyInjection.Containers
 		public TBindType BindAsSingle<TBindType>(TBindType instance)
 			=> BindAsSingle(typeof(TBindType), instance);
 
-		protected TBindType BindAsSingle<TBindType>(Type typeKey, TBindType instance)
+		public TBindType ReBindAsSingle<TBindType>(TBindType newInstance)
 		{
-			if (_objects.TryGetValue(typeKey, out var alreadyInstance))
-				throw new BindDuplicateWithoutArrayMarkException(typeof(TBindType), alreadyInstance);
-
-			_objects.Add(typeKey, instance);
-			return _providerService.BindAsSingle(instance);
+			var typeKey = typeof(TBindType);
+			if (!_objects.TryGetValue(typeKey, out _))
+				return BindAsSingle(newInstance);
+			_objects[typeKey] = newInstance;
+			return _providerService.ReBindAsSingle(newInstance);
 		}
 
 		public TBindType BindAsArray<TBindType>(TBindType instance)
@@ -247,6 +258,32 @@ namespace RedCatEngine.DependencyInjection.Containers
 			return _providerService.BindAsArray(instance);
 		}
 
+		private bool TryCreate(
+			Type type,
+			out object instance,
+			params object[] context
+		)
+		{
+			if (type.IsAbstract || type.IsInterface)
+			{
+				instance = default;
+				return false;
+			}
+
+			instance = Create(type, context);
+			BindAsSingle(type, instance);
+			return true;
+		}
+
+		protected TBindType BindAsSingle<TBindType>(Type typeKey, TBindType instance)
+		{
+			if (_objects.TryGetValue(typeKey, out var alreadyInstance))
+				throw new BindDuplicateWithoutArrayMarkException(typeof(TBindType), alreadyInstance);
+
+			_objects.Add(typeKey, instance);
+			return _providerService.BindAsSingle(instance);
+		}
+
 		protected TBindType BindAsArray<TBindType>(Type typeKey, TBindType instance)
 		{
 			if (!_cashContainer.ArrayObjects.ContainsKey(typeKey))
@@ -254,6 +291,31 @@ namespace RedCatEngine.DependencyInjection.Containers
 
 			_cashContainer.ArrayObjects[typeKey].Add(instance);
 			return _providerService.BindAsArray(instance);
+		}
+
+		public void Dispose()
+		{
+			if (_isDisposed)
+				return;
+
+			for (var index = 0; index < _chilContainers.Count; index++)
+				_chilContainers[index].Dispose();
+
+			var disposablesSingleObjects = _objects.Values
+				.OfType<IDisposable>()
+				.ToList();
+			foreach (var disposable in disposablesSingleObjects)
+			{
+				disposable.Dispose();
+			}
+
+			if (!_cashContainer.TryGetAndCachedArrayByOtherKeys<IDisposable>(
+				out var disposablesArrays))
+				return;
+			foreach (var disposable in disposablesArrays)
+				disposable.Dispose();
+
+			_isDisposed = true;
 		}
 	}
 }

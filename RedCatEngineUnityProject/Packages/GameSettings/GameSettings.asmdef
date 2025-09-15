@@ -1,0 +1,17 @@
+{
+    "name": "GameSettings",
+    "rootNamespace": "RedCatEngine.GameSettings",
+    "references": [
+        "GUID:bc1a77b6bbee94316b30d47e73c29c41",
+        "GUID:79ad2193969254fbd829729521e3eee3"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

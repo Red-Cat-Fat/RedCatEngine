@@ -1,8 +1,8 @@
 namespace RedCatEngine.StateMachine.StateMachines
 {
-	public interface ITypedGameStateMachine : ITypedQueueStateMachine
+	public interface ITypedGameStateMachine<in TBaseState> : ITypedQueueStateMachine
 	{
-		ITypedQueueStateMachine Enter<TState>() where TState : class, IState;
-		ITypedQueueStateMachine Enter<TState, TPayload>(TPayload payload) where TState : class, IPayloadedState<TPayload>;
+		new ITypedQueueStateMachine Enter<TState>() where TState : class, IState, TBaseState;
+		new ITypedQueueStateMachine Enter<TState, TPayload>(TPayload payload) where TState : class, IPayloadedState<TPayload>, TBaseState;
 	}
 }

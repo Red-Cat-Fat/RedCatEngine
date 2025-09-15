@@ -8,20 +8,20 @@ namespace RedCatEngine.Quests.Mechanics.Quests
 {
 	public abstract class BaseCollectProgressQuest : BaseSavedQuest<CollectProgressQuestData>
 	{
-		public override double Progress
-			=> Math.Min(1, CurrentValue / TargetValue);
-
-		public override string ProcessProgressText
-			=> $"{Math.Min(CurrentValue, TargetValue)} / {TargetValue}";
+		protected BaseCollectProgressQuest(ConfigID<QuestConfig> config, double targetValue)
+			: base(config)
+		{
+			TargetValue = targetValue;
+		}
 
 		protected double TargetValue { get; }
 		protected double CurrentValue { get; private set; }
 
-		protected BaseCollectProgressQuest(ConfigID<QuestConfig> config, IReward reward,  double targetValue)
-			: base(config, reward)
-		{
-			TargetValue = targetValue;
-		}
+		public override double GetProgress()
+			=> Math.Min(1, CurrentValue / TargetValue);
+
+		public override string GetProcessProgressText()
+			=> $"{Math.Min(CurrentValue, TargetValue)} / {TargetValue}";
 
 		protected void SetCurrentValue(double value)
 		{
@@ -33,7 +33,7 @@ namespace RedCatEngine.Quests.Mechanics.Quests
 
 		protected override void CheckComplete()
 		{
-			if(QuestState != QuestState.InProgress)
+			if (QuestState != QuestState.InProgress)
 				return;
 
 			if (TargetValue <= CurrentValue)

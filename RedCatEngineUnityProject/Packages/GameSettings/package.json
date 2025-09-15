@@ -1,0 +1,11 @@
+{
+    "name": "com.boronnikov.games.red-cat-engine.gamesettings",
+    "version": "1.0.0",
+    "displayName": "Red Cat Engine: Game Settings",
+    "description": "Simple game settings",
+    "unity": "6000.0",
+    "author": {
+        "name": "Boronnikov Games",
+        "url": "https://github.com/Red-Cat-Fat"
+    }
+}

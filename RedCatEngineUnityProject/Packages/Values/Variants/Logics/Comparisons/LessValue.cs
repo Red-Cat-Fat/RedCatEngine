@@ -1,11 +1,10 @@
 ﻿using System;
-using RedCatEngine.DependencyInjection.Containers.Interfaces;
-using RedCatEngine.DependencyInjection.Containers.Interfaces.Application;
-using RedCatEngine.Values.Base;
-using RedCatEngine.Values.Variants.Contents;
+using RedCatEngine.Values.Base.Interfaces;
 using RedCatEngine.Values.Variants.Contents.Constants;
 using SerializeReferenceEditor;
 using UnityEngine;
+using IGetterApplicationContainer =
+	RedCatEngine.DependencyInjection.Containers.Interfaces.Application.IGetterApplicationContainer;
 
 namespace RedCatEngine.Values.Variants.Logics.Comparisons
 {
@@ -21,7 +20,7 @@ namespace RedCatEngine.Values.Variants.Logics.Comparisons
 		[SerializeReference]
 		private IFloatValue _otherValue = new ConstantFloatValue(0);
 
-		public bool GetValue(IApplicationContainer applicationContainer)
-			=> _baseComparison.GetValue(applicationContainer) < _otherValue.GetValue(applicationContainer);
+		public bool GetValue(IGetterApplicationContainer getterContainer)
+			=> _baseComparison.GetValue(getterContainer) < _otherValue.GetValue(getterContainer);
 	}
 }

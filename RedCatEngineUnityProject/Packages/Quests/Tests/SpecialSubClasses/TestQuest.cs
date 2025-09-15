@@ -9,13 +9,28 @@ namespace RedCatEngine.Quests.Tests.SpecialSubClasses
 {
 	public class TestQuest : IQuest
 	{
+		private string _processProgressText;
+		private double _progress;
+		public IReward Reward { get; }
+		public double Progress
+		{
+			set => _progress = value;
+		}
+
+		public string ProcessProgressText
+		{
+			set => _processProgressText = value;
+		}
 		public event Action<IQuest> ChangeQuestStateEvent;
 		public event Action<IQuest> ChangeProgressEvent;
 		public ConfigID<QuestConfig> Config { get; set; }
-		public IReward Reward { get; }
 		public QuestState QuestState { get; set; }
-		public double Progress { get; set; }
-		public string ProcessProgressText { get; set; }
+
+		public double GetProgress()
+			=> _progress;
+
+		public string GetProcessProgressText()
+			=> _processProgressText;
 
 		public void Start(DateTime time)
 		{
@@ -28,7 +43,7 @@ namespace RedCatEngine.Quests.Tests.SpecialSubClasses
 			throw new NotImplementedException();
 		}
 
-		public void Close()
+		public void Disable()
 		{
 			QuestState = QuestState.Complete;
 			ChangeQuestStateEvent?.Invoke(this);
@@ -40,9 +55,8 @@ namespace RedCatEngine.Quests.Tests.SpecialSubClasses
 			ChangeQuestStateEvent?.Invoke(this);
 		}
 
-		public void Finished()
+		public void SuccessFinished()
 		{
-			
 		}
 
 		public IQuest LoadSave(IQuestData data)
@@ -55,7 +69,12 @@ namespace RedCatEngine.Quests.Tests.SpecialSubClasses
 			return new TestQuestData();
 		}
 
-		public string GetDescription()
+		public string GetLocalizedName()
+		{
+			throw new NotImplementedException();
+		}
+
+		public string GetLocalizedDescription()
 		{
 			throw new NotImplementedException();
 		}

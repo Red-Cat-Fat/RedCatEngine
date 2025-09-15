@@ -1,8 +1,11 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using RedCatEngine.DependencyInjection.Specials.Providers.Waiters;
 
 namespace RedCatEngine.DependencyInjection.Specials.Providers
 {
-	public class ArrayProvider<TTypeProvide> : IArrayProvider<TTypeProvide>, IArrayWaiter<TTypeProvide> where TTypeProvide : class
+	public class ArrayProvider<TTypeProvide> : IArrayProvider<TTypeProvide>, IArrayWaiter<TTypeProvide>
+		where TTypeProvide : class
 	{
 		private readonly List<TTypeProvide> _instances = new();
 
@@ -11,6 +14,9 @@ namespace RedCatEngine.DependencyInjection.Specials.Providers
 			instance = _instances.ToArray();
 			return instance.Length > 0;
 		}
+
+		public Type[] ExpectedTypes
+			=> new[] { typeof(TTypeProvide) };
 
 		public void Attach(TTypeProvide waitType)
 			=> _instances.Add(waitType);

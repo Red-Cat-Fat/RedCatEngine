@@ -7,7 +7,7 @@ using UnityEngine;
 namespace RedCatEngine.Quests.Configs.QuestCollections
 {
 	[CreateAssetMenu(
-		menuName = "Configs/Quests/QuestCollection/QuestCollectionConfig",
+		menuName = "Configs/Quests/Quest Groups/QuestCollectionConfig",
 		fileName = nameof(SimpleQuestCollectionConfig))]
 	public class SimpleQuestCollectionConfig : BaseConfig, IQuestCollection
 	{

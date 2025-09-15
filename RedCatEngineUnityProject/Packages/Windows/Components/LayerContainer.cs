@@ -1,8 +1,8 @@
 using System;
-using RedCatEngine.Windows.Interfaces;
+using Infrastructure.Windows.Interfaces;
 using UnityEngine;
 
-namespace RedCatEngine.Windows.Components
+namespace Infrastructure.Windows.Components
 {
 	public class LayerContainer : MonoBehaviour, ILayerContainer
 	{

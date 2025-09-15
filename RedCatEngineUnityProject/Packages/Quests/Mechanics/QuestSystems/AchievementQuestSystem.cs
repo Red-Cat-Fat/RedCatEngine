@@ -24,7 +24,7 @@ namespace RedCatEngine.Quests.Mechanics.QuestSystems
 				if (ActiveQuests.Any(quest => quest.Config == questConfig))
 					continue;
 
-				var quest = QuestFactory.MakeFromConfig(questConfig);
+				var quest = QuestQuestFactory.MakeFromConfig(questConfig);
 				quest.Start(CurrentTime);
 				ActiveQuests.Add(quest);
 			}

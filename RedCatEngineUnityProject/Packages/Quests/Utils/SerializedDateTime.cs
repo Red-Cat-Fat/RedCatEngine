@@ -5,8 +5,6 @@ namespace RedCatEngine.Quests.Utils
 	[Serializable]
 	public class SerializedDateTime
 	{
-		public static SerializedDateTime Now
-			=> (SerializedDateTime)DateTime.Now;
 		public int Year;
 		public int Month;
 		public int Day;

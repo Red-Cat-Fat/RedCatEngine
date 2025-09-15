@@ -12,7 +12,7 @@ namespace RedCatEngine.Conditions.Base
 		[SerializeReference]
 		private ICondition _condition;
 
-		public bool Check(IApplicationContainer applicationContainer)
-			=> _condition.Check(applicationContainer);
+		public bool Check(IGetterApplicationContainer getter)
+			=> _condition.Check(getter);
 	}
 }

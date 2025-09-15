@@ -12,7 +12,7 @@ namespace RedCatEngine.Configs
 		public int ID
 			=> _id;
 
-		private void OnValidate()
+		public void OnValidate()
 		{
 #if UNITY_EDITOR
 			if (!EditorUtility.IsPersistent(this))

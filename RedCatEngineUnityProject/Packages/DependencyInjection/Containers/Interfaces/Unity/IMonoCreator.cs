@@ -8,7 +8,6 @@ namespace RedCatEngine.DependencyInjection.Containers.Interfaces.Unity
 		GameObject Create(
 			GameObject prefab,
 			Transform parent,
-			bool constructChildren = false,
 			params object[] context
 		);
 
@@ -17,14 +16,12 @@ namespace RedCatEngine.DependencyInjection.Containers.Interfaces.Unity
 			Vector3 position,
 			Quaternion rotation,
 			Transform parent,
-			bool constructChildren = false,
 			params object[] context
 		);
 
 		TBindType CreateAndGetComponent<TBindType>(
 			GameObject prefab,
 			Transform parent,
-			bool constructChildren = false,
 			params object[] context
 		) where TBindType : Component;
 
@@ -33,7 +30,6 @@ namespace RedCatEngine.DependencyInjection.Containers.Interfaces.Unity
 			Vector3 position,
 			Quaternion rotation,
 			Transform parent,
-			bool constructChildren = false,
 			params object[] context
 		) where TBindType : Component;
 
@@ -41,7 +37,6 @@ namespace RedCatEngine.DependencyInjection.Containers.Interfaces.Unity
 			Type componentType,
 			GameObject prefab,
 			Transform parent,
-			bool constructChildren = false,
 			params object[] context
 		);
 		object CreateAndGetComponent(
@@ -50,7 +45,6 @@ namespace RedCatEngine.DependencyInjection.Containers.Interfaces.Unity
 			Vector3 position,
 			Quaternion rotation,
 			Transform parent,
-			bool constructChildren = false,
 			params object[] context
 		);
 	}
