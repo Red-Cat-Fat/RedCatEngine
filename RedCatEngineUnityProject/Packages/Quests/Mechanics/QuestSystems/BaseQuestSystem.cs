@@ -10,19 +10,27 @@ namespace RedCatEngine.Quests.Mechanics.QuestSystems
 {
 	public abstract class BaseQuestSystem : IDisposable
 	{
-		public event Action<IQuest> ChangeStateQuest;
-		public event Action<IQuest> NewQuestEvent;
 		protected readonly List<IQuest> ActiveQuests = new();
+
+		protected readonly IQuestFactory QuestQuestFactory;
+
+		protected BaseQuestSystem(IQuestFactory questQuestFactory)
+		{
+			QuestQuestFactory = questQuestFactory;
+		}
 
 		protected static DateTime CurrentTime
 			=> DateTime.UtcNow; //todo: make time service
 
-		protected readonly IQuestFactory QuestFactory;
-
-		protected BaseQuestSystem(IQuestFactory questFactory)
+		public void Dispose()
 		{
-			QuestFactory = questFactory;
+			foreach (var quest in ActiveQuests)
+				quest.ChangeQuestStateEvent -= OnChangeQuestState;
+			Clear();
 		}
+
+		public event Action<IQuest> ChangeStateQuest;
+		public event Action<IQuest> NewQuestEvent;
 
 		public void LoadData(QuestsDataContainer questsDataContainer)
 		{
@@ -36,7 +44,7 @@ namespace RedCatEngine.Quests.Mechanics.QuestSystems
 			var savedQuest = questsDataContainer.GetQuests();
 			foreach (var questData in savedQuest)
 			{
-				var loadQuest = QuestFactory.LoadFrom(questData);
+				var loadQuest = QuestQuestFactory.LoadFrom(questData);
 				if (loadQuest == null)
 					continue;
 
@@ -78,12 +86,12 @@ namespace RedCatEngine.Quests.Mechanics.QuestSystems
 			return false;
 		}
 
-		public List<IQuest> GetActiveQuest()
+		public List<IQuest> GetActiveQuests()
 			=> ActiveQuests;
 
 		protected IQuest CreateAndStartNewQuest()
 		{
-			var newQuest = QuestFactory.MakeNewQuest(ActiveQuests);
+			var newQuest = QuestQuestFactory.MakeNewQuest(ActiveQuests);
 			newQuest.Start(CurrentTime);
 			NewQuestEvent?.Invoke(newQuest);
 			return newQuest;
@@ -91,7 +99,7 @@ namespace RedCatEngine.Quests.Mechanics.QuestSystems
 
 		protected IQuest CreateAndStartNewQuest(ConfigID<QuestConfig> questConfig)
 		{
-			var newQuest = QuestFactory.MakeFromConfig(questConfig);
+			var newQuest = QuestQuestFactory.MakeFromConfig(questConfig);
 			newQuest.Start(CurrentTime);
 			NewQuestEvent?.Invoke(newQuest);
 			return newQuest;
@@ -105,18 +113,16 @@ namespace RedCatEngine.Quests.Mechanics.QuestSystems
 
 		protected abstract void DoClear();
 
-		public void Dispose()
+		protected void OnChangeQuestState(IQuest quest)
 		{
-			foreach (var quest in ActiveQuests)
-				quest.ChangeQuestStateEvent -= OnChangeQuestState;
-			Clear();
-		}
-
-		private void OnChangeQuestState(IQuest quest)
-		{
+			DoChangeQuestState(quest);
 			ChangeStateQuest?.Invoke(quest);
 		}
-		
+
+		protected virtual void DoChangeQuestState(IQuest quest)
+		{
+		}
+
 		protected abstract void DoAfterLoadData();
 	}
 }

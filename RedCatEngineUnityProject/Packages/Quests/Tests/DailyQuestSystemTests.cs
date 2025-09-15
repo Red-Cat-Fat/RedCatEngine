@@ -5,7 +5,6 @@ using RedCatEngine.Quests.Configs.Quests;
 using RedCatEngine.Quests.Mechanics.Quests;
 using RedCatEngine.Quests.Mechanics.QuestSystems;
 using RedCatEngine.Quests.Tests.SpecialSubClasses;
-using RedCatEngine.Rewards.Base;
 using UnityEngine;
 
 namespace RedCatEngine.Quests.Tests
@@ -38,7 +37,7 @@ namespace RedCatEngine.Quests.Tests
 				_testFactory,
 				questCount,
 				24 * 60 * 60);
-			var activeQuests = system.GetActiveQuest();
+			var activeQuests = system.GetActiveQuests();
 
 			Assert.AreEqual(
 				activeQuests.Count,
@@ -66,7 +65,7 @@ namespace RedCatEngine.Quests.Tests
 				3,
 				24 * 60 * 60);
 			skipQuest.Skip();
-			var activeQuests = system.GetActiveQuest();
+			var activeQuests = system.GetActiveQuests();
 
 			Assert.AreEqual(
 				activeQuests.Sum(quest => quest.QuestState == QuestState.Skip ? 1 : 0),
@@ -97,8 +96,8 @@ namespace RedCatEngine.Quests.Tests
 				_testFactory,
 				3,
 				24 * 60 * 60);
-			skipQuest.Close();
-			var activeQuests = system.GetActiveQuest();
+			skipQuest.Disable();
+			var activeQuests = system.GetActiveQuests();
 
 			Assert.AreEqual(
 				activeQuests.Sum(quest => quest.QuestState == QuestState.Skip ? 1 : 0),
@@ -115,26 +114,23 @@ namespace RedCatEngine.Quests.Tests
 		{
 			var deltaTest = new TestDeltaChangeProgressQuest(
 				ConfigID<QuestConfig>.MakeForTest(41),
-				IReward.Empty,
 				41);
 			var deltaTest2 = new TestDeltaChangeProgressQuest(
 				ConfigID<QuestConfig>.MakeForTest(42),
-				IReward.Empty,
 				42);
 			var collectTest = new TestCollectProgressQuest(
 				ConfigID<QuestConfig>.MakeForTest(43),
-				IReward.Empty,
 				43);
 
 			Debug.Log("Before load parameters:");
 			deltaTest.SetStartValueForTest(21);
 			deltaTest.SetCurrentValueForTest(44);
-			Debug.LogFormat("41: {0}", deltaTest.ProcessProgressText);
+			Debug.LogFormat("41: {0}", deltaTest.GetProcessProgressText());
 			deltaTest2.SetStartValueForTest(20);
 			deltaTest2.SetCurrentValueForTest(44);
-			Debug.LogFormat("42: {0}", deltaTest2.ProcessProgressText);
+			Debug.LogFormat("42: {0}", deltaTest2.GetProcessProgressText());
 			collectTest.SetCurrentValueForTest(3);
-			Debug.LogFormat("43: {0}", collectTest.ProcessProgressText);
+			Debug.LogFormat("43: {0}", collectTest.GetProcessProgressText());
 
 			_testFactory.SetReturnQuest(
 				new IQuest[]
@@ -161,15 +157,12 @@ namespace RedCatEngine.Quests.Tests
 
 			var deltaTestAfterLoad = new TestDeltaChangeProgressQuest(
 				ConfigID<QuestConfig>.MakeForTest(41),
-				IReward.Empty,
 				41);
 			var deltaTest2AfterLoad = new TestDeltaChangeProgressQuest(
 				ConfigID<QuestConfig>.MakeForTest(42),
-				IReward.Empty,
 				42);
 			var collectTestAfterLoad = new TestCollectProgressQuest(
 				ConfigID<QuestConfig>.MakeForTest(43),
-				IReward.Empty,
 				43);
 
 			_testFactory.SetReturnQuest(
@@ -186,17 +179,17 @@ namespace RedCatEngine.Quests.Tests
 				24 * 60 * 60);
 			systemForLoad.LoadData(questContainer);
 
-			var activeQuestBeforeLoad = systemForSave.GetActiveQuest();
-			var activeQuestAfterLoad = systemForLoad.GetActiveQuest();
+			var activeQuestBeforeLoad = systemForSave.GetActiveQuests();
+			var activeQuestAfterLoad = systemForLoad.GetActiveQuests();
 
 			Assert.AreEqual(activeQuestBeforeLoad.Count, activeQuestAfterLoad.Count);
 			for (var i = 0; i < activeQuestBeforeLoad.Count; i++)
 			{
-				Debug.Log($"[{i}] Before: {activeQuestBeforeLoad[i].ProcessProgressText}");
-				Debug.Log($"[{i}] After: {activeQuestAfterLoad[i].ProcessProgressText}");
+				Debug.Log($"[{i}] Before: {activeQuestBeforeLoad[i].GetProcessProgressText()}");
+				Debug.Log($"[{i}] After: {activeQuestAfterLoad[i].GetProcessProgressText()}");
 				Assert.AreEqual(
-					activeQuestBeforeLoad[i].ProcessProgressText,
-					activeQuestAfterLoad[i].ProcessProgressText);
+					activeQuestBeforeLoad[i].GetProcessProgressText(),
+					activeQuestAfterLoad[i].GetProcessProgressText());
 			}
 		}
 
@@ -220,7 +213,7 @@ namespace RedCatEngine.Quests.Tests
 				3,
 				24 * 60 * 60);
 			skipQuest.Skip();
-			var activeQuests = system.GetActiveQuest();
+			var activeQuests = system.GetActiveQuests();
 
 			Assert.AreEqual(
 				activeQuests.Sum(quest => quest.QuestState == QuestState.Skip ? 1 : 0),

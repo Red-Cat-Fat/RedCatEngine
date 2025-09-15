@@ -1,6 +1,7 @@
 ﻿using System;
 using NUnit.Framework;
 using RedCatEngine.DependencyInjection.Containers;
+using RedCatEngine.DependencyInjection.Containers.Attributes;
 using RedCatEngine.DependencyInjection.Exceptions;
 using RedCatEngine.DependencyInjection.Tests.SpecialSubClasses;
 
@@ -19,9 +20,9 @@ namespace RedCatEngine.DependencyInjection.Tests
 			}
 			catch (Exception exception)
 			{
-				Assert.IsTrue(exception is NotFountInjectAttributeForConstructorException, "Incorrect error");
+				Assert.IsTrue(exception is NotFountInjectAttributeForConstructorException<InjectAttribute>, "Incorrect error");
 				Assert.IsTrue(
-					((NotFountInjectAttributeForConstructorException)exception).NotFoundType == typeof(SimpleDemoSecondDataChildClass),
+					((NotFountInjectAttributeForConstructorException<InjectAttribute>)exception).NotFoundType == typeof(SimpleDemoSecondDataChildClass),
 					"Incorrect type");
 				return;
 			}

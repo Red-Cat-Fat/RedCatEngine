@@ -5,7 +5,9 @@
         "UnityEngine.TestRunner",
         "UnityEditor.TestRunner",
         "Conditions",
-        "DependencyInjection"
+        "DependencyInjection",
+        "Configs",
+        "Values"
     ],
     "includePlatforms": [
         "Editor"

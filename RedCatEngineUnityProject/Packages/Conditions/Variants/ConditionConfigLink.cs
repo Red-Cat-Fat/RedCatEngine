@@ -13,9 +13,9 @@ namespace RedCatEngine.Conditions.Variants
 		[SerializeField]
 		private ConditionConfig _conditionConfig;
 
-		public bool Check(IApplicationContainer applicationContainer)
+		public bool Check(IGetterApplicationContainer getter)
 		{
-			return _conditionConfig.Check(applicationContainer);
+			return _conditionConfig.Check(getter);
 		}
 	}
 }

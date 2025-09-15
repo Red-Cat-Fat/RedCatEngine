@@ -1,40 +1,50 @@
+using Infrastructure.Windows.Components;
+using Infrastructure.Windows.Components.Windows;
+using Infrastructure.Windows.Interfaces;
 using JetBrains.Annotations;
+using RedCatEngine.CommonServices.Extensions;
+using RedCatEngine.CommonServices.Services.Logs;
 using RedCatEngine.DependencyInjection.Containers.Attributes;
-using RedCatEngine.Windows.Components;
-using RedCatEngine.Windows.Components.Windows;
-using RedCatEngine.Windows.Interfaces;
 
-namespace RedCatEngine.Windows.Factory
+namespace Infrastructure.Windows.Factory
 {
-	public class WindowCreatorFactory<TModel, TView, TPresenter>
-		where TModel : class, IModel
+	public class WindowCreatorFactory<TView, TPresenter>
 		where TView : BaseView
 		where TPresenter : IPresenter
 	{
 		private readonly ILayerContainer _layerContainer;
 		private readonly IWindowContainer _windowContainer;
+		private readonly ILogService _log;
 
 		[Inject]
-		[UsedImplicitly]
-		public WindowCreatorFactory(ILayerContainer layerContainer, IWindowContainer windowContainer)
+		public WindowCreatorFactory(ILayerContainer layerContainer, IWindowContainer windowContainer, ILogService log)
 		{
 			_layerContainer = layerContainer;
 			_windowContainer = windowContainer;
+			_log = log;
 		}
 
-		public IWindowData CreateWindow(BaseWindowConfig config, params object[] context)
+		public IWindowData CreateWindow(WindowConfig config, params object[] context)
 		{
 			var parentTransform = _layerContainer.GetParentLayer(config.Layer);
-			var model = config.GetModel() as TModel;
+			var fullContext =
+				context.Attach(_log);
 			var view = _windowContainer.CreateAndGetComponent<TView>(
 				config.WindowPrefab,
 				parentTransform,
-				context: model);
-			var presenter = _windowContainer.Create<TPresenter>(model, view, context);
-			return new WindowData(
-				model,
+				context: fullContext
+			);
+			var presenter = _windowContainer.Create<TPresenter>(
 				view,
-				presenter);
+				fullContext
+			);
+			return new WindowData(
+				config,
+				config.Parent,
+				config.Layer,
+				view,
+				presenter
+			);
 		}
 	}
 }

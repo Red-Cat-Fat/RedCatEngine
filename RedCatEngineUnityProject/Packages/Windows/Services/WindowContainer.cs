@@ -1,8 +1,10 @@
 using System;
 using System.Collections.Generic;
+using Infrastructure.Windows.Attributes;
+using Infrastructure.Windows.Interfaces;
 using RedCatEngine.DependencyInjection.Containers.Attributes;
 using RedCatEngine.DependencyInjection.Containers.Interfaces.Unity;
-using RedCatEngine.Windows.Interfaces;
+using RedCatEngine.DependencyInjection.Specials;
 using UnityEngine;
 
 namespace RedCatEngine.Windows.Services
@@ -10,6 +12,9 @@ namespace RedCatEngine.Windows.Services
 	public class WindowContainer : IWindowContainer
 	{
 		private readonly IUnityGameContainer _windowContainerImplementation;
+
+		public Injector Injector
+			=> _windowContainerImplementation.Injector;
 
 		[Inject]
 		public WindowContainer(IUnityGameContainer windowContainerImplementation)
@@ -20,6 +25,11 @@ namespace RedCatEngine.Windows.Services
 		public bool TryGetSingle<T>(out T data)
 		{
 			return _windowContainerImplementation.TryGetSingle(out data);
+		}
+
+		public bool TryGetSingle(Type type, out object data)
+		{
+			return _windowContainerImplementation.TryGetSingle(type, out data);
 		}
 
 		public bool TryGetArray<T>(out IEnumerable<T> data)
@@ -54,96 +64,100 @@ namespace RedCatEngine.Windows.Services
 
 		public GameObject Create(
 			GameObject prefab,
-			Vector3 position = default,
-			Quaternion rotation = default,
-			Transform parent = null,
-			bool constructChildren = false,
+			Vector3 position,
+			Quaternion rotation,
+			Transform parent,
 			params object[] context
 		)
 		{
-			return _windowContainerImplementation.Create(prefab,
+			return _windowContainerImplementation.Create(
+				prefab,
 				position,
 				rotation,
 				parent,
-				constructChildren,
 				context);
 		}
 
 		public GameObject Create(
 			GameObject prefab,
-			Transform parent = null,
-			bool constructChildren = false,
+			Transform parent,
 			params object[] context
 		)
 		{
-			return _windowContainerImplementation.Create(prefab,
+			return _windowContainerImplementation.Create(
+				prefab,
 				parent,
-				constructChildren,
 				context);
 		}
 
 		public TBindType CreateAndGetComponent<TBindType>(
 			GameObject prefab,
-			Vector3 position = default,
-			Quaternion rotation = default,
-			Transform parent = null,
-			bool constructChildren = false,
+			Vector3 position,
+			Quaternion rotation,
+			Transform parent,
 			params object[] context
 		) where TBindType : Component
 		{
-			return _windowContainerImplementation.CreateAndGetComponent<TBindType>(prefab,
+			return _windowContainerImplementation.CreateAndGetComponent<TBindType>(
+				prefab,
 				position,
 				rotation,
 				parent,
-				constructChildren,
 				context);
 		}
 
 		public object CreateAndGetComponent(
 			Type componentType,
 			GameObject prefab,
-			Transform parent = null,
-			bool constructChildren = false,
+			Transform parent,
 			params object[] context
 		)
 		{
-			return _windowContainerImplementation.CreateAndGetComponent(componentType,
+			return _windowContainerImplementation.CreateAndGetComponent(
+				componentType,
 				prefab,
 				parent,
-				constructChildren,
 				context);
 		}
 
 		public TBindType CreateAndGetComponent<TBindType>(
 			GameObject prefab,
 			Transform parent,
-			bool constructChildren = false,
 			params object[] context
 		) where TBindType : Component
 		{
-			return _windowContainerImplementation.CreateAndGetComponent<TBindType>(prefab,
+			return _windowContainerImplementation.CreateAndGetComponent<TBindType>(
+				prefab,
 				parent,
-				constructChildren,
 				context);
 		}
 
 		public object CreateAndGetComponent(
 			Type componentType,
 			GameObject prefab,
-			Vector3 position = default,
-			Quaternion rotation = default,
-			Transform parent = null,
-			bool constructChildren = false,
+			Vector3 position,
+			Quaternion rotation,
+			Transform parent,
 			params object[] context
 		)
 		{
-			return _windowContainerImplementation.CreateAndGetComponent(componentType,
+			return _windowContainerImplementation.CreateAndGetComponent(
+				componentType,
 				prefab,
 				position,
 				rotation,
 				parent,
-				constructChildren,
 				context);
+		}
+
+		public IModel FillContextToModel(IModel model, params object[] context)
+		{
+			_windowContainerImplementation
+				.Injector
+				.InjectContextToMethodsWithAttribute<InjectModelContextAttribute>(
+					model,
+					context);
+			return model;
 		}
 	}
 }

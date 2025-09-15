@@ -7,7 +7,7 @@
 			Enter((TPayload)payload);
 		}
 
-		public abstract void Exit();
+		public virtual void Exit() { }
 		public abstract void Enter(TPayload payload);
 	}
 }

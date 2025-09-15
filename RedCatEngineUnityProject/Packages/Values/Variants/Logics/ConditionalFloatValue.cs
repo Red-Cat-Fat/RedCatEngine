@@ -1,10 +1,10 @@
 ﻿using System;
 using JetBrains.Annotations;
-using RedCatEngine.DependencyInjection.Containers.Interfaces;
-using RedCatEngine.DependencyInjection.Containers.Interfaces.Application;
-using RedCatEngine.Values.Base;
+using RedCatEngine.Values.Base.Interfaces;
 using SerializeReferenceEditor;
 using UnityEngine;
+using IGetterApplicationContainer =
+	RedCatEngine.DependencyInjection.Containers.Interfaces.Application.IGetterApplicationContainer;
 
 namespace RedCatEngine.Values.Variants.Logics
 {
@@ -16,22 +16,20 @@ namespace RedCatEngine.Values.Variants.Logics
 		[SerializeReference]
 		[UsedImplicitly]
 		private IBoolValue _checkValue;
-
 		[SR]
 		[SerializeReference]
 		[UsedImplicitly]
 		private IFloatValue _value;
-
 		[SR]
 		[SerializeReference]
 		[UsedImplicitly]
 		private IFloatValue _alternativeValue;
 
-		public float GetValue(IApplicationContainer applicationContainer)
+		public float GetValue(IGetterApplicationContainer getterContainer)
 		{
-			return _checkValue.GetValue(applicationContainer)
-				? _value.GetValue(applicationContainer)
-				: _alternativeValue.GetValue(applicationContainer);
+			return _checkValue.GetValue(getterContainer)
+				? _value.GetValue(getterContainer)
+				: _alternativeValue.GetValue(getterContainer);
 		}
 	}
 }

@@ -1,6 +1,5 @@
 ﻿using JetBrains.Annotations;
 using RedCatEngine.Configs;
-using RedCatEngine.DependencyInjection.Containers.Interfaces;
 using RedCatEngine.DependencyInjection.Containers.Interfaces.Application;
 using RedCatEngine.Quests.Configs.QuestCollections;
 using RedCatEngine.Quests.Mechanics.Factories;
@@ -10,7 +9,10 @@ using UnityEngine;
 
 namespace RedCatEngine.Quests.Configs.Settings
 {
-	[CreateAssetMenu(menuName = "Configs/Quests/AchievementQuestSystemConfig", fileName = nameof(AchievementQuestSystemConfig))]
+	[CreateAssetMenu(
+		menuName = "Configs/Quests/Quest Systems/AchievementQuestSystemConfig",
+		fileName = nameof(AchievementQuestSystemConfig), 
+		order = 1)]
 	public class AchievementQuestSystemConfig : BaseConfig
 	{
 		public SimpleQuestCollectionConfig AchievementPack;

@@ -1,40 +1,48 @@
 using RedCatEngine.Configs;
 using RedCatEngine.Quests.Configs.Quests;
 using RedCatEngine.Quests.Mechanics.Quests;
-using RedCatEngine.Rewards.Base;
 
 namespace RedCatEngine.Quests.Tests.SpecialSubClasses
 {
 	public class TestCollectProgressQuest : BaseCollectProgressQuest
 	{
+		public TestCollectProgressQuest(
+			ConfigID<QuestConfig> config,
+			float targetValue
+		)
+			: base(
+				config,
+				targetValue)
+		{
+		}
 
 		public void SetCurrentValueForTest(float newValue)
 			=> SetCurrentValue(newValue);
 
 		protected override void DoResetValue()
 		{
-			
 		}
 
 		protected override void DoStart()
 		{
-			
 		}
 
-		protected override void DoClose()
+		protected override void DoReset()
 		{
-			
 		}
 
-		public override string GetDescription()
+		protected override void DoSuccessFinished()
+		{
+		}
+
+		public override string GetLocalizedName()
 		{
 			throw new System.NotImplementedException();
 		}
 
-		public TestCollectProgressQuest(ConfigID<QuestConfig> config, IReward reward,
-			float targetValue
-		)
-			: base(config, reward,
-			       targetValue) { }
+		public override string GetLocalizedDescription()
+		{
+			throw new System.NotImplementedException();
+		}
 	}
 }

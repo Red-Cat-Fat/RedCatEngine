@@ -1,9 +1,12 @@
-namespace RedCatEngine.Windows.Interfaces
+namespace Infrastructure.Windows.Interfaces
 {
 	public enum WindowLayer
 	{
+		None = 0,
 		Screen = 1,
 		Popup = 15,
-		Warning = 31
+		Messages = 30,
+		Warning = 31,
+		Phrase = 40
 	}
 }

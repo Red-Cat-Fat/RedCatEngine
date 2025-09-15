@@ -38,7 +38,7 @@ namespace RedCatEngine.DependencyInjection.Containers.Interfaces.Unity
 			Quaternion rotation,
 			Transform parent,
 			params object[] context
-		) where TMonoConstruct : MonoConstruct;
+		) where TMonoConstruct : IMonoConstruct;
 
 		TMonoConstruct BindAsArrayInstance<TMonoConstruct>(
 			GameObject prefab,
@@ -46,6 +46,6 @@ namespace RedCatEngine.DependencyInjection.Containers.Interfaces.Unity
 			Quaternion rotation,
 			Transform parent,
 			params object[] context
-		) where TMonoConstruct : MonoConstruct;
+		) where TMonoConstruct : IMonoConstruct;
 	}
 }

@@ -4,7 +4,6 @@ using System.Linq;
 using RedCatEngine.Conditions;
 using RedCatEngine.Conditions.Base;
 using RedCatEngine.Conditions.Variants;
-using RedCatEngine.DependencyInjection.Containers.Interfaces;
 using RedCatEngine.DependencyInjection.Containers.Interfaces.Application;
 using RedCatEngine.Quests.Mechanics.Quests;
 using SerializeReferenceEditor;
@@ -12,27 +11,21 @@ using UnityEngine;
 
 namespace RedCatEngine.Quests.Configs.Quests
 {
-	[CreateAssetMenu(menuName = "Configs/Quests/QuestCollection/ConditionalQuestConfig", fileName = nameof(ConditionalQuestConfig))]
+	[CreateAssetMenu(
+		menuName = "Configs/Quests/Quest Groups/ConditionalQuestConfig",
+		fileName = nameof(ConditionalQuestConfig))]
 	public class ConditionalQuestConfig : QuestConfig, IQuestRedirected
 	{
 		public ConditionQuest[] Quests = Array.Empty<ConditionQuest>();
-		
-		[Serializable]
-		public class ConditionQuest
-		{
-			[SR]
-			[SerializeReference]
-			public ICondition Condition = ForceCondition.True;
 
-			public QuestConfig QuestConfig;
-		}
+		public IEnumerable<QuestConfig> GetAllQuestVariantForLoad()
+			=> Quests.Select(conditionQuest => conditionQuest.QuestConfig);
 
 		protected override IQuest DoMake(IApplicationContainer applicationContainer)
 		{
 			if (!applicationContainer.TryGetSingle<IConditionCheckerService>(out var conditionCheckerService))
 			{
-				Debug.LogError("Not found ConditionCheckerService");
-				conditionCheckerService = new ConditionCheckerService(applicationContainer);
+				throw new Exception("Not found ConditionCheckerService");
 			}
 
 			foreach (var quest in Quests)
@@ -44,7 +37,13 @@ namespace RedCatEngine.Quests.Configs.Quests
 			return null;
 		}
 
-		public IEnumerable<QuestConfig> GetAllQuestVariantForLoad()
-			=> Quests.Select(conditionQuest => conditionQuest.QuestConfig);
+		[Serializable]
+		public class ConditionQuest
+		{
+			[SR]
+			[SerializeReference]
+			public ICondition Condition = ForceCondition.True;
+			public QuestConfig QuestConfig;
+		}
 	}
 }

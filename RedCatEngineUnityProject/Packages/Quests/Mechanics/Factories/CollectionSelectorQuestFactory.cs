@@ -1,6 +1,5 @@
 using System.Collections.Generic;
 using RedCatEngine.Configs;
-using RedCatEngine.DependencyInjection.Containers.Interfaces;
 using RedCatEngine.DependencyInjection.Containers.Interfaces.Application;
 using RedCatEngine.Quests.Configs.Quests;
 using RedCatEngine.Quests.Exceptions;
@@ -21,9 +20,9 @@ namespace RedCatEngine.Quests.Mechanics.Factories
 			_randomQuestSelector = selector;
 		}
 
-		public IQuest MakeFromConfig(ConfigID<QuestConfig> questConfig)
+		public IQuest MakeFromConfig(ConfigID<QuestConfig> questId)
 		{
-			_randomQuestSelector.TryLoad(questConfig, out var quest);
+			_randomQuestSelector.TryLoad(questId, out var quest);
 			return quest.Make(_applicationContainer);
 		}
 

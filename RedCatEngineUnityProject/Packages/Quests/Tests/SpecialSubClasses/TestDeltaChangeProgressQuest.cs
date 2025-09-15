@@ -1,12 +1,21 @@
 using RedCatEngine.Configs;
 using RedCatEngine.Quests.Configs.Quests;
 using RedCatEngine.Quests.Mechanics.Quests;
-using RedCatEngine.Rewards.Base;
 
 namespace RedCatEngine.Quests.Tests.SpecialSubClasses
 {
 	public class TestDeltaChangeProgressQuest : BaseDeltaChangeProgressQuest
 	{
+		public TestDeltaChangeProgressQuest(
+			ConfigID<QuestConfig> config,
+			float deltaValue
+		)
+			: base(
+				config,
+				deltaValue)
+		{
+		}
+
 		public void SetStartValueForTest(float startValue)
 			=> SetStartAndCurrentValue(startValue);
 
@@ -17,21 +26,20 @@ namespace RedCatEngine.Quests.Tests.SpecialSubClasses
 
 		protected override void DoStart() { }
 
-		protected override void DoClose() { }
+		protected override void DoReset() { }
 
-		public override string GetDescription()
+		protected override void DoSuccessFinished()
+		{
+		}
+
+		public override string GetLocalizedName()
 		{
 			throw new System.NotImplementedException();
 		}
 
-		public TestDeltaChangeProgressQuest(
-			ConfigID<QuestConfig> config,
-			IReward reward,
-			float deltaValue
-		)
-			: base(
-				config,
-				reward,
-				deltaValue) { }
+		public override string GetLocalizedDescription()
+		{
+			throw new System.NotImplementedException();
+		}
 	}
 }

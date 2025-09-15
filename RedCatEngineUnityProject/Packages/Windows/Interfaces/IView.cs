@@ -1,10 +1,11 @@
 using System;
 
-namespace RedCatEngine.Windows.Interfaces
+namespace Infrastructure.Windows.Interfaces
 {
 	public interface IView
 	{
-		event Action CloseEvent;
+		bool IsOpen { get; }
+		event Action ClickCloseEvent;
 		void Close();
 		void Open();
 	}

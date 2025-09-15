@@ -1,25 +1,24 @@
 ﻿using System;
-using RedCatEngine.DependencyInjection.Containers.Interfaces;
-using RedCatEngine.DependencyInjection.Containers.Interfaces.Application;
-using RedCatEngine.Values.Base;
+using RedCatEngine.Values.Base.Interfaces;
 using SerializeReferenceEditor;
 using UnityEngine;
+using IGetterApplicationContainer =
+	RedCatEngine.DependencyInjection.Containers.Interfaces.Application.IGetterApplicationContainer;
 
 namespace RedCatEngine.Values.Variants.Contents.Constants
 {
 	[Serializable]
-	[SRName("Constants/Constant Bool")]
+	[SRName("Common/Constant Bool")]
 	public class ConstantBoolValue : IBoolValue
 	{
+		[SerializeField]
+		private bool _value;
 		public static ConstantBoolValue True
 			=> new() { _value = true };
 		public static ConstantBoolValue False
 			=> new() { _value = false };
 
-		[SerializeField]
-		private bool _value;
-
-		public bool GetValue(IApplicationContainer applicationContainer)
+		public bool GetValue(IGetterApplicationContainer getterContainer)
 			=> _value;
 	}
 }

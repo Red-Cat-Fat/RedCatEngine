@@ -1,8 +1,11 @@
-namespace RedCatEngine.Windows.Interfaces
+using System;
+
+namespace Infrastructure.Windows.Interfaces
 {
 	public interface IPresenter
 	{
-		void Open();
+		event Action CloseEvent;
+		void Open(IModel model);
 		void Close();
 	}
 }

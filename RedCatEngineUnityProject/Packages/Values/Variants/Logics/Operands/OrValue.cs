@@ -1,11 +1,10 @@
 ﻿using System;
-using RedCatEngine.DependencyInjection.Containers.Interfaces;
-using RedCatEngine.DependencyInjection.Containers.Interfaces.Application;
-using RedCatEngine.Values.Base;
-using RedCatEngine.Values.Variants.Contents;
+using RedCatEngine.Values.Base.Interfaces;
 using RedCatEngine.Values.Variants.Contents.Constants;
 using SerializeReferenceEditor;
 using UnityEngine;
+using IGetterApplicationContainer =
+	RedCatEngine.DependencyInjection.Containers.Interfaces.Application.IGetterApplicationContainer;
 
 namespace RedCatEngine.Values.Variants.Logics.Operands
 {
@@ -21,7 +20,7 @@ namespace RedCatEngine.Values.Variants.Logics.Operands
 		[SerializeReference]
 		private IBoolValue _right = ConstantBoolValue.False;
 
-		public bool GetValue(IApplicationContainer applicationContainer)
-			=> _left.GetValue(applicationContainer) || _right.GetValue(applicationContainer);
+		public bool GetValue(IGetterApplicationContainer getterContainer)
+			=> _left.GetValue(getterContainer) || _right.GetValue(getterContainer);
 	}
 }

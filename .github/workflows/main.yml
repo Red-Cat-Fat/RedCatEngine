@@ -33,7 +33,7 @@ jobs:
         run: git lfs ls-files -l | cut -d' ' -f1 | sort > .lfs-assets-id
 
       - name: Restore LFS cache
-        uses: actions/cache@v4.0.2
+        uses: actions/cache@v4
         id: lfs-cache
         with:
           path: .git/lfs
@@ -46,7 +46,7 @@ jobs:
           git reset --hard
 
       - name: Restore Library cache
-        uses: actions/cache@v4.0.2
+        uses: actions/cache@v4
         with:
           path: RedCatEngineUnityProject/Library
           key: Library-test-project-${{ matrix.targetPlatform }}
@@ -65,12 +65,12 @@ jobs:
           checkName: ${{ matrix.package }} package test results
           githubToken: ${{ secrets.GITHUB_TOKEN }}
 
-      - uses: actions/upload-artifact@v3
+      - uses: actions/upload-artifact@v4
         with:
           name: Test results (${{ matrix.package }})
           path: ${{ steps.testRunner.outputs.artifactsPath }}
 
-      - uses: actions/upload-artifact@v3
+      - uses: actions/upload-artifact@v4
         with:
           name: Coverage results (${{ matrix.package }})
           path: ${{ steps.testRunner.outputs.coveragePath }}

@@ -21,10 +21,10 @@ namespace RedCatEngine.StateMachine.Tests
 			_testStateB = new TestStateB();
 			_testStateC = new TestStateC();
 
-			_stateMachine.AddTestState<TestStateA>(_testStateA);
-			_stateMachine.AddTestState<TestStateB>(_testStateB);
-			_stateMachine.AddTestState<TestStateC>(_testStateC);
-			_stateMachine.AddTestState<TestStatePayloadA>(_testStatePayloadA);
+			_stateMachine.AddTestState(_testStateA);
+			_stateMachine.AddTestState(_testStateB);
+			_stateMachine.AddTestState(_testStateC);
+			_stateMachine.AddTestState(_testStatePayloadA);
 		}
 	}
 }

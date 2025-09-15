@@ -18,7 +18,14 @@ namespace RedCatEngine.Conditions.Variants
 		[SerializeField]
 		private bool _forceValue;
 
-		public bool Check(IApplicationContainer applicationContainer)
+		public ForceCondition() { }
+
+		public ForceCondition(bool value)
+		{
+			_forceValue = value;
+		}
+
+		public bool Check(IGetterApplicationContainer getter)
 			=> _forceValue;
 	}
 }

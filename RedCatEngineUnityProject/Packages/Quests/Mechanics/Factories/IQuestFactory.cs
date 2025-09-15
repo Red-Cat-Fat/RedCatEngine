@@ -8,7 +8,7 @@ namespace RedCatEngine.Quests.Mechanics.Factories
 {
 	public interface IQuestFactory
 	{
-		IQuest MakeFromConfig(ConfigID<QuestConfig> questConfig);
+		IQuest MakeFromConfig(ConfigID<QuestConfig> questId);
 		IQuest MakeNewQuest(List<IQuest> currentActiveQuests);
 		IQuest LoadFrom(IQuestData saveData);
 		bool TryLoad(ConfigID<QuestConfig> questId, out QuestConfig questConfig);

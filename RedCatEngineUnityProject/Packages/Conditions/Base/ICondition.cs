@@ -4,6 +4,6 @@ namespace RedCatEngine.Conditions.Base
 {
 	public interface ICondition
 	{
-		bool Check(IApplicationContainer applicationContainer);
+		bool Check(IGetterApplicationContainer getter);
 	}
 }

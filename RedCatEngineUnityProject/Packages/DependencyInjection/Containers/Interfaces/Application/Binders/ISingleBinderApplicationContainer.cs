@@ -8,5 +8,6 @@ namespace RedCatEngine.DependencyInjection.Containers.Interfaces.Application.Bin
 		ISingleProvider<TProvideType> RegisterProvider<TProvideType>() where TProvideType : class;
 		object RegisterProvider(Type providerType);
 		TBindType BindAsSingle<TBindType>(TBindType instance);
+		TBindType ReBindAsSingle<TBindType>(TBindType newInstance);
 	}
 }
