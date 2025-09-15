@@ -1,6 +1,10 @@
 # RedCatEngine
 
-This is an extension package that represents a set of different functionality for creating a game. The main focus in version 1.0.0 is on Unity, but it can be adapted for other game engines
+This is an extension package that represents a set of different functionality for creating a game. The main focus in version 1.0.0 is on Unity, but it can be adapted for other game engines. 
+Individual packages may have dependencies on other packages that are hosted in a separate repository, namely:
+- [Serialize Reference Editor](https://github.com/elmortem/serializereferenceeditor "For working with Serialize reference")
+- [Localization](https://github.com/elmortem/localization "To implement a localization system")
+
 
 ## Configs
 
