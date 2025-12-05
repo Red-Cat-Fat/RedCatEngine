@@ -5,6 +5,15 @@ Individual packages may have dependencies on other packages that are hosted in a
 - [Serialize Reference Editor](https://github.com/elmortem/serializereferenceeditor "For working with Serialize reference")
 - [Localization](https://github.com/elmortem/localization "To implement a localization system")
 
+## Pools
+
+Special pool system.
+
+Serializable prefab spawner^
+```cs
+		[SerializeField]
+		private UnityComponentPoolSerializable<*BasePooledObject*> _items;
+```
 
 ## Configs
 
