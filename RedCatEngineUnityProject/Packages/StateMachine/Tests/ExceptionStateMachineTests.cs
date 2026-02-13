@@ -48,5 +48,26 @@ namespace RedCatEngine.StateMachine.Tests
 
 			Assert.IsTrue(false, "Not catch exception");
 		}
+
+		[Test]
+		public void GivenStateMachine_WhenEnterNextFromEmptyQueue_ThenCatchQueueStateIsEmptyException()
+		{
+			try
+			{
+				_stateMachine.EnterNextFromQueue();
+			}
+			catch (Exception exception)
+			{
+				Assert.IsTrue(
+					exception is QueueStateIsEmptyException,
+					"Catch incorrect error");
+				Assert.IsTrue(
+					exception.Message.Contains("TestedTypedStateMachine"),
+					"State machine name is not specified in exception message");
+				return;
+			}
+
+			Assert.IsTrue(false, "Not catch exception");
+		}
 	}
 }

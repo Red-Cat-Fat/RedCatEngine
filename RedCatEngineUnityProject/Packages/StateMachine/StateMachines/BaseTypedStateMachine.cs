@@ -78,6 +78,9 @@ namespace RedCatEngine.StateMachine.StateMachines
 
 		public ITypedQueueStateMachine EnterNextFromQueue()
 		{
+			if (_queue.Count == 0)
+				throw new QueueStateIsEmptyException(_name);
+
 			var data = _queue.Dequeue();
 			AddToHistory(data);
 			var nextState = SelectStateAsActive(data.StateType);
