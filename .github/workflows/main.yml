@@ -9,29 +9,13 @@ env:
 
 jobs:
   testRunner:
-    name: Test for ${{ matrix.package }} package
+    name: Run EditMode tests for all packages
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
       matrix:
         testMode:
           - EditMode
-          #- PlayMode
-        package:
-          - ApplicationRunner
-          - Benchmark
-          - Conditions
-          - Configs
-          - DependencyInjection
-          - GameSettings
-          - Pools
-          - Quests
-          - ResourceSystem
-          - Rewards
-          - StateMachine
-          - UniversalServices
-          - Values
-          - Windows
         targetPlatform:
           - WebGL
     permissions:
@@ -70,18 +54,17 @@ jobs:
         id: testRunner
         with:
           unityVersion: 2021.3.31f1
-          packageMode: true
-          projectPath: RedCatEngineUnityProject/Packages/${{ matrix.package }}
+          projectPath: RedCatEngineUnityProject
           testMode: ${{ matrix.testMode }}
-          checkName: ${{ matrix.package }} package test results
+          checkName: All packages test results
           githubToken: ${{ secrets.GITHUB_TOKEN }}
 
       - uses: actions/upload-artifact@v4
         with:
-          name: Test results (${{ matrix.package }})
+          name: Test results
           path: ${{ steps.testRunner.outputs.artifactsPath }}
 
       - uses: actions/upload-artifact@v4
         with:
-          name: Coverage results (${{ matrix.package }})
+          name: Coverage results
           path: ${{ steps.testRunner.outputs.coveragePath }}
