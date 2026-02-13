@@ -19,7 +19,7 @@ namespace RedCatEngine.Quests.Tests.SpecialSubClasses
 
 		public IQuest MakeNewQuest(List<IQuest> currentActiveQuests)
 		{
-			throw new System.NotImplementedException();
+			return MakeNewQuest();
 		}
 
 		public IQuest LoadFrom(IQuestData saveData)
