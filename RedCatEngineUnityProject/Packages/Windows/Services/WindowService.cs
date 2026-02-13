@@ -29,9 +29,18 @@ namespace RedCatEngine.Windows.Services
 			=> _windowInfos.TryGetValue(windowConfig, out var windowData) && windowData.IsOpen;
 
 		public void Open(WindowConfig windowConfig, params object[] context)
+			=> Open(windowConfig, new HashSet<WindowConfig>(), context);
+
+		private void Open(WindowConfig windowConfig, HashSet<WindowConfig> visited, params object[] context)
 		{
+			if (!visited.Add(windowConfig))
+			{
+				_logService.LogErrorFormat("Detected cyclic window opening for {0}", windowConfig.name);
+				return;
+			}
+
 			_logService.LogFormat("Open window {0}", windowConfig.name);
-			var windowData = PrepareWindowData(windowConfig, context);
+			var windowData = PrepareWindowData(windowConfig, context, visited);
 			windowData.Open(
 				(IModel)_windowContainer.Create(windowConfig.ModelType, CreateContext(windowConfig, context))
 			);
@@ -43,9 +52,24 @@ namespace RedCatEngine.Windows.Services
 			Action closeCallBack,
 			params object[] context
 		)
+			=> OpenWithCallbacks(windowConfig, openCallback, closeCallBack, new HashSet<WindowConfig>(), context);
+
+		private void OpenWithCallbacks(
+			WindowConfig windowConfig,
+			Action openCallback,
+			Action closeCallBack,
+			HashSet<WindowConfig> visited,
+			params object[] context
+		)
 		{
+			if (!visited.Add(windowConfig))
+			{
+				_logService.LogErrorFormat("Detected cyclic window opening for {0}", windowConfig.name);
+				return;
+			}
+
 			_logService.LogFormat("Open window {0} with callback", windowConfig.name);
-			var windowData = PrepareWindowData(windowConfig, context);
+			var windowData = PrepareWindowData(windowConfig, context, visited);
 
 			openCallback?.Invoke();
 			windowData.SetCloseCallback(closeCallBack);
@@ -73,12 +97,13 @@ namespace RedCatEngine.Windows.Services
 				windowInfo.Value.Close();
 		}
 
-		private IWindowData PrepareWindowData(WindowConfig windowConfig, object[] context)
+		private IWindowData PrepareWindowData(WindowConfig windowConfig, object[] context, HashSet<WindowConfig> visited)
 		{
 			var windowData = GetWindowData(windowConfig, context);
 			var isHasParent = TryOpenParent(
 				windowConfig,
 				context,
+				visited,
 				windowData,
 				out var parent
 			);
@@ -155,13 +180,24 @@ namespace RedCatEngine.Windows.Services
 		private bool TryOpenParent(
 			WindowConfig windowConfig,
 			object[] context,
+			HashSet<WindowConfig> visited,
 			IWindowData windowData,
 			out WindowConfig parentWindowConfig
 		)
 		{
 			var isHasParent = windowData.TryGetParent(out parentWindowConfig);
-			if (!isHasParent)
+			if (!isHasParent || parentWindowConfig == null)
 				return false;
+
+			if (visited.Contains(parentWindowConfig))
+			{
+				_logService.LogErrorFormat(
+					"Detected cyclic parent chain while opening {0}. Parent {1} is already visited",
+					windowConfig.name,
+					parentWindowConfig.name
+				);
+				return false;
+			}
 
 			var value = GetSafeHierarchy(parentWindowConfig);
 			if (!value.Contains(windowConfig))
@@ -169,7 +205,7 @@ namespace RedCatEngine.Windows.Services
 				value.Add(windowConfig);
 			}
 
-			Open(parentWindowConfig, context);
+			Open(parentWindowConfig, visited, context);
 
 			return true;
 		}
