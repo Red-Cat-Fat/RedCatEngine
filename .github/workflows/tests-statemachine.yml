@@ -1,4 +1,4 @@
-name: Tests
+name: Tests / StateMachine
 
 on: push
 
@@ -9,7 +9,7 @@ env:
 
 jobs:
   testRunner:
-    name: Run EditMode tests for all packages
+    name: Run EditMode tests for StateMachine
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
@@ -56,15 +56,16 @@ jobs:
           unityVersion: 2021.3.31f1
           projectPath: RedCatEngineUnityProject
           testMode: ${{ matrix.testMode }}
-          checkName: All packages test results
+          customParameters: -assemblyNames StateMachineTests
+          checkName: StateMachine test results
           githubToken: ${{ secrets.GITHUB_TOKEN }}
 
       - uses: actions/upload-artifact@v4
         with:
-          name: Test results
+          name: StateMachine Test results
           path: ${{ steps.testRunner.outputs.artifactsPath }}
 
       - uses: actions/upload-artifact@v4
         with:
-          name: Coverage results
+          name: StateMachine Coverage results
           path: ${{ steps.testRunner.outputs.coveragePath }}
