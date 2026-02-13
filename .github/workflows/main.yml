@@ -18,9 +18,20 @@ jobs:
           - EditMode
           #- PlayMode
         package:
+          - ApplicationRunner
+          - Benchmark
+          - Conditions
+          - Configs
           - DependencyInjection
+          - GameSettings
+          - Pools
+          - Quests
+          - ResourceSystem
+          - Rewards
           - StateMachine
-          #- Quests #need resolve package dependency
+          - UniversalServices
+          - Values
+          - Windows
         targetPlatform:
           - WebGL
     permissions:
