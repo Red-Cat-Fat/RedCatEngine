@@ -3,7 +3,7 @@
     "version": "1.0.0",
     "displayName": "Red Cat Engine: Game Settings",
     "description": "Simple game settings",
-    "unity": "6000.0",
+    "unity": "2021.3",
     "author": {
         "name": "Boronnikov Games",
         "url": "https://github.com/Red-Cat-Fat"
