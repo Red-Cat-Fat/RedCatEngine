@@ -86,7 +86,7 @@ namespace RedCatEngine.Windows.Services
 			if (!_windowInfos.TryGetValue(windowConfig, out var info))
 				return;
 
-			_logService.LogFormat("Open window {0}", windowConfig);
+			_logService.LogFormat("Close window {0}", windowConfig.name);
 			info.Close();
 		}
 

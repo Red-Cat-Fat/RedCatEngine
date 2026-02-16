@@ -1,11 +1,10 @@
 {
-    "name": "WindowsTests",
-
-    "rootNamespace": "RedCatEngine.Windows",
+    "name": "ResourceSystemTests",
+    "rootNamespace": "RedCatEngine.ResourceSystem",
     "references": [
         "UnityEngine.TestRunner",
         "UnityEditor.TestRunner",
-        "Windows"
+        "Resources"
     ],
     "includePlatforms": [
         "Editor"

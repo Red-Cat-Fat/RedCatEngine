@@ -9,9 +9,19 @@ namespace RedCatEngine.Quests.Tests.SpecialSubClasses
 	[Serializable]
 	public class TestQuestData : IQuestData
 	{
-		public ConfigID<QuestConfig> Config => ConfigID<QuestConfig>.Invalid;
-		public DateTime CreateTime { get; }
-		public QuestState QuestState { get; }
+		private ConfigID<QuestConfig> _config = ConfigID<QuestConfig>.Invalid;
+		private DateTime _createTime = DateTime.UtcNow;
+		private QuestState _questState = QuestState.InProgress;
+
+		public ConfigID<QuestConfig> Config
+			=> _config;
+
+		public DateTime CreateTime
+			=> _createTime;
+
+		public QuestState QuestState
+			=> _questState;
+
 		public ConfigID<QuestConfig> GetConfig()
 		{
 			return Config;
@@ -19,17 +29,17 @@ namespace RedCatEngine.Quests.Tests.SpecialSubClasses
 
 		public DateTime GetCreateTime()
 		{
-			throw new NotImplementedException();
+			return CreateTime;
 		}
 
 		public QuestState GetQuestState()
 		{
-			throw new NotImplementedException();
+			return QuestState;
 		}
 
 		public void SetQuestState(QuestState newQuestState)
 		{
-			throw new NotImplementedException();
+			_questState = newQuestState;
 		}
 
 		public void ConstructSerialization(
@@ -38,7 +48,9 @@ namespace RedCatEngine.Quests.Tests.SpecialSubClasses
 			QuestState questState
 		)
 		{
-			throw new NotImplementedException();
+			_config = config;
+			_createTime = createTime;
+			_questState = questState;
 		}
 	}
 }

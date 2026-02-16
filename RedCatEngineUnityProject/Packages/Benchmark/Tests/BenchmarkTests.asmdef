@@ -1,11 +1,10 @@
 {
-    "name": "WindowsTests",
-
-    "rootNamespace": "RedCatEngine.Windows",
+    "name": "BenchmarkTests",
+    "rootNamespace": "RedCatEngine.Benchmark",
     "references": [
         "UnityEngine.TestRunner",
         "UnityEditor.TestRunner",
-        "Windows"
+        "Benchmark"
     ],
     "includePlatforms": [
         "Editor"
