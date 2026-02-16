@@ -30,11 +30,32 @@ namespace RedCatEngine.Windows.Services
 
 		public void Open(WindowConfig windowConfig, params object[] context)
 		{
+			Open(windowConfig, context, new HashSet<WindowConfig>());
+		}
+
+		private void Open(WindowConfig windowConfig, object[] context, HashSet<WindowConfig> visited)
+		{
+			if (!visited.Add(windowConfig))
+			{
+				_logService.LogErrorFormat(
+					"Detected cyclic window opening chain on window {0}. Recursive opening has been interrupted.",
+					windowConfig.name
+				);
+				return;
+			}
+
 			_logService.LogFormat("Open window {0}", windowConfig.name);
-			var windowData = PrepareWindowData(windowConfig, context);
-			windowData.Open(
-				(IModel)_windowContainer.Create(windowConfig.ModelType, CreateContext(windowConfig, context))
-			);
+			try
+			{
+				var windowData = PrepareWindowData(windowConfig, context, visited);
+				windowData.Open(
+					(IModel)_windowContainer.Create(windowConfig.ModelType, CreateContext(windowConfig, context))
+				);
+			}
+			finally
+			{
+				visited.Remove(windowConfig);
+			}
 		}
 
 		public void OpenWithCallbacks(
@@ -44,14 +65,41 @@ namespace RedCatEngine.Windows.Services
 			params object[] context
 		)
 		{
-			_logService.LogFormat("Open window {0} with callback", windowConfig.name);
-			var windowData = PrepareWindowData(windowConfig, context);
+			OpenWithCallbacks(windowConfig, openCallback, closeCallBack, new HashSet<WindowConfig>(), context);
+		}
 
-			openCallback?.Invoke();
-			windowData.SetCloseCallback(closeCallBack);
-			windowData.Open(
-				(IModel)_windowContainer.Create(windowConfig.ModelType, CreateContext(windowConfig, context))
-			);
+		private void OpenWithCallbacks(
+			WindowConfig windowConfig,
+			Action openCallback,
+			Action closeCallBack,
+			HashSet<WindowConfig> visited,
+			params object[] context
+		)
+		{
+			if (!visited.Add(windowConfig))
+			{
+				_logService.LogErrorFormat(
+					"Detected cyclic window opening chain on window {0}. Recursive opening has been interrupted.",
+					windowConfig.name
+				);
+				return;
+			}
+
+			_logService.LogFormat("Open window {0} with callback", windowConfig.name);
+			try
+			{
+				var windowData = PrepareWindowData(windowConfig, context, visited);
+
+				openCallback?.Invoke();
+				windowData.SetCloseCallback(closeCallBack);
+				windowData.Open(
+					(IModel)_windowContainer.Create(windowConfig.ModelType, CreateContext(windowConfig, context))
+				);
+			}
+			finally
+			{
+				visited.Remove(windowConfig);
+			}
 		}
 
 		private object[] CreateContext(WindowConfig windowConfig, object[] context)
@@ -73,13 +121,14 @@ namespace RedCatEngine.Windows.Services
 				windowInfo.Value.Close();
 		}
 
-		private IWindowData PrepareWindowData(WindowConfig windowConfig, object[] context)
+		private IWindowData PrepareWindowData(WindowConfig windowConfig, object[] context, HashSet<WindowConfig> visited)
 		{
 			var windowData = GetWindowData(windowConfig, context);
 			var isHasParent = TryOpenParent(
 				windowConfig,
 				context,
 				windowData,
+				visited,
 				out var parent
 			);
 
@@ -156,6 +205,7 @@ namespace RedCatEngine.Windows.Services
 			WindowConfig windowConfig,
 			object[] context,
 			IWindowData windowData,
+			HashSet<WindowConfig> visited,
 			out WindowConfig parentWindowConfig
 		)
 		{
@@ -163,13 +213,26 @@ namespace RedCatEngine.Windows.Services
 			if (!isHasParent)
 				return false;
 
+			if (parentWindowConfig == null)
+				return false;
+
+			if (visited.Contains(parentWindowConfig))
+			{
+				_logService.LogErrorFormat(
+					"Detected cyclic parent window reference: {0} -> {1}. Recursive opening has been interrupted.",
+					windowConfig.name,
+					parentWindowConfig.name
+				);
+				return false;
+			}
+
 			var value = GetSafeHierarchy(parentWindowConfig);
 			if (!value.Contains(windowConfig))
 			{
 				value.Add(windowConfig);
 			}
 
-			Open(parentWindowConfig, context);
+			Open(parentWindowConfig, context, visited);
 
 			return true;
 		}

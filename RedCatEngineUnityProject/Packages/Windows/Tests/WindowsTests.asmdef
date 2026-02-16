@@ -4,7 +4,10 @@
     "references": [
         "UnityEngine.TestRunner",
         "UnityEditor.TestRunner",
-        "Windows"
+        "Windows",
+        "CommonServices",
+        "DependencyInjection",
+        "Configs"
     ],
     "includePlatforms": [
         "Editor"
