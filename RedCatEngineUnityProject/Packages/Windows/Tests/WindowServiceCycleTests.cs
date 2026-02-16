@@ -1,17 +1,21 @@
 using System;
 using System.Collections.Generic;
+using System.Reflection;
 using Infrastructure.Windows.Components.Windows;
 using Infrastructure.Windows.Interfaces;
 using NUnit.Framework;
 using RedCatEngine.CommonServices.Services.Logs;
 using RedCatEngine.DependencyInjection.Specials;
 using RedCatEngine.Windows.Services;
+using RedCatEngine.Configs;
 using UnityEngine;
 
 namespace RedCatEngine.Windows.Tests
 {
 	public class WindowServiceCycleTests
 	{
+		private static readonly FieldInfo ConfigIdField = typeof(BaseConfig).GetField("_id", BindingFlags.Instance | BindingFlags.NonPublic);
+
 		[Test]
 		public void Open_WithCyclicParents_StopsRecursionAndLogsError()
 		{
@@ -19,10 +23,8 @@ namespace RedCatEngine.Windows.Tests
 			var windowContainer = new TestWindowContainer();
 			var windowService = new WindowService(windowContainer, logService);
 
-			var firstWindow = ScriptableObject.CreateInstance<TestWindowConfig>();
-			firstWindow.name = "First";
-			var secondWindow = ScriptableObject.CreateInstance<TestWindowConfig>();
-			secondWindow.name = "Second";
+			var firstWindow = CreateWindowConfig("First", 1);
+			var secondWindow = CreateWindowConfig("Second", 2);
 
 			firstWindow.ParentForData = secondWindow;
 			secondWindow.ParentForData = firstWindow;
@@ -42,10 +44,8 @@ namespace RedCatEngine.Windows.Tests
 			var windowContainer = new TestWindowContainer();
 			var windowService = new WindowService(windowContainer, logService);
 
-			var childWindow = ScriptableObject.CreateInstance<TestWindowConfig>();
-			childWindow.name = "Child";
-			var parentWindow = ScriptableObject.CreateInstance<TestWindowConfig>();
-			parentWindow.name = "Parent";
+			var childWindow = CreateWindowConfig("Child", 3);
+			var parentWindow = CreateWindowConfig("Parent", 4);
 
 			childWindow.ParentForData = parentWindow;
 			parentWindow.ParentForData = null;
@@ -55,6 +55,14 @@ namespace RedCatEngine.Windows.Tests
 			Assert.AreEqual(1, parentWindow.WindowData.OpenCount);
 			Assert.AreEqual(1, childWindow.WindowData.OpenCount);
 			Assert.That(logService.ErrorLogs, Is.Empty);
+		}
+
+		private static TestWindowConfig CreateWindowConfig(string windowName, int id)
+		{
+			var windowConfig = ScriptableObject.CreateInstance<TestWindowConfig>();
+			windowConfig.name = windowName;
+			ConfigIdField?.SetValue(windowConfig, id);
+			return windowConfig;
 		}
 
 		private class TestWindowConfig : WindowConfig
