@@ -10,6 +10,8 @@ namespace RedCatEngine.DependencyInjection.Specials
 {
 	public class Injector
 	{
+		public const string RequesterTypeContextKey = "__requester_type_context__";
+
 		private readonly IGetterApplicationContainer _getter;
 		private readonly ProviderService _providerService;
 
@@ -55,6 +57,12 @@ namespace RedCatEngine.DependencyInjection.Specials
 
 		private object[] GetParametersForMethod(MethodBase method, object[] context)
 		{
+			var parameterContext = new object[context.Length + 1];
+			Array.Copy(context, parameterContext, context.Length);
+			parameterContext[context.Length] = new KeyValuePair<string, Type>(
+				RequesterTypeContextKey,
+				method.DeclaringType);
+
 			var parameters = new List<object>();
 
 			foreach (var parameterInfo in method.GetParameters())
@@ -75,7 +83,7 @@ namespace RedCatEngine.DependencyInjection.Specials
 					continue;
 				}
 
-				parameters.Add(_getter.GetSingle(parameterInfo.ParameterType, context));
+				parameters.Add(_getter.GetSingle(parameterInfo.ParameterType, parameterContext));
 			}
 			return parameters.ToArray();
 		}
