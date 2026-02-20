@@ -205,7 +205,21 @@ namespace RedCatEngine.DependencyInjection.Containers
 				context) && type.IsInstanceOfType(createdInstance))
 				return createdInstance;
 
-			throw new NotFoundInstanceOrCreateException(type);
+			throw new NotFoundInstanceOrCreateException(type, TryGetRequesterTypeFromContext(context));
+		}
+
+		private static Type TryGetRequesterTypeFromContext(object[] context)
+		{
+			foreach (var contextParameter in context)
+			{
+				if (contextParameter is not KeyValuePair<string, Type> requesterContext ||
+					requesterContext.Key != Injector.RequesterTypeContextKey)
+					continue;
+
+				return requesterContext.Value;
+			}
+
+			return null;
 		}
 
 		public TInstanceBindType BindDummy<TInstanceBindType, TDummyType>(params object[] context)

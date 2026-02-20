@@ -49,6 +49,29 @@ namespace RedCatEngine.DependencyInjection.Tests
 		}
 
 		[Test]
+		public void GivenApplicationContainer_WhenInjectNotContainInstance_ThenCatchRequesterTypeInException()
+		{
+			var applicationContainer = new ApplicationContainer();
+			try
+			{
+				applicationContainer.GetSingle<SimpleInjectedDemoParentClass>();
+			}
+			catch (Exception exception)
+			{
+				Assert.IsTrue(exception is NotFoundInstanceOrCreateException, "Incorrect error");
+				Assert.IsTrue(
+					((NotFoundInstanceOrCreateException)exception).NotFoundType == typeof(SimpleDemoFirstDataChildClass),
+					"Incorrect not found type");
+				Assert.IsTrue(
+					((NotFoundInstanceOrCreateException)exception).RequesterType == typeof(SimpleInjectedDemoParentClass),
+					"Incorrect requester type");
+				return;
+			}
+
+			Assert.Fail("Not catch error");
+		}
+
+		[Test]
 		public void GivenApplicationContainer_WhenTryCreateInterface_ThenCatchNotCorrectType()
 		{
 			var applicationContainer = new ApplicationContainer();
