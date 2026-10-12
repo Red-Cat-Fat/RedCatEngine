@@ -98,3 +98,27 @@ Simple window system, based on MVP pattern.
 ```text
 https://github.com/Red-Cat-Fat/RedCatEngine.git?path=/RedCatEngineUnityProject/Packages/Windows
 ```
+
+
+## Dependencies between packages
+
+Packages declare their dependencies on each other in `package.json`. Install all required packages by git URL (see the sections above); versions are taken from `package.json` of each package.
+
+| Package | Requires |
+|---|---|
+| ApplicationRunner | DependencyInjection, StateMachine |
+| Conditions | Configs, DependencyInjection, Values |
+| GameSettings | Configs |
+| Quests | Conditions, Configs, DependencyInjection, Rewards, Values |
+| ResourceSystem | `com.unity.addressables` |
+| Rewards | Conditions, Configs, DependencyInjection, Values |
+| UniversalServices | Configs, DependencyInjection, Pools |
+| Values | Configs, DependencyInjection, UniversalServices |
+| Windows | Configs, DependencyInjection, UniversalServices |
+
+Git packages cannot be declared as UPM dependencies, so add them to the project manually:
+
+- `com.elmortem.serializereferenceeditor` (Conditions, Values, Quests, Rewards, GameSettings)
+- `com.elmortem.localization` (ApplicationRunner)
+
+`DoTweenExtensions` from UniversalServices is compiled only when the `DOTWEEN` scripting define is set (DOTween installed).
