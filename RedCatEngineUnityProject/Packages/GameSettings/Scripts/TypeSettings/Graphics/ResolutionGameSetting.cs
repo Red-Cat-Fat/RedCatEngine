@@ -15,7 +15,11 @@ namespace RedCatEngine.GameSettings.TypeSettings.Graphics
 		public int Width = 1920;
 		public int Height = 1080;
 		public FullScreenMode Mode = FullScreenMode.ExclusiveFullScreen;
-		public int RefreshRate = 60;
+		public RefreshRate RefreshRate = new()
+		{
+			numerator = 1,
+			denominator = 60
+		};
 
 		public ResolutionGameSetting()
 		{
@@ -25,7 +29,7 @@ namespace RedCatEngine.GameSettings.TypeSettings.Graphics
 			int width,
 			int height,
 			FullScreenMode mode,
-			int refreshRate
+			RefreshRate refreshRate
 		)
 		{
 			Width = width;

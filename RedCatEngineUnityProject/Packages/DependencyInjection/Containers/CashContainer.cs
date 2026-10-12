@@ -1,14 +1,15 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Reflection;
 
 namespace RedCatEngine.DependencyInjection.Containers
 {
 	public class CashContainer
 	{
-		private static readonly Dictionary<Type, Type[]> ChildTypeCache = new();
+		private readonly ChildTypesCache _childTypesCache;
 		internal readonly Dictionary<Type, List<object>> ArrayObjects = new();
+
+		public CashContainer(ChildTypesCache childTypesCache) => _childTypesCache = childTypesCache;
 
 		internal bool TryFindFirstChildByType<T>(Dictionary<Type, object> objects, out T data)
 		{
@@ -47,21 +48,7 @@ namespace RedCatEngine.DependencyInjection.Containers
 			return false;
 		}
 
-		private static IEnumerable<Type> GetChildTypes(Type type)
-		{
-			if (ChildTypeCache.TryGetValue(type, out var result))
-				return result;
-
-			if (type.IsInterface)
-				result = AppDomain.CurrentDomain.GetAssemblies().SelectMany(s => s.GetTypes())
-					.Where(p => p != type && type.IsAssignableFrom(p)).ToArray();
-			else
-				result = Assembly.GetAssembly(type).GetTypes().Where(t => t.IsSubclassOf(type)).ToArray();
-
-			ChildTypeCache[type] = result;
-
-			return result;
-		}
+		private IEnumerable<Type> GetChildTypes(Type type) => _childTypesCache.GetChildTypes(type);
 
 		internal bool TryGetAndCachedArrayByOtherKeys<T>(out IEnumerable<T> data)
 		{

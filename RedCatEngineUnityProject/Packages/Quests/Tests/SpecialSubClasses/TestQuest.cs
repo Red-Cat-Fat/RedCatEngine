@@ -11,6 +11,7 @@ namespace RedCatEngine.Quests.Tests.SpecialSubClasses
 	{
 		private string _processProgressText;
 		private double _progress;
+		private DateTime _createTime;
 		public IReward Reward { get; }
 		public double Progress
 		{
@@ -34,6 +35,7 @@ namespace RedCatEngine.Quests.Tests.SpecialSubClasses
 
 		public void Start(DateTime time)
 		{
+			_createTime = time;
 			QuestState = QuestState.InProgress;
 			ChangeQuestStateEvent?.Invoke(this);
 		}
@@ -66,7 +68,9 @@ namespace RedCatEngine.Quests.Tests.SpecialSubClasses
 
 		public IQuestData GetData()
 		{
-			return new TestQuestData();
+			var data = new TestQuestData();
+			data.ConstructSerialization(Config, _createTime, QuestState);
+			return data;
 		}
 
 		public string GetLocalizedName()

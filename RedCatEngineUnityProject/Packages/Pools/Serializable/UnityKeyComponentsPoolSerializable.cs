@@ -14,6 +14,8 @@ namespace RedCatEngine.Pools.Serializable
 	{
 		[SerializeField] private Transform _parentTransform;
 
+		public Transform Parent => _parentTransform;
+
 		private IKeyPoolComponentsContainer<TKey, TComponent> _hiddenPoolContainer;
 
 		private IKeyPoolComponentsContainer<TKey, TComponent> Container

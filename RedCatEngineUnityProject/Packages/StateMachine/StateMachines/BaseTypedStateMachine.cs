@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using RedCatEngine.CommonServices.Extensions;
 using RedCatEngine.StateMachine.Exceptions;
 using UnityEngine;
 
@@ -78,9 +79,6 @@ namespace RedCatEngine.StateMachine.StateMachines
 
 		public ITypedQueueStateMachine EnterNextFromQueue()
 		{
-			if (_queue.Count == 0)
-				throw new QueueStateIsEmptyException(_name);
-
 			var data = _queue.Dequeue();
 			AddToHistory(data);
 			var nextState = SelectStateAsActive(data.StateType);
@@ -89,6 +87,12 @@ namespace RedCatEngine.StateMachine.StateMachines
 			else
 				EnterState(nextState as IPayloadedState, data.Payload);
 
+			return this;
+		}
+
+		public ITypedQueueStateMachine ClearQueue()
+		{
+			_queue.Clear();
 			return this;
 		}
 
@@ -110,15 +114,15 @@ namespace RedCatEngine.StateMachine.StateMachines
 		private void AddToHistory(StateStepData data)
 		{
 			if(!data.IsPayLoadState)
-				Debug.LogFormat("[{0}] Enter to state {1}", _name, data.StateType);
+				Debug.LogFormat("[{0}] Enter to state {1}", _name, data.StateType.ShortName());
 			else
-				Debug.LogFormat("[{0}] Enter to payload state {1} with {2}", _name, data.StateType, data.Payload);
+				Debug.LogFormat("[{0}] Enter to payload state {1} with {2}", _name, data.StateType.ShortName(), data.Payload);
 			_stepHistory.Add(data);
 		}
 
 		private ITypedQueueStateMachine AddToQueue(StateStepData data)
 		{
-			Debug.LogFormat("[{0}] Add to queue state {1}", _name, data.StateType);
+			Debug.LogFormat("[{0}] Add to queue state {1}", _name, data.StateType.ShortName());
 			_queue.Enqueue(data);
 			return this;
 		}

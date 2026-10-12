@@ -18,15 +18,16 @@ namespace RedCatEngine.Benchmark
 		[Tooltip(
 			"Формат имени файла с результатами. "
 			+ "{0} - название продукта, "
+			+ "{3} - версия проекта"
 			+ "{1} - имя сценария,"
 			+ "{2} - время запуска бенчмарка")]
-		private string _benchmarkNameFormat = "benchmark_results_{0}_{1}_{2}.txt";
+		private string _benchmarkNameFormat = "benchmark_results_{0}_{3}_{1}_{2}.txt";
 		[SerializeField]
 		private string _subFolderName = "{0}";
 		[SerializeField]
 		private float _timeWriteInterval = 10f;
 		[SerializeField]
-		private Camera _benchmarkCamera;
+		private GameObject _benchmarkCamera;
 		private float _fpsAccumulator;
 		private int _fpsFramesCount;
 		private float _fpsTimeLeft;
@@ -42,6 +43,21 @@ namespace RedCatEngine.Benchmark
 		private float _maxDeltaTime = float.MinValue;
 
 		private float _startTime;
+
+		private float _currentAllocatedMB;
+		private float _currentReservedMB;
+		private float _currentMonoHeapMB;
+		private float _currentGCMB;
+
+		private float _minAllocatedMB = float.MaxValue;
+		private float _maxAllocatedMB = float.MinValue;
+		private float _minReservedMB = float.MaxValue;
+		private float _maxReservedMB = float.MinValue;
+		private float _minMonoHeapMB = float.MaxValue;
+		private float _maxMonoHeapMB = float.MinValue;
+		private float _minGCMB = float.MaxValue;
+		private float _maxGCMB = float.MinValue;
+
 		public bool IsRunning
 			=> _isRunning;
 
@@ -65,7 +81,8 @@ namespace RedCatEngine.Benchmark
 				_benchmarkNameFormat,
 				Application.productName,
 				scenarioName,
-				DateTime.Now.ToString("yyyy-MM-dd-HH-mm"));
+				DateTime.Now.ToString("yyyy-MM-dd_HH-mm"),
+				Application.version);
 
 			_benchmarkFilePath = Path.Combine(
 				GetBenchmarkFolderPath(),
@@ -88,6 +105,15 @@ namespace RedCatEngine.Benchmark
 			_fpsAccumulator = 0f;
 			_fpsFramesCount = 0;
 			_currentFPS = 0;
+
+			_minAllocatedMB = float.MaxValue;
+			_maxAllocatedMB = float.MinValue;
+			_minReservedMB = float.MaxValue;
+			_maxReservedMB = float.MinValue;
+			_minMonoHeapMB = float.MaxValue;
+			_maxMonoHeapMB = float.MinValue;
+			_minGCMB = float.MaxValue;
+			_maxGCMB = float.MinValue;
 		}
 		
 		private void Update()
@@ -96,6 +122,7 @@ namespace RedCatEngine.Benchmark
 				return;
 
 			MeasureFPS();
+			MeasureMemory();
 			_minDeltaTime = Mathf.Min(_minDeltaTime, Time.deltaTime);
 			_maxDeltaTime = Mathf.Max(_maxDeltaTime, Time.deltaTime);
 			if (Time.time % _timeWriteInterval < Time.deltaTime)
@@ -105,6 +132,9 @@ namespace RedCatEngine.Benchmark
 		private void WriteSystemInfo()
 		{
 			var sb = new StringBuilder();
+			sb.AppendLine("=== GAME INFORMATION ===");
+			sb.AppendLine($"Project name: {Application.productName}");
+			sb.AppendLine($"Version: {Application.version}");
 			sb.AppendLine("=== SYSTEM INFORMATION ===");
 			sb.AppendLine($"Operating System: {SystemInfo.operatingSystem}");
 			sb.AppendLine($"Processor: {SystemInfo.processorType}");
@@ -115,7 +145,7 @@ namespace RedCatEngine.Benchmark
 			sb.AppendLine($"Unity Version: {Application.unityVersion}");
 			sb.AppendLine($"Screen Resolution: {Screen.currentResolution}");
 			sb.AppendLine("\n=== BENCHMARK RESULTS ===");
-			sb.AppendLine("Time (s)\tFPS");
+			sb.AppendLine("Time (s)\tFPS\t\tAllocMB\tReservedMB\tMonoHeapMB\tGCMB");
 
 			File.WriteAllText(_benchmarkFilePath, sb.ToString());
 		}
@@ -139,9 +169,64 @@ namespace RedCatEngine.Benchmark
 			_fpsFramesCount = 0;
 		}
 
+		private void MeasureMemory()
+		{
+#if UNITY_EDITOR || CHEAT_ENABLED
+			_currentAllocatedMB = UnityEngine.Profiling.Profiler.GetTotalAllocatedMemoryLong() / (1024f * 1024f);
+			_currentReservedMB = UnityEngine.Profiling.Profiler.GetTotalReservedMemoryLong() / (1024f * 1024f);
+			_currentMonoHeapMB = UnityEngine.Profiling.Profiler.GetMonoHeapSizeLong() / (1024f * 1024f);
+			_minAllocatedMB = Mathf.Min(_minAllocatedMB, _currentAllocatedMB);
+			_maxAllocatedMB = Mathf.Max(_maxAllocatedMB, _currentAllocatedMB);
+			_minReservedMB = Mathf.Min(_minReservedMB, _currentReservedMB);
+			_maxReservedMB = Mathf.Max(_maxReservedMB, _currentReservedMB);
+			_minMonoHeapMB = Mathf.Min(_minMonoHeapMB, _currentMonoHeapMB);
+			_maxMonoHeapMB = Mathf.Max(_maxMonoHeapMB, _currentMonoHeapMB);
+#else
+			_currentAllocatedMB = 0;
+			_currentReservedMB = 0;
+			_currentMonoHeapMB = 0;
+#endif
+			_currentGCMB = GC.GetTotalMemory(false) / (1024f * 1024f);
+			_minGCMB = Mathf.Min(_minGCMB, _currentGCMB);
+			_maxGCMB = Mathf.Max(_maxGCMB, _currentGCMB);
+		}
+
 		private void RecordFPS()
 		{
-			var logEntry = $"{(Time.time-_startTime):F1}\t\t{_currentFPS:F1}\n";
+			var logEntry = $"{(Time.time - _startTime):F1}\t\t{_currentFPS:F1}\t\t{_currentAllocatedMB:F0}\t{_currentReservedMB:F0}\t\t{_currentMonoHeapMB:F0}\t\t{_currentGCMB:F1}\n";
+			File.AppendAllText(_benchmarkFilePath, logEntry);
+		}
+
+		private void AppendMemorySummary(StringBuilder sb)
+		{
+			bool hasProfiler = false;
+#if UNITY_EDITOR || DEVELOPMENT_BUILD
+			hasProfiler = true;
+#endif
+
+			sb.AppendLine("\n=== MEMORY SUMMARY ===");
+
+			if (hasProfiler)
+			{
+				sb.AppendLine($"Min Allocated Memory (MB): {_minAllocatedMB:F0}");
+				sb.AppendLine($"Max Allocated Memory (MB): {_maxAllocatedMB:F0}");
+				sb.AppendLine($"Min Reserved Memory (MB): {_minReservedMB:F0}");
+				sb.AppendLine($"Max Reserved Memory (MB): {_maxReservedMB:F0}");
+				sb.AppendLine($"Min Mono Heap Size (MB): {_minMonoHeapMB:F0}");
+				sb.AppendLine($"Max Mono Heap Size (MB): {_maxMonoHeapMB:F0}");
+			}
+
+			sb.AppendLine($"Min GC Memory (MB): {_minGCMB:F1}");
+			sb.AppendLine($"Max GC Memory (MB): {_maxGCMB:F1}");
+			sb.AppendLine($"Total System Memory (MB): {SystemInfo.systemMemorySize}");
+		}
+
+		public void ActionAddMark(string markName)
+		{
+			if (!_isRunning)
+				return;
+
+			var logEntry = $"{(Time.time - _startTime):F1} Mark:\t\t{markName}\n";
 			File.AppendAllText(_benchmarkFilePath, logEntry);
 		}
 
@@ -157,26 +242,12 @@ namespace RedCatEngine.Benchmark
 			sb.AppendLine($"Min deltaTime: {_minDeltaTime:F1}");
 			sb.AppendLine($"Max deltaTime: {_maxDeltaTime:F1}");
 
+			AppendMemorySummary(sb);
+
 #if UNITY_EDITOR
 			Debug.Log("Запущено в редакторе Unity");
-			sb.AppendLine(
-				$"Total Memory Usage (MB): {SystemInfo.systemMemorySize - (SystemInfo.systemMemorySize - (GC.GetTotalMemory(false) / (1024 * 1024)))}");
-			sb.AppendLine(
-				$"Allocated Memory (MB): {UnityEngine.Profiling.Profiler.GetTotalAllocatedMemoryLong() / (1024 * 1024)}");
-			sb.AppendLine(
-				$"Reserved Memory (MB): {UnityEngine.Profiling.Profiler.GetTotalReservedMemoryLong() / (1024 * 1024)}");
-			sb.AppendLine(
-				$"Mono Heap Size (MB): {UnityEngine.Profiling.Profiler.GetMonoHeapSizeLong() / (1024 * 1024)}");
 #elif DEVELOPMENT_BUILD
 			Debug.Log("Development Build (но не редактор)");
-			sb.AppendLine(
-				$"Total Memory Usage (MB): {SystemInfo.systemMemorySize - (SystemInfo.systemMemorySize - (GC.GetTotalMemory(false) / (1024 * 1024)))}");
-			sb.AppendLine(
-				$"Allocated Memory (MB): {UnityEngine.Profiling.Profiler.GetTotalAllocatedMemoryLong() / (1024 * 1024)}");
-			sb.AppendLine(
-				$"Reserved Memory (MB): {UnityEngine.Profiling.Profiler.GetTotalReservedMemoryLong() / (1024 * 1024)}");
-			sb.AppendLine(
-				$"Mono Heap Size (MB): {UnityEngine.Profiling.Profiler.GetMonoHeapSizeLong() / (1024 * 1024)}");
 #else
 			Debug.Log("Релизная сборка");
 #endif

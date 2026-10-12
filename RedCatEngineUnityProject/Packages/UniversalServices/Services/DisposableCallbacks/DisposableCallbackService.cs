@@ -8,7 +8,7 @@ namespace RedCatEngine.CommonServices.Services.DisposableCallbacks
 {
 	public class DisposableCallbackService : IDisposableCallbackService, IDisposable
 	{
-		private readonly List<DisposableCallback> _disposable = new();
+		private readonly List<IDisposable> _disposable = new();
 		private readonly List<DisposableTimerCallback> _timers = new();
 		private readonly ITimeService _timeService;
 
@@ -52,6 +52,13 @@ namespace RedCatEngine.CommonServices.Services.DisposableCallbacks
 		public DisposableCallback MakeAlwaysInvokeCallback(Action callback)
 		{
 			var disposableCallback = new DisposableCallback(callback, true);
+			_disposable.Add(disposableCallback);
+			return disposableCallback;
+		}
+
+		public DisposableCallback<TResult> MakeCallback<TResult>(Action<TResult> callback)
+		{
+			var disposableCallback = new DisposableCallback<TResult>(callback);
 			_disposable.Add(disposableCallback);
 			return disposableCallback;
 		}

@@ -14,6 +14,9 @@ namespace RedCatEngine.Pools.Containers.SimpleContainers
 	{
 		private readonly IInstanceCreator _creator;
 		private readonly Stack<IPooledObject> _inactiveStack = new();
+		/// <summary>
+		/// Лист созданных объектов, которые в данный момент активны.
+		/// </summary>
 		protected readonly List<IPooledObject> CreatedPooledObjects = new();
 		private Action<GameObject> _callbackBeforeKill;
 		private Action<GameObject> _callbackAfterEnable;

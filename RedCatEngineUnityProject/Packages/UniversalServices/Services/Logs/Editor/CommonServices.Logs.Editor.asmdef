@@ -1,0 +1,18 @@
+{
+  "name": "CommonServices.Logs.Editor",
+  "rootNamespace": "RedCatEngine.CommonServices.Services.Logs.Editor",
+  "references": [
+    "CommonServices"
+  ],
+  "includePlatforms": [
+    "Editor"
+  ],
+  "excludePlatforms": [],
+  "allowUnsafeCode": false,
+  "overrideReferences": false,
+  "precompiledReferences": [],
+  "autoReferenced": true,
+  "defineConstraints": [],
+  "versionDefines": [],
+  "noEngineReferences": false
+}

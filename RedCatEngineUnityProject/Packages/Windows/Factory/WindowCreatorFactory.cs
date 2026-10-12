@@ -5,6 +5,7 @@ using JetBrains.Annotations;
 using RedCatEngine.CommonServices.Extensions;
 using RedCatEngine.CommonServices.Services.Logs;
 using RedCatEngine.DependencyInjection.Containers.Attributes;
+using RedCatEngine.DependencyInjection.Containers.Interfaces.Unity;
 
 namespace Infrastructure.Windows.Factory
 {
@@ -13,11 +14,11 @@ namespace Infrastructure.Windows.Factory
 		where TPresenter : IPresenter
 	{
 		private readonly ILayerContainer _layerContainer;
-		private readonly IWindowContainer _windowContainer;
+		private readonly IUnityGameContainer _windowContainer;
 		private readonly ILogService _log;
 
 		[Inject]
-		public WindowCreatorFactory(ILayerContainer layerContainer, IWindowContainer windowContainer, ILogService log)
+		public WindowCreatorFactory(ILayerContainer layerContainer, IUnityGameContainer windowContainer, ILogService log)
 		{
 			_layerContainer = layerContainer;
 			_windowContainer = windowContainer;

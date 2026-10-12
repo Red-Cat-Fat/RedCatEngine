@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
 namespace RedCatEngine.CommonServices.Containers.Components
 {
@@ -8,6 +9,7 @@ namespace RedCatEngine.CommonServices.Containers.Components
         TRedComponent GetRedComponent<TRedComponent>() where TRedComponent : IRedComponent;
         IEnumerable<TRedComponent> GetRedComponents<TRedComponent>() where TRedComponent : IRedComponent;
         void Add<TRedComponent>(TRedComponent item) where TRedComponent : IRedComponent;
+        public void Add(Type type, object item);
         void Remove<TRedComponent>() where TRedComponent : IRedComponent;
         bool IsContains<TRedComponent>() where TRedComponent : IRedComponent;
 

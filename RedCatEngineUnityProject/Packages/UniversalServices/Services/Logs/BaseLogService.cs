@@ -1,68 +1,101 @@
+using System;
+using System.Globalization;
+using RedCatEngine.CommonServices.Services.Logs.Filtering;
+
 namespace RedCatEngine.CommonServices.Services.Logs
 {
+	/// <summary>
+	/// Общая часть логгеров: композиция тегов и кэш эффективного уровня.
+	/// Кэш инвалидируется по <see cref="ILogLevelFilter.Version"/>, поэтому стоимость
+	/// выключенного вызова — чтение int и два сравнения, без словарей и строк.
+	/// </summary>
 	public abstract class BaseLogService : ILogService
 	{
-		protected readonly string Tag;
+		private LogLevel _cachedLevel;
+		private int _cachedVersion = -1;
 
-		protected BaseLogService(string tag)
+		protected BaseLogService(string tag, ILogLevelFilter filter)
 		{
 			Tag = tag;
+			Filter = filter ?? AlwaysAllowFilter.Instance;
 		}
 
-		public void Log(string log)
-			=> DoLog(
-				string.IsNullOrEmpty(Tag)
-					? log
-					: $"[{Tag}] {log}"
-			);
+		protected ILogLevelFilter Filter { get; }
 
-		public void LogWarning(string log)
-			=> DoLogWarning(
-				string.IsNullOrEmpty(Tag)
-					? log
-					: $"[{Tag}] {log}"
-			);
+		public string Tag { get; }
 
-		public void LogError(string log)
-			=> DoLogError(
-				string.IsNullOrEmpty(Tag)
-					? log
-					: $"[{Tag}] {log}"
-			);
+		public bool IsVerbose => IsEnabled(LogLevel.Verbose);
 
-		public void LogFormat(string log, params object[] parameters)
+		public bool IsEnabled(LogLevel level)
 		{
-			var logFormat = string.Format(log, parameters);
-			Log(logFormat);
+			var version = Filter.Version;
+			if(_cachedVersion == version)
+				return level >= _cachedLevel;
+			_cachedLevel = Filter.Resolve(Tag);
+			_cachedVersion = version;
+
+			return level >= _cachedLevel;
 		}
 
-		public void LogWarningFormat(string log, params object[] parameters)
+		public ILogService CreateTag(string tag)
 		{
-			var logFormat = string.Format(log, parameters);
-			LogWarning(logFormat);
-		}
-
-		public void LogErrorFormat(string log, params object[] parameters)
-		{
-			var logFormat = string.Format(log, parameters);
-			LogError(logFormat);
+			var tagForInstance = BuildTag(tag);
+			Filter.RegisterTag(tagForInstance);
+			return DoCreateInstance(tagForInstance);
 		}
 
 		public ILogService CreateTag<TType>()
 			=> CreateTag(typeof(TType).Name);
 
-		public ILogService CreateTag(string tag)
+		public ILogService CreateInstanceTag(string instanceName)
+			=> DoCreateInstance(BuildTag(instanceName));
+
+		public void Write(LogLevel level, string message)
 		{
-			var tagForInstance = string.IsNullOrEmpty(Tag)
-				? tag
-				: $"{Tag}:{tag}";
-			return DoCreateInstance(tagForInstance);
+			if(!IsEnabled(level))
+				return;
+
+			DoWrite(level, message);
+		}
+
+		public void WriteException(Exception exception, string context)
+		{
+			var message = string.IsNullOrEmpty(context)
+					? exception?.ToString() ?? "null exception"
+					: $"{context}: {exception}";
+
+			Write(LogLevel.Error, message);
+		}
+
+		public void LogWarning(string log)
+			=> Write(LogLevel.Warning, log);
+
+		public void LogError(string log)
+			=> Write(LogLevel.Error, log);
+
+		public void LogWarningFormat(string log, params object[] parameters)
+		{
+			if(!IsEnabled(LogLevel.Warning))
+				return;
+
+			DoWrite(LogLevel.Warning, string.Format(CultureInfo.CurrentCulture, log, parameters));
+		}
+
+		public void LogErrorFormat(string log, params object[] parameters)
+		{
+			if(!IsEnabled(LogLevel.Error))
+				return;
+
+			DoWrite(LogLevel.Error, string.Format(CultureInfo.CurrentCulture, log, parameters));
 		}
 
 		protected abstract ILogService DoCreateInstance(string tag);
 
-		protected abstract void DoLog(string log);
-		protected abstract void DoLogWarning(string log);
-		protected abstract void DoLogError(string log);
+		protected abstract void DoWrite(LogLevel level, string message);
+
+		private string BuildTag(string tag)
+			=> string.IsNullOrEmpty(Tag)
+					? tag
+					: $"{Tag}:{tag}";
 	}
 }

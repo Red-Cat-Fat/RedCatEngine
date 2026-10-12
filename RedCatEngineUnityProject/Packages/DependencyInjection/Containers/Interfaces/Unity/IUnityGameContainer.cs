@@ -1,4 +1,5 @@
 ﻿using RedCatEngine.DependencyInjection.Containers.Interfaces.Application;
+using RedCatEngine.DependencyInjection.Specials.CreatedRule;
 using UnityEngine;
 
 namespace RedCatEngine.DependencyInjection.Containers.Interfaces.Unity
@@ -6,7 +7,7 @@ namespace RedCatEngine.DependencyInjection.Containers.Interfaces.Unity
 	public interface
 		IUnityGameContainer : IApplicationContainer, IMonoConstructCreator, IMonoBindInstance, IMonoCreator
 	{
-		new IUnityGameContainer CreateChildContainer();
+		IUnityGameContainer CreateChildContainer(string name, UnityContainerModifyRule createdRules);
 		TMonoBehaviorType CreateAndBindComponentAsSingle<TMonoBehaviorType>(
 			GameObject prefab,
 			Vector3 position,

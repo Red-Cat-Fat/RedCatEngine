@@ -2,9 +2,15 @@
 
 namespace RedCatEngine.DependencyInjection.Tests.SpecialSubClasses
 {
-	public class SimpleDemoDataParentClass
+	public interface ISimpleDemoData
+	{
+		int Value { get; }
+	}
+
+	public class SimpleDemoDataParentClass : ISimpleDemoData
 	{
 		public readonly int Value;
+		int ISimpleDemoData.Value => Value;
 
 		public SimpleDemoDataParentClass(int value)
 		{

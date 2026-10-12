@@ -40,6 +40,17 @@ namespace RedCatEngine.DependencyInjection.Tests
 			
 			Assert.AreEqual(justGetSingle, tryGetSingle, "Not equal instances");
 		}
+
+		[Test]
+		public void GivenBoundImplementation_WhenGetSingleByInterface_ThenDoesNotThrowAndReturnsInstance()
+		{
+			var bound = new SimpleDemoFirstDataChildClass(42);
+			_applicationContainer.BindAsSingle(bound);
+
+			ISimpleDemoData resolved = null;
+			Assert.DoesNotThrow(() => resolved = _applicationContainer.GetSingle<ISimpleDemoData>());
+			Assert.AreSame(bound, resolved);
+		}
 		
 		[Test]
 		public void GivenApplicationContainer_WhenGetArrayAndTryGetArrayInvoke_ThenInstancesAreEquals()

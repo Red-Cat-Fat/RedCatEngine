@@ -80,4 +80,62 @@ namespace RedCatEngine.CommonServices.Services.Callbacks
 		{
 		}
 	}
+
+	/// <summary>
+	/// Callback, который может быть вызван только один раз.
+	/// </summary>
+	/// <typeparam name="TResult">Тип вызываемого результата</typeparam>
+	public sealed class DisposableCallback<TResult> : IDisposable
+	{
+		/// <summary>
+		/// Действие, которое будет выполнено.
+		/// </summary>
+		private Action<TResult> _callback;
+
+		/// <summary>
+		/// Флаг, указывающий, было ли уже вызвано действие.
+		/// </summary>
+		private bool _isDisposed;
+
+		/// <summary>
+		/// Возвращает значение, указывающее, включён ли callback и может ли он быть вызван.
+		/// </summary>
+		public bool IsEnable { get; private set; }
+
+		/// <summary>
+		/// Инициализирует новый экземпляр класса <see cref="DisposableCallback"/>.
+		/// </summary>
+		/// <param name="callback">Действие, которое будет выполнено.</param>
+		public DisposableCallback(Action<TResult> callback)
+		{
+			_callback = callback;
+			IsEnable = true;
+		}
+
+		/// <summary>
+		/// Вызывает сохранённое действие, если оно ещё не было вызвано.
+		/// 
+		/// </summary>
+		public void Invoke(TResult result)
+		{
+			var callback = _callback;
+			_callback = null;
+			callback?.Invoke(result);
+			IsEnable = false;
+		}
+
+		/// <summary>
+		/// Освобождает ресурсы, связанные с этим объектом.
+		/// Если <see cref="_invokeOnDispose"/> установлен в <see langword="true"/>, вызывает действие перед освобождением.
+		/// </summary>
+		public void Dispose()
+		{
+			if (_isDisposed)
+				return;
+
+			IsEnable = false;
+			_callback = null;
+			_isDisposed = true;
+		}
+	}
 }

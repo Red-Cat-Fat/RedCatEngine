@@ -12,14 +12,14 @@ namespace RedCatEngine.Quests.Mechanics.Factories
 {
 	public class StoryQuestFactory : IQuestFactory
 	{
-		private readonly List<QuestConfig> _allQuests;
+		private readonly QuestConfig[] _allQuests;
 		private readonly IApplicationContainer _applicationContainer;
 
 		[Inject]
 		public StoryQuestFactory(IApplicationContainer applicationContainer, AllQuestLinksConfig allQuests)
 		{
 			_applicationContainer = applicationContainer;
-			_allQuests = allQuests.Quests;
+			_allQuests = allQuests.AllConfigs;
 		}
 
 		public IQuest MakeFromConfig(ConfigID<QuestConfig> questId)

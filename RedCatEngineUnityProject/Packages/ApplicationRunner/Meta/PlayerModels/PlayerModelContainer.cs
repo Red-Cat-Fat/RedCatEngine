@@ -19,7 +19,6 @@ namespace RedCatEngine.ApplicationRunner.Meta.PlayerModels
 		public TModelData Model { get; private set; }
 
 		[Inject]
-		[UsedImplicitly]
 		public PlayerModelContainer(IModelLoader<TModelData> loader, IPlayerModelSaveTrigger playerModelSaveTrigger)
 		{
 			_loader = loader;

@@ -9,5 +9,6 @@ namespace RedCatEngine.CommonServices.Services.DisposableCallbacks
 		DisposableTimerCallback MakeAlwaysInvokeTimerCallback(float time, Action callback);
 		DisposableCallback MakeCallback(Action callback);
 		DisposableCallback MakeAlwaysInvokeCallback(Action callback);
+		DisposableCallback<TResult> MakeCallback<TResult>(Action<TResult> callback);
 	}
 }

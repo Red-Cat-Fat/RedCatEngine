@@ -1,6 +1,7 @@
 using RedCatEngine.DependencyInjection.Containers.Attributes;
 using RedCatEngine.Quests.Configs.Quests;
 using RedCatEngine.Quests.Mechanics.Factories;
+using RedCatEngine.Quests.Mechanics.Quests;
 
 namespace RedCatEngine.Quests.Mechanics.QuestSystems
 {
@@ -19,14 +20,22 @@ namespace RedCatEngine.Quests.Mechanics.QuestSystems
 		{
 			var newQuest = CreateAndStartNewQuest(quest);
 			newQuest.ChangeQuestStateEvent += OnChangeQuestState;
-			ActiveQuests.Add(newQuest);
+			AddActiveQuest(newQuest);
 		}
 
 		public void FinishedQuest(QuestConfig quest)
 		{
+			IQuest questToFinish = null;
 			foreach (var activeQuest in ActiveQuests)
-				if (activeQuest.Config == quest)
-					activeQuest.SuccessFinished();
+			{
+				if (activeQuest.Config != quest)
+					continue;
+
+				questToFinish = activeQuest;
+				break;
+			}
+
+			questToFinish?.SuccessFinished();
 		}
 
 		protected override void DoClear()

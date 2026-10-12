@@ -2,6 +2,7 @@ using System.Linq;
 using NUnit.Framework;
 using RedCatEngine.Configs;
 using RedCatEngine.Quests.Configs.Quests;
+using RedCatEngine.Quests.Mechanics.Data;
 using RedCatEngine.Quests.Mechanics.Quests;
 using RedCatEngine.Quests.Mechanics.QuestSystems;
 using RedCatEngine.Quests.Tests.SpecialSubClasses;
@@ -20,6 +21,9 @@ namespace RedCatEngine.Quests.Tests
 			_testFactory = new TestQuestFactory();
 		}
 
+		private void LoadInitialQuests(DailyQuestSystem system)
+			=> system.LoadData(QuestsDataContainer.Empty);
+
 		[Test]
 		public void GivenDailyQuestSystem_WhenCreateWithEmptyData_ThenCreatedNeedCountQuests()
 		{
@@ -37,6 +41,7 @@ namespace RedCatEngine.Quests.Tests
 				_testFactory,
 				questCount,
 				24 * 60 * 60);
+			LoadInitialQuests(system);
 			var activeQuests = system.GetActiveQuests();
 
 			Assert.AreEqual(
@@ -64,6 +69,7 @@ namespace RedCatEngine.Quests.Tests
 				_testFactory,
 				3,
 				24 * 60 * 60);
+			LoadInitialQuests(system);
 			skipQuest.Skip();
 			var activeQuests = system.GetActiveQuests();
 
@@ -96,6 +102,7 @@ namespace RedCatEngine.Quests.Tests
 				_testFactory,
 				3,
 				24 * 60 * 60);
+			LoadInitialQuests(system);
 			skipQuest.Disable();
 			var activeQuests = system.GetActiveQuests();
 
@@ -144,6 +151,7 @@ namespace RedCatEngine.Quests.Tests
 				_testFactory,
 				3,
 				24 * 60 * 60);
+			LoadInitialQuests(systemForSave);
 
 			var questContainer = systemForSave.GetData();
 
@@ -212,6 +220,7 @@ namespace RedCatEngine.Quests.Tests
 				_testFactory,
 				3,
 				24 * 60 * 60);
+			LoadInitialQuests(system);
 			skipQuest.Skip();
 			var activeQuests = system.GetActiveQuests();
 

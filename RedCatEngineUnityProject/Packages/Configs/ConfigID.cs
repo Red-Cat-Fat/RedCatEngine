@@ -9,15 +9,15 @@ namespace RedCatEngine.Configs
 			IComparable<ConfigID<TBaseConfig>>
 		where TBaseConfig : BaseConfig
 	{
-		public const int InvalidId = 0;
+		public const uint InvalidId = 0u;
 		[SerializeField]
-		private int _id;
+		private uint _id;
 
-		private ConfigID(int id)
+		private ConfigID(uint id)
 			=> _id = id;
 
 		public ConfigID(TBaseConfig config)
-			=> _id = config.ID;
+			=> _id = config.Id;
 
 		public static ConfigID<TBaseConfig> Invalid
 			=> new(InvalidId);
@@ -41,7 +41,7 @@ namespace RedCatEngine.Configs
 			=> obj is ConfigID<TBaseConfig> other && Equals(other);
 
 		public override int GetHashCode()
-			=> _id;
+			=> unchecked((int)_id);
 
 		public override string ToString()
 			=> $"{typeof(TBaseConfig)}: {_id.ToString()}";
@@ -53,22 +53,22 @@ namespace RedCatEngine.Configs
 			=> (a?._id ?? InvalidId) != (b?._id ?? InvalidId);
 
 		public static bool operator ==(ConfigID<TBaseConfig> a, TBaseConfig b)
-			=> (a?._id ?? InvalidId) == (b != null ? b.ID : Invalid._id);
+			=> (a?._id ?? InvalidId) == (b != null ? b.Id : Invalid._id);
 
 		public static bool operator !=(ConfigID<TBaseConfig> a, TBaseConfig b)
-			=> (a?._id ?? InvalidId) != (b != null ? b.ID : InvalidId);
+			=> (a?._id ?? InvalidId) != (b != null ? b.Id : InvalidId);
 
-		public static explicit operator ConfigID<TBaseConfig>(int id)
+		public static explicit operator ConfigID<TBaseConfig>(uint id)
 			=> new(id);
 
-		public static explicit operator int(ConfigID<TBaseConfig> configId)
+		public static explicit operator uint(ConfigID<TBaseConfig> configId)
 			=> configId._id;
 
 		public static implicit operator ConfigID<TBaseConfig>(TBaseConfig config)
-			=> config != null ? new ConfigID<TBaseConfig>(config.ID) : Invalid;
+			=> config != null ? new ConfigID<TBaseConfig>(config.Id) : Invalid;
 
 #if UNITY_EDITOR
-		public static ConfigID<TBaseConfig> MakeForTest(int id)
+		public static ConfigID<TBaseConfig> MakeForTest(uint id)
 			=> new(id);
 #endif
 	}
