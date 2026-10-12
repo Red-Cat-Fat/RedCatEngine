@@ -30,41 +30,21 @@ namespace RedCatEngine.DependencyInjection.Tests
 		}
 
 		[Test]
-		public void GivenApplicationContainer_WhenGetAllNotContainInstance_ThenCatchNotFoundInstanceException()
+		public void GivenApplicationContainer_WhenGetAllNotContainInstance_ThenReturnEmptyArray()
 		{
 			var applicationContainer = new ApplicationContainer();
-			try
-			{
-				applicationContainer.GetArray<SimpleDemoParentClass>();
-			}
-			catch (Exception exception)
-			{
-				Assert.IsTrue(exception is NotFoundInstanceOrCreateException, "Incorrect error");
-				Assert.IsTrue(
-					((NotFoundInstanceOrCreateException)exception).NotFoundType == typeof(SimpleDemoParentClass),
-					"Incorrect type");
-				return;
-			}
-			Assert.Fail("Not catch error");
+			var result = applicationContainer.GetArray<SimpleDemoParentClass>();
+
+			Assert.IsEmpty(result, "GetArray should return empty array for unregistered type");
 		}
 
 		[Test]
-		public void GivenApplicationContainer_WhenTryCreateInterface_ThenCatchNotCorrectType()
+		public void GivenApplicationContainer_WhenTryGetArrayNotContainInstance_ThenReturnsFalse()
 		{
 			var applicationContainer = new ApplicationContainer();
-			try
-			{
-				applicationContainer.GetArray<SimpleDemoParentClass>();
-			}
-			catch (Exception exception)
-			{
-				Assert.IsTrue(exception is NotFoundInstanceOrCreateException, "Incorrect error");
-				Assert.IsTrue(
-					((NotFoundInstanceOrCreateException)exception).NotFoundType == typeof(SimpleDemoParentClass),
-					"Incorrect type");
-				return;
-			}
-			Assert.Fail("Not catch error");
+			var result = applicationContainer.TryGetArray<SimpleDemoParentClass>(out _);
+
+			Assert.IsFalse(result, "TryGetArray should return false for unregistered type");
 		}
 
 		[Test]

@@ -2,6 +2,7 @@
 {
 	public interface IMonoConstruct
 	{
+		bool IsInitialized { get; }
 		public void FinishInitialize();
 	}
 }
