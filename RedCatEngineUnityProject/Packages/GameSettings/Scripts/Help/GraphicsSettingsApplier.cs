@@ -18,7 +18,7 @@ namespace RedCatEngine.GameSettings.Help
 			int width,
 			int height,
 			FullScreenMode mode,
-			int refreshRate
+			RefreshRate refreshRate
 		)
 		{
 			Screen.SetResolution(

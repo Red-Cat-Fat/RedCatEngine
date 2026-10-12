@@ -3,7 +3,7 @@ using RedCatEngine.GameSettings.TypeSettings;
 
 namespace RedCatEngine.GameSettings
 {
-	public class GameSettingService
+	public class GameVisualSettingService
 	{
 		public event Action<BaseGameSetting> GameSettingChangeEvent;
 
@@ -23,7 +23,7 @@ namespace RedCatEngine.GameSettings
 
 		public void LoadGameSetting()
 		{
-			var settingsConfig = GameSettingsConfig.Instance;
+			var settingsConfig = GameVisualSettingsConfig.Instance;
 			foreach (var baseSetting in settingsConfig.BaseSettings)
 				ApplySettingChange(baseSetting);
 
