@@ -26,6 +26,11 @@ namespace RedCatEngine.CommonServices.Containers.Components
 		{
 			base.Add(item);
 		}
+		
+		public new void Add(Type type, object item)
+		{
+			base.Add(type, item);
+		}
 
 		public void Remove<TRedComponent>() where TRedComponent : IRedComponent
 		{
@@ -36,5 +41,7 @@ namespace RedCatEngine.CommonServices.Containers.Components
 		{
 			return IsContain<TRedComponent>();
 		}
+		
+		
 	}
 }

@@ -4,66 +4,78 @@ using System.Linq;
 
 namespace RedCatEngine.CommonServices.Containers.Storages.TypedStorage
 {
-	public class TypedStorage : ITypedStorage
-	{
-		private readonly Dictionary<Type, List<object>> _items = new();
+    public class TypedStorage : ITypedStorage
+    {
+        private readonly Dictionary<Type, List<object>> _items = new();
 
-		public event Action<object> AddNewElementEvent;
+        public event Action<object> AddNewElementEvent;
 
-		public event Action ClearEvent;
+        public event Action ClearEvent;
 
-		protected virtual void AddToDictionary<TType>(TType item)
-		{
-			if (!_items.TryGetValue(typeof(TType), out var elementsList))
-			{
-				elementsList = new List<object>();
-				_items.Add(typeof(TType), elementsList);
-			}
+        protected virtual void AddToDictionary<TType>(TType item)
+        {
+            if (!_items.TryGetValue(typeof(TType), out var elementsList))
+            {
+                elementsList = new List<object>();
+                _items.Add(typeof(TType), elementsList);
+            }
 
-			elementsList.Add(item);
-			AddNewElementEvent?.Invoke(item);
-		}
+            elementsList.Add(item);
+            AddNewElementEvent?.Invoke(item);
+        }
 
-		public bool TryGets<TType>(out IEnumerable<TType> result)
-		{
-			var isContain = _items.TryGetValue(typeof(TType), out var collect);
-			result = isContain ? collect.Cast<TType>() : Array.Empty<TType>();
-			return isContain;
-		}
-		
-		public bool TryGet<TType>(out TType result)
-		{
-			var isContain = _items.TryGetValue(typeof(TType), out var collect) && collect.Any();
-			if(isContain)
-				result = (TType)collect.First();
-			else
-				result = default;
-			return isContain;
-		}
+        public bool TryGets<TType>(out IEnumerable<TType> result)
+        {
+            var isContain = _items.TryGetValue(typeof(TType), out var collect);
+            result = isContain ? collect.Cast<TType>() : Array.Empty<TType>();
+            return isContain;
+        }
 
-		public IEnumerable<TType> Gets<TType>()
-		{
-			return _items.TryGetValue(typeof(TType), out var result)
-				? result.Cast<TType>()
-				: Array.Empty<TType>();
-		}
+        public bool TryGet<TType>(out TType result)
+        {
+            var isContain = _items.TryGetValue(typeof(TType), out var collect) && collect.Any();
+            if (isContain)
+                result = (TType)collect.First();
+            else
+                result = default;
+            return isContain;
+        }
 
-		public void Add<TType>(TType item)
-			=> AddToDictionary(item);
+        public IEnumerable<TType> Gets<TType>()
+        {
+            return _items.TryGetValue(typeof(TType), out var result)
+                ? result.Cast<TType>()
+                : Array.Empty<TType>();
+        }
 
-		public bool IsContain<TType>()
-			=> _items.TryGetValue(typeof(TType), out var items) && items.Any();
+        public void Add<TType>(TType item)
+            => AddToDictionary(item);
+        
+        public void Add(Type type, object item)
+        {
+            if (!_items.TryGetValue(type, out var list))
+            {
+                list = new List<object>();
+                _items[type] = list;
+            }
 
-		public void Clear()
-		{
-			_items.Clear();
-			ClearEvent?.Invoke();
-		}
+            list.Add(item);
+            AddNewElementEvent?.Invoke(item);
+        }
 
-		public void Remove<TType>()
-		{
-			if (_items.TryGetValue(typeof(TType), out var items))
-				items.Clear();
-		}
-	}
+        public bool IsContain<TType>()
+            => _items.TryGetValue(typeof(TType), out var items) && items.Any();
+
+        public void Clear()
+        {
+            _items.Clear();
+            ClearEvent?.Invoke();
+        }
+
+        public void Remove<TType>()
+        {
+            if (_items.TryGetValue(typeof(TType), out var items))
+                items.Clear();
+        }
+    }
 }
