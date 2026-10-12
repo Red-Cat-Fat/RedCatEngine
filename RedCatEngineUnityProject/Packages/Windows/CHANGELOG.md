@@ -5,6 +5,18 @@ All notable changes to this package will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.0.1] - 2026-10-12
+
+### Fixed
+
+- Assembly renamed `Windows` -> `MvpWindows` (asmdef GUID unchanged). Unity's `BuildPlayerDataGenerator`
+  (`UnitySerializationLogic.ShouldNotTryToResolve`) hard-codes the assembly name `Windows` as the WinRT metadata
+  assembly and refuses to resolve any type whose scope is named `Windows`. As a result every serialized field typed
+  `WindowConfig` / `WindowConfig[]` declared in another assembly was dropped from the player TypeDB, the player read
+  the objects with the real class layout and crashed on startup with
+  `The file 'sharedassets0.assets' is corrupted! [Position out of bounds!]`.
+  Consumers must update their asmdef references from `Windows` to `MvpWindows` (or reference by GUID).
+
 ## [2.0.0] - 2026-10-12
 
 ### Changed

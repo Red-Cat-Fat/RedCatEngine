@@ -1,10 +1,10 @@
 {
     "name": "WindowsTests",
-    "rootNamespace": "RedCatEngine.Windows",
+    "rootNamespace": "MvpWindows",
     "references": [
         "UnityEngine.TestRunner",
         "UnityEditor.TestRunner",
-        "Windows",
+        "MvpWindows",
         "CommonServices",
         "DependencyInjection",
         "Configs"
