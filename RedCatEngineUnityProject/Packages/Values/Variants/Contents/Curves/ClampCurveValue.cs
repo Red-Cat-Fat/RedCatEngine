@@ -1,13 +1,15 @@
 ﻿using System;
 using RedCatEngine.Values.Base.Interfaces;
+using SerializeReferenceEditor;
 using UnityEngine;
 
 namespace RedCatEngine.Values.Variants.Contents.Curves
 {
 	[Serializable]
+	[SRName("Curve/Clamp")]
 	public class ClampCurveValue : CurveValue
 	{
-		public ClampCurveValue() : base()
+		public ClampCurveValue()
 		{
 		}
 

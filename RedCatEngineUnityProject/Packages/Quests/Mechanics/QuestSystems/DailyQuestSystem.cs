@@ -1,6 +1,5 @@
 using System;
 using System.Linq;
-using RedCatEngine.Quests.Mechanics.Data;
 using RedCatEngine.Quests.Mechanics.Factories;
 using RedCatEngine.Quests.Mechanics.Quests;
 
@@ -20,7 +19,6 @@ namespace RedCatEngine.Quests.Mechanics.QuestSystems
 		{
 			_countQuests = countQuests;
 			_dailyTimeLiveSeconds = dailyTimeLiveSeconds;
-			LoadData(QuestsDataContainer.Empty);
 		}
 
 		protected override void DoAfterLoadData()
@@ -50,11 +48,8 @@ namespace RedCatEngine.Quests.Mechanics.QuestSystems
 			var toRemove = ActiveQuests.Where(PredicateForRemoveQuests()).ToArray();
 			foreach (var quest in toRemove)
 			{
+				quest.Disable();
 				quest.ChangeQuestStateEvent -= OnChangeQuestState;
-
-				if (quest.QuestState == QuestState.InProgress)
-					quest.Disable();
-
 				ActiveQuests.Remove(quest);
 			}
 
@@ -81,7 +76,7 @@ namespace RedCatEngine.Quests.Mechanics.QuestSystems
 		{
 			var newQuest = CreateAndStartNewQuest();
 			newQuest.ChangeQuestStateEvent += OnChangeQuestState;
-			ActiveQuests.Add(newQuest);
+			AddActiveQuest(newQuest);
 		}
 	}
 }

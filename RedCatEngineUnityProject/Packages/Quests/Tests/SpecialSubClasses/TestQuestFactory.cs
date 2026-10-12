@@ -18,9 +18,7 @@ namespace RedCatEngine.Quests.Tests.SpecialSubClasses
 		}
 
 		public IQuest MakeNewQuest(List<IQuest> currentActiveQuests)
-		{
-			return MakeNewQuest();
-		}
+			=> MakeNewQuest();
 
 		public IQuest LoadFrom(IQuestData saveData)
 		{

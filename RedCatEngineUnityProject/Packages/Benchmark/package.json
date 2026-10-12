@@ -1,6 +1,6 @@
 {
   "name": "com.boronnikov.games.red-cat-engine.banchmark",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "displayName": "Red Cat Engine: Banchmark",
   "description": "An extension designed to measure gameplay performance in a specific scenario.",
   "unity": "2021.3",

@@ -12,6 +12,7 @@ namespace RedCatEngine.Values.Variants.Logics
 	[SRName("Logic/Conditional Float")]
 	public class ConditionalFloatValue : IFloatValue
 	{
+		[Header("Проверяет _checkValue\nВозвращает _value если TRUE \nили _alternativeValue если FALSE")]
 		[SR]
 		[SerializeReference]
 		[UsedImplicitly]

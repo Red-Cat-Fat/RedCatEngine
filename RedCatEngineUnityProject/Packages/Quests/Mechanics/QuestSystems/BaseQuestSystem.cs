@@ -31,6 +31,7 @@ namespace RedCatEngine.Quests.Mechanics.QuestSystems
 
 		public event Action<IQuest> ChangeStateQuest;
 		public event Action<IQuest> NewQuestEvent;
+		public event Action QuestsReloaded;
 
 		public void LoadData(QuestsDataContainer questsDataContainer)
 		{
@@ -60,6 +61,7 @@ namespace RedCatEngine.Quests.Mechanics.QuestSystems
 			DoAfterLoadData();
 			foreach (var quest in ActiveQuests)
 				quest.ChangeQuestStateEvent += OnChangeQuestState;
+			QuestsReloaded?.Invoke();
 		}
 
 		public QuestsDataContainer GetData()
@@ -93,7 +95,6 @@ namespace RedCatEngine.Quests.Mechanics.QuestSystems
 		{
 			var newQuest = QuestQuestFactory.MakeNewQuest(ActiveQuests);
 			newQuest.Start(CurrentTime);
-			NewQuestEvent?.Invoke(newQuest);
 			return newQuest;
 		}
 
@@ -101,8 +102,13 @@ namespace RedCatEngine.Quests.Mechanics.QuestSystems
 		{
 			var newQuest = QuestQuestFactory.MakeFromConfig(questConfig);
 			newQuest.Start(CurrentTime);
-			NewQuestEvent?.Invoke(newQuest);
 			return newQuest;
+		}
+
+		protected void AddActiveQuest(IQuest quest)
+		{
+			ActiveQuests.Add(quest);
+			NewQuestEvent?.Invoke(quest);
 		}
 
 		private void Clear()

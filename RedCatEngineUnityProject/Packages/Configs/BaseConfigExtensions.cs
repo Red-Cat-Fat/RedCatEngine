@@ -6,11 +6,11 @@ namespace RedCatEngine.Configs
 {
 	public static class BaseConfigExtensions
 	{
-		public static bool TryFindById<T>(this IEnumerable<T> configs, int id, out T targetConfig) where T : BaseConfig
+		public static bool TryFindById<T>(this IEnumerable<T> configs, uint id, out T targetConfig) where T : BaseConfig
 		{
 			foreach (var config in configs)
 			{
-				if (config.ID != id)
+				if (config.Id != id)
 					continue;
 
 				targetConfig = config;

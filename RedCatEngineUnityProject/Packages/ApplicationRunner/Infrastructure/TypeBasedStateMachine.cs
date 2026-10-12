@@ -15,12 +15,12 @@ namespace RedCatEngine.ApplicationRunner.Infrastructure
 			_creator = creator;
 		}
 
-		protected void AddState<TTagState, TInstanceState>()
+		private void AddState<TTagState, TInstanceState>()
 			where TTagState : TBaseState
 			where TInstanceState : TTagState
 			=> AddState<TTagState>(_creator.Create<TInstanceState>());
 
-		protected void AddState<TTagState, TInstanceState>(params object[] context)
+		public void AddState<TTagState, TInstanceState>(params object[] context)
 			where TTagState : TBaseState
 			where TInstanceState : TTagState
 			=> AddState<TTagState>(_creator.Create<TInstanceState>(context));
