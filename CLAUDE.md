@@ -8,7 +8,7 @@ All project instructions live in `AGENTS.md` (shared with other coding agents) a
 
 ## Claude Code specifics
 
-- `.claude/settings.json` registers graphify `PreToolUse` hooks on Bash/Grep/Read/Glob that enforce the "graphify first" policy from `AGENTS.md`. Follow the hook's reminder rather than working around it.
+- A graphify `PreToolUse` hook on Bash/Grep/Read/Glob enforces the "graphify first" policy from `AGENTS.md`. It is installed per user (`~/.claude/settings.json`), not in this repository, so it may be absent on other machines — the policy applies either way. Follow the hook's reminder rather than working around it.
 - The `## graphify` section below is managed by `graphify claude install` / `uninstall` — do not edit it by hand.
 
 ## graphify
