@@ -25,9 +25,10 @@ namespace RedCatEngine.ApplicationRunner.Meta.PlayerModels.ModelLoaders
 		public void Load(Action<TModelData> callbackLoad)
 		{
 			var save = PlayerPrefs.GetString(SaveKey);
-			if (!string.IsNullOrEmpty(save))
-				callbackLoad?.Invoke(JsonUtility.FromJson<TModelData>(save));
-			callbackLoad?.Invoke(new TModelData());
+			var model = string.IsNullOrEmpty(save)
+				? null
+				: JsonUtility.FromJson<TModelData>(save);
+			callbackLoad?.Invoke(model ?? new TModelData());
 		}
 	}
 }

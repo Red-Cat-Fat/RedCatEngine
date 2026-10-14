@@ -296,7 +296,8 @@ namespace RedCatEngine.DependencyInjection.Containers
 			if(!_objects.TryGetValue(typeKey, out _))
 				return BindAsSingle(newInstance);
 			_objects[typeKey] = newInstance;
-			return _providerService.ReBindAsSingle(newInstance);
+			_providerService.ReBindAsSingle(typeKey, newInstance);
+			return newInstance;
 		}
 
 		public TBindType BindAsArray<TBindType>(TBindType instance)
@@ -306,7 +307,8 @@ namespace RedCatEngine.DependencyInjection.Containers
 				_cashContainer.ArrayObjects.Add(type, new List<object>());
 
 			_cashContainer.ArrayObjects[type].Add(instance);
-			return _providerService.BindAsArray(instance);
+			_providerService.BindAsArray(type, instance);
+			return instance;
 		}
 
 		public void Dispose()
@@ -395,7 +397,8 @@ namespace RedCatEngine.DependencyInjection.Containers
 				throw new BindDuplicateWithoutArrayMarkException(typeof(TBindType), alreadyInstance);
 
 			_objects.Add(typeKey, instance);
-			return _providerService.BindAsSingle(instance);
+			_providerService.BindAsSingle(typeKey, instance);
+			return instance;
 		}
 
 		protected TBindType BindAsArray<TBindType>(Type typeKey, TBindType instance)
@@ -404,7 +407,8 @@ namespace RedCatEngine.DependencyInjection.Containers
 				_cashContainer.ArrayObjects.Add(typeKey, new List<object>());
 
 			_cashContainer.ArrayObjects[typeKey].Add(instance);
-			return _providerService.BindAsArray(instance);
+			_providerService.BindAsArray(typeKey, instance);
+			return instance;
 		}
 	}
 }

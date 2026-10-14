@@ -8,7 +8,8 @@ namespace RedCatEngine.CommonServices.Services.DisposableCallbacks
 {
 	public class DisposableCallbackService : IDisposableCallbackService, IDisposable
 	{
-		private readonly List<IDisposable> _disposable = new();
+		// callbacks that are not timers, with a check whether they can still be invoked
+		private readonly List<(IDisposable Callback, Func<bool> IsPending)> _callbacks = new();
 		private readonly List<DisposableTimerCallback> _timers = new();
 		private readonly ITimeService _timeService;
 
@@ -22,10 +23,14 @@ namespace RedCatEngine.CommonServices.Services.DisposableCallbacks
 		public void Dispose()
 		{
 			_timeService.UpdateEvent -= OnUpdate;
-			foreach (var disposableTimerCallback in _timers)
+			// copies: an invoke-on-dispose callback may create new callbacks while the lists are disposed
+			foreach (var disposableTimerCallback in _timers.ToArray())
 				disposableTimerCallback.Dispose();
-			foreach (var disposableCallback in _disposable)
-				disposableCallback.Dispose();
+			foreach (var (callback, _) in _callbacks.ToArray())
+				callback.Dispose();
+
+			_timers.Clear();
+			_callbacks.Clear();
 		}
 
 		public DisposableTimerCallback MakeTimerCallback(float time, Action callback)
@@ -45,22 +50,32 @@ namespace RedCatEngine.CommonServices.Services.DisposableCallbacks
 		public DisposableCallback MakeCallback(Action callback)
 		{
 			var disposableCallback = new DisposableCallback(callback, false);
-			_disposable.Add(disposableCallback);
+			Track(disposableCallback, () => disposableCallback.IsEnable);
 			return disposableCallback;
 		}
 
 		public DisposableCallback MakeAlwaysInvokeCallback(Action callback)
 		{
 			var disposableCallback = new DisposableCallback(callback, true);
-			_disposable.Add(disposableCallback);
+			Track(disposableCallback, () => disposableCallback.IsEnable);
 			return disposableCallback;
 		}
 
 		public DisposableCallback<TResult> MakeCallback<TResult>(Action<TResult> callback)
 		{
 			var disposableCallback = new DisposableCallback<TResult>(callback);
-			_disposable.Add(disposableCallback);
+			Track(disposableCallback, () => disposableCallback.IsEnable);
 			return disposableCallback;
+		}
+
+		/// <summary>
+		/// Keeps a callback so it is disposed together with the service, and drops callbacks that have already
+		/// been invoked or disposed, so the list does not grow for the lifetime of the service.
+		/// </summary>
+		private void Track(IDisposable callback, Func<bool> isPending)
+		{
+			_callbacks.RemoveAll(entry => !entry.IsPending());
+			_callbacks.Add((callback, isPending));
 		}
 
 		private void OnUpdate(float deltaTime)

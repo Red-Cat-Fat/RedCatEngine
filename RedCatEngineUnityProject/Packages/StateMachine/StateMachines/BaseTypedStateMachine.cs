@@ -79,7 +79,9 @@ namespace RedCatEngine.StateMachine.StateMachines
 
 		public ITypedQueueStateMachine EnterNextFromQueue()
 		{
-			var data = _queue.Dequeue();
+			if (!_queue.TryDequeue(out var data))
+				return this;
+
 			AddToHistory(data);
 			var nextState = SelectStateAsActive(data.StateType);
 			if (!data.IsPayLoadState)

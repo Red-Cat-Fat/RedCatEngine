@@ -22,8 +22,11 @@ namespace RedCatEngine.CommonServices.Services.Save.SaveReader
 			var loadJson = GetJsonForLoad(key);
 			if(string.IsNullOrEmpty(loadJson))
 			{
-				_logService.Info("{0} save is empty, so crated save", key);
+				// first launch: every service starts from its defaults, then the initial state is written
+				_logService.Info("{0} save is empty, so created save", key);
+				_saveApplierContainer.Load(null);
 				SaveCurrentState(key);
+				return;
 			}
 
 			var save = JsonUtility.FromJson<SaveData>(loadJson);

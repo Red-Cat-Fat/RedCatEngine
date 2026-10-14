@@ -19,15 +19,12 @@ namespace RedCatEngine.Values.Variants.Contents.Curves
 
 		protected override float FilterXAxis(float getXValue)
 		{
-			var absMax = Mathf.Abs(MaxXValue);
-			var absMin = Mathf.Abs(MinXValue);
+			var min = RangeMin;
+			var length = RangeMax - min;
+			if (length <= 0f)
+				return min;
 
-			while (getXValue > MaxXValue)
-				getXValue -= absMax;
-			while (getXValue < MinXValue)
-				getXValue += absMin;
-
-			return getXValue;
+			return min + Mathf.Repeat(getXValue - min, length);
 		}
 	}
 }

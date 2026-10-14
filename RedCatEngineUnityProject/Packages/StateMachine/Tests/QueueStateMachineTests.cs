@@ -219,5 +219,24 @@ namespace RedCatEngine.StateMachine.Tests
 			}
 		}
 
+		[Test]
+		public void GivenEmptyQueue_WhenEnterNextFromQueue_ThenStateNotChanged()
+		{
+			_stateMachine.Enter<TestStateA>();
+
+			Assert.DoesNotThrow(() => _stateMachine.EnterNextFromQueue(), "Empty queue must not be an error");
+			Assert.IsTrue(_stateMachine.CurrenState is TestStateA, "State changed on an empty queue");
+		}
+
+		[Test]
+		public void GivenClearedQueue_WhenEnterNextFromQueue_ThenStateNotChanged()
+		{
+			_stateMachine.Enter<TestStateA>();
+			_stateMachine.AddToQueue<TestStateB>().ClearQueue();
+
+			_stateMachine.EnterNextFromQueue();
+
+			Assert.IsTrue(_stateMachine.CurrenState is TestStateA, "Cleared queue still switched the state");
+		}
 	}
 }

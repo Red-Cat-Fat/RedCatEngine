@@ -20,7 +20,7 @@ namespace RedCatEngine.Values.Variants.Contents.Curves
 		protected override float FilterXAxis(float getXValue)
 			=> Mathf.Clamp(
 				getXValue,
-				MinXValue,
-				MaxXValue);
+				RangeMin,
+				RangeMax);
 	}
 }

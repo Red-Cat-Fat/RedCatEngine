@@ -85,5 +85,43 @@ namespace RedCatEngine.DependencyInjection.Tests
 			_applicationContainer.BindAsSingle(dataClass);
 			Assert.IsFalse(provider.TryGet(out _), "Provider set data class");
 		}
+		[Test]
+		public void GivenArrayProvider_WhenBindArrayTypeUnderBaseType_ThenProviderSetInstance()
+		{
+			var provider = _applicationContainer.RegisterArrayProvider<SimpleDemoParentClass>();
+
+			var instance = _applicationContainer.BindArrayType<SimpleDemoParentClass, SimpleDemoChildFirstClass>();
+
+			Assert.IsTrue(provider.TryGet(out var containData), "Provider not set instance bound by BindArrayType");
+			Assert.AreSame(instance, containData[0], "Provider set, but not correct instance");
+		}
+
+		[Test]
+		public void GivenSingleProvider_WhenBindTypeByType_ThenProviderSetInstance()
+		{
+			var provider = _applicationContainer.RegisterProvider<SimpleDemoParentClass>();
+
+			var instance = _applicationContainer.BindType(typeof(SimpleDemoParentClass));
+
+			Assert.IsTrue(provider.TryGet(out var containData), "Provider not set instance bound by BindType(Type)");
+			Assert.AreSame(instance, containData, "Provider set, but not correct instance");
+		}
+
+		[Test]
+		public void GivenSingleProvider_WhenReBindAsSingle_ThenProviderSetNewInstance()
+		{
+			var random = new Random();
+			var first = new SimpleDemoDataParentClass(random.Next());
+			var second = new SimpleDemoDataParentClass(random.Next());
+			var singleProvider = _applicationContainer.RegisterProvider<SimpleDemoDataParentClass>();
+			var arrayProvider = _applicationContainer.RegisterArrayProvider<SimpleDemoDataParentClass>();
+
+			_applicationContainer.BindAsSingle(first);
+			_applicationContainer.ReBindAsSingle(second);
+
+			Assert.IsTrue(singleProvider.TryGet(out var containData), "Provider lost instance after rebind");
+			Assert.AreSame(second, containData, "Provider did not receive the rebound instance");
+			Assert.IsFalse(arrayProvider.TryGet(out _), "Array provider received a single rebind");
+		}
 	}
 }

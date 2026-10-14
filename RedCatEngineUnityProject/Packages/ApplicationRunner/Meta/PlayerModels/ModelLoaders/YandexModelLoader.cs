@@ -38,9 +38,10 @@ namespace RedCatEngine.ApplicationRunner.Meta.PlayerModels.ModelLoaders
 		private void OnGetData()
 		{
 			var save = YandexGame.savesData.SavedModel;
-			if (!string.IsNullOrEmpty(save))
-				_onLoadCallBack?.Invoke(JsonUtility.FromJson<TModelData>(save));
-			_onLoadCallBack?.Invoke(new TModelData());
+			var model = string.IsNullOrEmpty(save)
+				? null
+				: JsonUtility.FromJson<TModelData>(save);
+			_onLoadCallBack?.Invoke(model ?? new TModelData());
 		}
 
 		public void Dispose()
