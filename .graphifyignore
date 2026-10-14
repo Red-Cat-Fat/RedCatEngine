@@ -1,0 +1,10 @@
+# Unity-generated / non-source content — keep the graph limited to package sources
+RedCatEngineUnityProject/Library/
+RedCatEngineUnityProject/Logs/
+RedCatEngineUnityProject/obj/
+RedCatEngineUnityProject/Temp/
+RedCatEngineUnityProject/UserSettings/
+RedCatEngineUnityProject/ProjectSettings/
+*.meta
+*.csproj
+*.sln
