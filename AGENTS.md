@@ -89,14 +89,14 @@ Consumers install each required RedCat package by its own git URL. Keep the grap
 - **Construction**: `Create<T>(context)` picks the constructor marked `[Inject]`, falls back to a parameterless one, otherwise throws. So every service with dependencies needs `[Inject]` on its constructor.
 - **Resolution order** for each parameter: the `params object[] context` passed to the call (matched by type, nested arrays included) → exact type in the container → any bound instance assignable to the type → parent container → **auto-create and bind as single** (concrete non-`UnityEngine.Object` types only; otherwise `NotFoundInstanceOrCreateException`). `context` is how per-call data (configs, models, payloads) reaches constructors without being bound.
 - **Deferred dependencies**: a constructor parameter of type `ISingleProvider<T>` / `IArrayProvider<T>` is satisfied immediately with a provider that is filled when `T` is bound later — use it to break ordering/cyclic dependencies.
-- **MonoBehaviours**: derive from `MonoConstruct` and expose a public method marked `[MonoInject]` instead of a constructor (`OnValidate` logs an error if it is missing); the container calls it, then `FinishInitialize()` → `DoInitialize()`. Cleanup goes in `DoDisposable()`, triggered from `OnDisable`.
+- **MonoBehaviours**: derive from `MonoConstruct` and expose a public method marked `[MonoInject]` instead of a constructor (`OnValidate` logs an error if it is missing); the container calls it, then `FinishInitialize()` → `DoInitialize()`. Cleanup goes in `DoDispose()`, triggered from `OnDisable`.
 
 ### How the other systems plug into DI
 
 - **StateMachine**: `BaseTypedStateMachine<TBaseState>` keys states by `Type`, supports `IState` and `IPayloadedState<TPayload>`, plus a queue (`AddToQueue` / `EnterNextFromQueue` / `ClearQueue`) and step history. It has no DI dependency.
 - **ApplicationRunner**: `TypeBasedStateMachine` bridges the two — states are created through `ICreator`, and unknown states are created lazily on first `Enter`. It also contains boot states (localization, cheats, player model load/save) with Editor and Yandex variants.
 - **Windows** (MVP): a window is described by a `WindowConfig` ScriptableObject that names its model type; `WindowService.Open(config, context)` creates the model through the injected `IUnityGameContainer`, passing `context` + the config, and manages parent/child window hierarchy, layers, and hide/show of all windows.
-- **Configs**: `BaseConfig` is a ScriptableObject whose `ID` is derived from the asset GUID in `OnValidate`, and equality is by that ID. Values/Conditions/Rewards/Quests are data-driven on top of it, using `[SerializeReference]` polymorphic fields (hence the SREditor dependency).
+- **Configs**: `BaseConfig` is a ScriptableObject whose `uint Id` is computed once from the asset GUID in `OnValidate` (FNV-1a) and stored in the asset; equality is by type and `Id`. Values/Conditions/Rewards/Quests are data-driven on top of it, using `[SerializeReference]` polymorphic fields (hence the SREditor dependency).
 
 ## Conventions
 
@@ -108,3 +108,11 @@ Consumers install each required RedCat package by its own git URL. Keep the grap
 ## Documentation
 
 Documentation is bilingual: **English is the primary language, Russian is the secondary translation**. Write the English version first and keep the Russian one in sync in the same change; never leave the Russian file ahead of or contradicting the English one. Code, identifiers, comments, commit messages stay in English.
+
+Layout:
+
+- Root `README.md` / `README.ru.md` — the index: package table with links to every package page, installation, the "Dependencies between packages" table.
+- `Packages/<Name>/README.md` / `README.ru.md` — one page per package: description, info table (id, version, Unity, assembly, namespace), installation URL, dependencies with links to the pages of the packages it depends on, concepts, usage examples, known limitations. Each file has a committed `.meta`.
+- Every page starts with the language switch line. English pages link to `README.md` of other packages, Russian pages to `README.ru.md`.
+
+When a package changes, update its two pages in the same change: the version in the info table and in the root table, the dependency table, and any example that touches the changed API. Examples must compile against the current API — check signatures in the code, do not write them from memory.
