@@ -7,7 +7,7 @@ A window (UI screen) system built on the MVP pattern: a window is described by a
 | | |
 |---|---|
 | Package id | `com.boronnikov.games.red-cat-engine.windows` |
-| Version | 2.0.1 ([changelog](CHANGELOG.md)) |
+| Version | 2.0.2 ([changelog](CHANGELOG.md)) |
 | Unity | 2021.3+ |
 | Assembly | `MvpWindows` |
 | Namespace | `Infrastructure.Windows` |
@@ -26,9 +26,9 @@ https://github.com/Red-Cat-Fat/RedCatEngine.git?path=/RedCatEngineUnityProject/P
 
 | Package | Version | Used for |
 |---|---|---|
-| [Configs](../Configs/README.md) | 1.1.0 | `WindowConfig` |
-| [Dependency Injection](../DependencyInjection/README.md) | 1.2.0 | creating models, views and presenters |
-| [Common services](../UniversalServices/README.md) | 2.0.0 | `ILogService` |
+| [Configs](../Configs/README.md) | 1.1.1 | `WindowConfig` |
+| [Dependency Injection](../DependencyInjection/README.md) | 1.2.1 | creating models, views and presenters |
+| [Common services](../UniversalServices/README.md) | 2.0.1 | `ILogService` |
 
 Common services additionally requires [Pools](../Pools/README.md).
 
@@ -177,4 +177,4 @@ Notes:
 
 - Closing a parent does not close its children. Close them explicitly, or use `HideAll()`.
 - The parent receives the child's context. Its model, view and presenter must be able to take what they need from that context or the container.
-- Parents must not form a cycle (`A` → `B` → `A`): there is no protection, and opening such a window never returns.
+- Parents should not form a cycle (`A` → `B` → `A`). If they do, opening stops at the window that is already being opened, and an error is logged.

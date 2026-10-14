@@ -7,7 +7,7 @@ Graphics settings as data: default settings are listed in a config asset, player
 | | |
 |---|---|
 | Package id | `com.boronnikov.games.red-cat-engine.gamesettings` |
-| Version | 2.0.0 ([changelog](CHANGELOG.md)) |
+| Version | 2.0.1 ([changelog](CHANGELOG.md)) |
 | Unity | 6000.0+ |
 | Assembly | `GameSettings` |
 | Namespace | `RedCatEngine.GameSettings` |
@@ -24,7 +24,7 @@ https://github.com/Red-Cat-Fat/RedCatEngine.git?path=/RedCatEngineUnityProject/P
 
 | Package | Version | Used for |
 |---|---|---|
-| [Configs](../Configs/README.md) | 1.1.0 | `GameVisualSettingsConfig` |
+| [Configs](../Configs/README.md) | 1.1.1 | `GameVisualSettingsConfig` |
 | [Serialize Reference Editor](https://github.com/elmortem/serializereferenceeditor) | git | the `[SR]` type picker — add it to the project manually |
 
 ## Concepts
@@ -95,8 +95,3 @@ A setting does not need the service to work:
 new QualityLevelGameSettings(2).Apply();
 GraphicsSettingsApplier.SetVSync(true);
 ```
-
-## Known limitations
-
-- `GameVisualSettingService` never initializes its `OverrideSettingsData` field, so `LoadGameSetting`, `OverrideGameSetting`, `SaveSettings` and `ResetSettings` currently throw `NullReferenceException`. Until this is fixed, apply settings directly as shown above.
-- `GameVisualSettingsConfig.Instance` relies on `BaseSingleConfig`, which looks for a `Resources` asset literally named `TConfig` — see [Configs](../Configs/README.md#known-limitations).

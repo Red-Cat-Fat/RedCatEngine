@@ -7,7 +7,7 @@ A set of general-purpose services and helper types used by games and by other Re
 | | |
 |---|---|
 | Package id | `com.boronnikov.games.red-cat-engine.services` |
-| Version | 2.0.0 ([changelog](CHANGELOG.md)) |
+| Version | 2.0.1 ([changelog](CHANGELOG.md)) |
 | Unity | 2021.3+ |
 | Assembly | `CommonServices` |
 | Namespace | `RedCatEngine.CommonServices` |
@@ -26,8 +26,8 @@ https://github.com/Red-Cat-Fat/RedCatEngine.git?path=/RedCatEngineUnityProject/P
 
 | Package | Version | Used for |
 |---|---|---|
-| [Configs](../Configs/README.md) | 1.1.0 | `TagConfig`, `BaseItemConfig`, `TimeSettingsConfig` |
-| [Dependency Injection](../DependencyInjection/README.md) | 1.2.0 | `[Inject]` constructors, `MonoConstruct` components |
+| [Configs](../Configs/README.md) | 1.1.1 | `TagConfig`, `BaseItemConfig`, `TimeSettingsConfig` |
+| [Dependency Injection](../DependencyInjection/README.md) | 1.2.1 | `[Inject]` constructors, `MonoConstruct` components |
 | [Pools](../Pools/README.md) | 1.1.0 | `DiPoolInstanceCreatorFactory` |
 
 Optional: `DoTweenExtensions` is compiled only when the `DOTWEEN` scripting define is set (DOTween installed).
@@ -376,7 +376,7 @@ Rules that keep tokens safe:
 - **Several tokens of one owner** can be kept in a `List<IDisposable>` and disposed in a loop.
 - **Check `IsEnable`** to learn whether the callback is still pending; it becomes `false` after the callback ran or was cancelled.
 - Disposing `DisposableCallbackService` disposes every token it created: ordinary callbacks are cancelled, *always invoke* callbacks run. A service bound in a child container (for example per level) therefore cleans up its callbacks together with the level.
-- Callbacks created with `MakeCallback` / `MakeAlwaysInvokeCallback` stay referenced by the service until the service itself is disposed, even after they ran. For many short-lived callbacks prefer a service in a short-lived scope.
+- Callbacks that have run or were cancelled are released by the service, so many short-lived callbacks do not accumulate.
 
 ### Random
 
@@ -487,7 +487,7 @@ container.BindAsArray<ISaved>(tags);
 Two details matter here:
 
 - the type argument of `BindAsArray` must be exactly `ISaved` — that is the key the collector waits for;
-- `BindArrayType<ISaved, WalletService>()` does **not** reach the collector: it notifies waiters of `WalletService`, not of `ISaved`. Bind the instance first, then call `BindAsArray<ISaved>(instance)`. A service can also be attached directly: `saveApplier.Attach(service)`.
+- `container.BindArrayType<ISaved, WalletService>()` also registers a service, but only as `ISaved`: use it for services nobody requests by their own interface. A service can also be attached directly: `saveApplier.Attach(service)`.
 
 #### 3. Load and save
 
@@ -499,12 +499,7 @@ saves.RemoveSave();  // overwrite the save with an empty one
 
 `Load` reads the save and calls `Load` on every registered service.
 
-On the very first launch there is nothing under the key yet. `Load` then writes the current state of the services, but afterwards still parses the empty string it read, and `JsonUtility` rejects an empty document with an exception. Until this is fixed, check for a save first:
-
-```csharp
-if (reader.LoadData("Saves") != null)  // reader is ISaveLoadReaderService
-	saves.Load();                       // otherwise services keep their defaults
-```
+On the very first launch there is nothing under the key yet: every service receives `Load(null)` and starts with its defaults, and the initial state is written, so the next start finds a save.
 
 `PlayerSaveService` always uses the key `"Saves"`. For several slots or profiles call `ISaveLoadReaderService` directly with your own keys:
 

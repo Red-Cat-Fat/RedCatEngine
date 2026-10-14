@@ -7,7 +7,7 @@
 | | |
 |---|---|
 | Идентификатор пакета | `com.boronnikov.games.red-cat-engine.gamesettings` |
-| Версия | 2.0.0 ([список изменений](CHANGELOG.md)) |
+| Версия | 2.0.1 ([список изменений](CHANGELOG.md)) |
 | Unity | 6000.0+ |
 | Сборка | `GameSettings` |
 | Пространство имён | `RedCatEngine.GameSettings` |
@@ -24,7 +24,7 @@ https://github.com/Red-Cat-Fat/RedCatEngine.git?path=/RedCatEngineUnityProject/P
 
 | Пакет | Версия | Для чего |
 |---|---|---|
-| [Configs](../Configs/README.ru.md) | 1.1.0 | `GameVisualSettingsConfig` |
+| [Configs](../Configs/README.ru.md) | 1.1.1 | `GameVisualSettingsConfig` |
 | [Serialize Reference Editor](https://github.com/elmortem/serializereferenceeditor) | git | выбор типа `[SR]` — добавляется в проект вручную |
 
 ## Основные понятия
@@ -95,8 +95,3 @@ public class MasterVolumeGameSetting : BaseGameSetting
 new QualityLevelGameSettings(2).Apply();
 GraphicsSettingsApplier.SetVSync(true);
 ```
-
-## Известные ограничения
-
-- `GameVisualSettingService` не инициализирует своё поле `OverrideSettingsData`, поэтому `LoadGameSetting`, `OverrideGameSetting`, `SaveSettings` и `ResetSettings` сейчас бросают `NullReferenceException`. Пока это не исправлено, применяйте настройки напрямую, как показано выше.
-- `GameVisualSettingsConfig.Instance` опирается на `BaseSingleConfig`, который ищет в `Resources` ассет с буквальным именем `TConfig` — см. [Configs](../Configs/README.ru.md#известные-ограничения).

@@ -7,7 +7,7 @@
 | | |
 |---|---|
 | Идентификатор пакета | `com.boronnikov.games.red-cat-engine.windows` |
-| Версия | 2.0.1 ([список изменений](CHANGELOG.md)) |
+| Версия | 2.0.2 ([список изменений](CHANGELOG.md)) |
 | Unity | 2021.3+ |
 | Сборка | `MvpWindows` |
 | Пространство имён | `Infrastructure.Windows` |
@@ -26,9 +26,9 @@ https://github.com/Red-Cat-Fat/RedCatEngine.git?path=/RedCatEngineUnityProject/P
 
 | Пакет | Версия | Для чего |
 |---|---|---|
-| [Configs](../Configs/README.ru.md) | 1.1.0 | `WindowConfig` |
-| [Dependency Injection](../DependencyInjection/README.ru.md) | 1.2.0 | создание моделей, представлений и презентеров |
-| [Common services](../UniversalServices/README.ru.md) | 2.0.0 | `ILogService` |
+| [Configs](../Configs/README.ru.md) | 1.1.1 | `WindowConfig` |
+| [Dependency Injection](../DependencyInjection/README.ru.md) | 1.2.1 | создание моделей, представлений и презентеров |
+| [Common services](../UniversalServices/README.ru.md) | 2.0.1 | `ILogService` |
 
 Пакету Common services дополнительно нужен [Pools](../Pools/README.ru.md).
 
@@ -177,4 +177,4 @@ windows.Open(itemDetailsConfig, itemConfig);
 
 - Закрытие родителя не закрывает дочерние окна. Закрывайте их явно или используйте `HideAll()`.
 - Родитель получает контекст дочернего окна. Его модель, представление и презентер должны брать нужное из этого контекста или из контейнера.
-- Родители не должны образовывать цикл (`A` → `B` → `A`): защиты от этого нет, и открытие такого окна не завершится.
+- Родители не должны образовывать цикл (`A` → `B` → `A`). Если цикл есть, открытие останавливается на окне, которое уже открывается, и в лог пишется ошибка.

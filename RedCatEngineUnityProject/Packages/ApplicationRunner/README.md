@@ -7,7 +7,7 @@ Building blocks for the game bootstrap: a state machine whose states are created
 | | |
 |---|---|
 | Package id | `com.boronnikov.games.red-cat-engine.aplication.runner` |
-| Version | 1.1.0 ([changelog](CHANGELOG.md)) |
+| Version | 1.1.1 ([changelog](CHANGELOG.md)) |
 | Unity | 2021.3+ |
 | Assembly | `ApplicationRunner` |
 | Namespace | `RedCatEngine.ApplicationRunner` |
@@ -24,8 +24,8 @@ https://github.com/Red-Cat-Fat/RedCatEngine.git?path=/RedCatEngineUnityProject/P
 
 | Package | Version | Used for |
 |---|---|---|
-| [Dependency Injection](../DependencyInjection/README.md) | 1.2.0 | creating states, binding the player model |
-| [State Machine](../StateMachine/README.md) | 2.0.0 | `BaseTypedStateMachine`, state interfaces |
+| [Dependency Injection](../DependencyInjection/README.md) | 1.2.1 | creating states, binding the player model |
+| [State Machine](../StateMachine/README.md) | 2.0.1 | `BaseTypedStateMachine`, state interfaces |
 | [Localization](https://github.com/elmortem/localization) | git | `LocalizeSystem` in the localization states — add it to the project manually |
 
 Optional: `YandexInitializeLocalizationState` and `YandexModelLoader` are compiled only with the `YANDEX_GAME` scripting define and require the YandexGame plugin.
@@ -137,8 +137,3 @@ public class Wallet
 ```
 
 To store the model elsewhere, implement `IModelLoader<TModel>` and use it as the second type argument of `LoadPlayerModelState`.
-
-## Known limitations
-
-- `EditorModelLoader.Load` and `YandexModelLoader.Load` invoke the callback with the loaded model and then again with a new empty model, so the saved model is replaced by an empty one. Until this is fixed, use your own `IModelLoader<TModel>` if saves must be restored.
-- `BaseInitializeCheatState.Enter` instantiates the console prefab but does not call the abstract `AttachCheats()`.

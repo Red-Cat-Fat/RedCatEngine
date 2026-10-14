@@ -7,7 +7,7 @@
 | | |
 |---|---|
 | Идентификатор пакета | `com.boronnikov.games.red-cat-engine.quests` |
-| Версия | 1.1.0 ([список изменений](CHANGELOG.md)) |
+| Версия | 1.2.0 ([список изменений](CHANGELOG.md)) |
 | Unity | 2021.3+ |
 | Сборка | `Quests` |
 | Пространство имён | `RedCatEngine.Quests` |
@@ -24,11 +24,11 @@ https://github.com/Red-Cat-Fat/RedCatEngine.git?path=/RedCatEngineUnityProject/P
 
 | Пакет | Версия | Для чего |
 |---|---|---|
-| [Conditions](../Conditions/README.ru.md) | 1.1.0 | `ConditionalQuestConfig` |
-| [Configs](../Configs/README.ru.md) | 1.1.0 | конфиги квестов, `ConfigID<QuestConfig>` |
-| [Dependency Injection](../DependencyInjection/README.ru.md) | 1.2.0 | квесты создаются с контейнером приложения |
-| [Rewards](../Rewards/README.ru.md) | 1.0.1 | награды за квесты |
-| [Values](../Values/README.ru.md) | 1.1.0 | поля-значения в конфигах квестов |
+| [Conditions](../Conditions/README.ru.md) | 1.1.1 | `ConditionalQuestConfig` |
+| [Configs](../Configs/README.ru.md) | 1.1.1 | конфиги квестов, `ConfigID<QuestConfig>` |
+| [Dependency Injection](../DependencyInjection/README.ru.md) | 1.2.1 | квесты создаются с контейнером приложения |
+| [Rewards](../Rewards/README.ru.md) | 1.0.2 | награды за квесты |
+| [Values](../Values/README.ru.md) | 1.1.1 | поля-значения в конфигах квестов |
 | [Serialize Reference Editor](https://github.com/elmortem/serializereferenceeditor) | git | выбор типа `[SR]` — добавляется в проект вручную |
 
 Пакету Values дополнительно нужны [Common services](../UniversalServices/README.ru.md) и [Pools](../Pools/README.ru.md).
@@ -296,7 +296,7 @@ public class StoryQuestsSave : ISaved
 
 - `StartQuest` не проверяет, запущен ли квест; двойной вызов создаёт две копии. Сначала проверяйте `GetActiveQuests()`, как делает `IsKnown` выше.
 - Завершённые квесты остаются в `GetActiveQuests()` и в сохранении с состоянием `Finished`. Так сюжет помнит, что уже сделано; при показе журнала квестов фильтруйте по `QuestState`.
-- Сохранять можно только квесты, унаследованные от `BaseCollectProgressQuest` или `BaseDeltaChangeProgressQuest`: `QuestsDataContainer` хранит только их типы данных и бросает исключение для остальных.
+- Сохранять можно квесты любого типа. Данные `BaseCollectProgressQuest` и `BaseDeltaChangeProgressQuest` хранятся в типизированных списках, любые другие `IQuestData` — через `[SerializeReference]`, поэтому пометьте свой класс данных `[Serializable]`.
 
 ### Ежедневные квесты и достижения
 

@@ -10,19 +10,19 @@ The packages are independent. You do not clone this repository into your game �
 
 | Package | What it is for | Version | Documentation |
 |---|---|---|---|
-| Dependency Injection | DI container: bindings, `[Inject]` constructors, child scopes, `MonoBehaviour` injection | 1.2.0 | [EN](RedCatEngineUnityProject/Packages/DependencyInjection/README.md) · [RU](RedCatEngineUnityProject/Packages/DependencyInjection/README.ru.md) |
-| State Machine | Typed state machine with payload states and a state queue | 2.0.0 | [EN](RedCatEngineUnityProject/Packages/StateMachine/README.md) · [RU](RedCatEngineUnityProject/Packages/StateMachine/README.ru.md) |
-| Application runner | Game bootstrap: DI-created states, localization, player model loading and saving | 1.1.0 | [EN](RedCatEngineUnityProject/Packages/ApplicationRunner/README.md) · [RU](RedCatEngineUnityProject/Packages/ApplicationRunner/README.ru.md) |
-| Configs | `ScriptableObject` configs with stable ids and typed id references | 1.1.0 | [EN](RedCatEngineUnityProject/Packages/Configs/README.md) · [RU](RedCatEngineUnityProject/Packages/Configs/README.ru.md) |
+| Dependency Injection | DI container: bindings, `[Inject]` constructors, child scopes, `MonoBehaviour` injection | 1.2.1 | [EN](RedCatEngineUnityProject/Packages/DependencyInjection/README.md) · [RU](RedCatEngineUnityProject/Packages/DependencyInjection/README.ru.md) |
+| State Machine | Typed state machine with payload states and a state queue | 2.0.1 | [EN](RedCatEngineUnityProject/Packages/StateMachine/README.md) · [RU](RedCatEngineUnityProject/Packages/StateMachine/README.ru.md) |
+| Application runner | Game bootstrap: DI-created states, localization, player model loading and saving | 1.1.1 | [EN](RedCatEngineUnityProject/Packages/ApplicationRunner/README.md) · [RU](RedCatEngineUnityProject/Packages/ApplicationRunner/README.ru.md) |
+| Configs | `ScriptableObject` configs with stable ids and typed id references | 1.1.1 | [EN](RedCatEngineUnityProject/Packages/Configs/README.md) · [RU](RedCatEngineUnityProject/Packages/Configs/README.ru.md) |
 | Pools | Object pools for prefabs, configured in the Inspector or from code | 1.1.0 | [EN](RedCatEngineUnityProject/Packages/Pools/README.md) · [RU](RedCatEngineUnityProject/Packages/Pools/README.ru.md) |
-| Common services | Logs, time, update loop, callbacks, random, save, tags, sound, storages | 2.0.0 | [EN](RedCatEngineUnityProject/Packages/UniversalServices/README.md) · [RU](RedCatEngineUnityProject/Packages/UniversalServices/README.ru.md) |
-| Windows | MVP window system with layers and parent windows | 2.0.1 | [EN](RedCatEngineUnityProject/Packages/Windows/README.md) · [RU](RedCatEngineUnityProject/Packages/Windows/README.ru.md) |
-| Values | Numbers and flags assembled in the Inspector from constants, variables, curves and operations | 1.1.0 | [EN](RedCatEngineUnityProject/Packages/Values/README.md) · [RU](RedCatEngineUnityProject/Packages/Values/README.ru.md) |
-| Conditions | Checks assembled in the Inspector from logic blocks and your own service checks | 1.1.0 | [EN](RedCatEngineUnityProject/Packages/Conditions/README.md) · [RU](RedCatEngineUnityProject/Packages/Conditions/README.ru.md) |
-| Rewards | Rewards described in configs and applied by one service | 1.0.1 | [EN](RedCatEngineUnityProject/Packages/Rewards/README.md) · [RU](RedCatEngineUnityProject/Packages/Rewards/README.ru.md) |
-| Quests | Quest configs, story / daily / achievement quest systems, saving | 1.1.0 | [EN](RedCatEngineUnityProject/Packages/Quests/README.md) · [RU](RedCatEngineUnityProject/Packages/Quests/README.ru.md) |
+| Common services | Logs, time, update loop, callbacks, random, save, tags, sound, storages | 2.0.1 | [EN](RedCatEngineUnityProject/Packages/UniversalServices/README.md) · [RU](RedCatEngineUnityProject/Packages/UniversalServices/README.ru.md) |
+| Windows | MVP window system with layers and parent windows | 2.0.2 | [EN](RedCatEngineUnityProject/Packages/Windows/README.md) · [RU](RedCatEngineUnityProject/Packages/Windows/README.ru.md) |
+| Values | Numbers and flags assembled in the Inspector from constants, variables, curves and operations | 1.1.1 | [EN](RedCatEngineUnityProject/Packages/Values/README.md) · [RU](RedCatEngineUnityProject/Packages/Values/README.ru.md) |
+| Conditions | Checks assembled in the Inspector from logic blocks and your own service checks | 1.1.1 | [EN](RedCatEngineUnityProject/Packages/Conditions/README.md) · [RU](RedCatEngineUnityProject/Packages/Conditions/README.ru.md) |
+| Rewards | Rewards described in configs and applied by one service | 1.0.2 | [EN](RedCatEngineUnityProject/Packages/Rewards/README.md) · [RU](RedCatEngineUnityProject/Packages/Rewards/README.ru.md) |
+| Quests | Quest configs, story / daily / achievement quest systems, saving | 1.2.0 | [EN](RedCatEngineUnityProject/Packages/Quests/README.md) · [RU](RedCatEngineUnityProject/Packages/Quests/README.ru.md) |
 | Resources | Addressables wrapper: cached loading, instantiation, cleanup | 1.0.1 | [EN](RedCatEngineUnityProject/Packages/ResourceSystem/README.md) · [RU](RedCatEngineUnityProject/Packages/ResourceSystem/README.ru.md) |
-| Game Settings | Graphics settings as data with saved player overrides | 2.0.0 | [EN](RedCatEngineUnityProject/Packages/GameSettings/README.md) · [RU](RedCatEngineUnityProject/Packages/GameSettings/README.ru.md) |
+| Game Settings | Graphics settings as data with saved player overrides | 2.0.1 | [EN](RedCatEngineUnityProject/Packages/GameSettings/README.md) · [RU](RedCatEngineUnityProject/Packages/GameSettings/README.ru.md) |
 | Benchmark | FPS and memory measurement of a gameplay scenario into a report file | 1.1.0 | [EN](RedCatEngineUnityProject/Packages/Benchmark/README.md) · [RU](RedCatEngineUnityProject/Packages/Benchmark/README.ru.md) |
 
 Each package page contains its description, dependencies with links, and usage examples.

@@ -7,7 +7,7 @@ Base classes for `ScriptableObject` configs with a stable numeric id, so a confi
 | | |
 |---|---|
 | Package id | `com.boronnikov.games.red-cat-engine.configs` |
-| Version | 1.1.0 ([changelog](CHANGELOG.md)) |
+| Version | 1.1.1 ([changelog](CHANGELOG.md)) |
 | Unity | 2021.3+ |
 | Assembly | `Configs` |
 | Namespace | `RedCatEngine.Configs` |
@@ -29,7 +29,7 @@ None.
 - **`BaseConfig`** — `ScriptableObject` with a `uint Id`. The id is computed once from the asset GUID (FNV-1a hash) in `OnValidate` and then stored in the asset. Two configs are equal when they have the same type and the same `Id`.
 - **`ConfigID<TConfig>`** — a serializable reference to a config by id. Converts implicitly from the config and compares with configs directly; `ConfigID<T>.Invalid` is the empty value.
 - **`BaseAllConfigContainerConfig<TConfig>`** — an asset holding every config of a type, with lookup by id. In the editor `CollectLinks()` finds all assets of the type and fills the list.
-- **`BaseSingleConfig<TConfig>`** — a config with a static `Instance` loaded from `Resources`.
+- **`BaseSingleConfig<TConfig>`** — a config with a static `Instance`, loaded from `Resources/Configs/<TypeName>` (or `Resources/<TypeName>`). In the Editor a missing asset is created at `Assets/Resources/Configs/<TypeName>.asset`.
 
 ## Usage
 
@@ -81,7 +81,3 @@ if (allWeaponsConfig.TryGetById(weaponId, out WeaponConfig weapon)) { /* ... */ 
 ```
 
 Call `CollectLinks()` from an editor script or a context menu to refresh the list.
-
-## Known limitations
-
-- `BaseSingleConfig<TConfig>.Instance` looks up the asset by the literal name `TConfig` (`Resources.Load<TConfig>("TConfig")`), not by the name of the actual config type. Until this is fixed, the asset must be placed in a `Resources` folder under that exact name.

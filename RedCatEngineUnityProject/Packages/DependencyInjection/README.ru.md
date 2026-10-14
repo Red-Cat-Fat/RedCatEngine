@@ -7,7 +7,7 @@
 | | |
 |---|---|
 | Идентификатор пакета | `com.boronnikov.games.red-cat-engine.di` |
-| Версия | 1.2.0 ([список изменений](CHANGELOG.md)) |
+| Версия | 1.2.1 ([список изменений](CHANGELOG.md)) |
 | Unity | 2021.3+ |
 | Сборка | `DependencyInjection` |
 | Пространство имён | `RedCatEngine.DependencyInjection` |

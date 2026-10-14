@@ -7,7 +7,7 @@ Data-driven values: a number or a flag in a config is not a constant but a small
 | | |
 |---|---|
 | Package id | `com.boronnikov.games.red-cat-engine.values` |
-| Version | 1.1.0 ([changelog](CHANGELOG.md)) |
+| Version | 1.1.1 ([changelog](CHANGELOG.md)) |
 | Unity | 2021.3+ |
 | Assembly | `Values` |
 | Namespace | `RedCatEngine.Values` |
@@ -24,9 +24,9 @@ https://github.com/Red-Cat-Fat/RedCatEngine.git?path=/RedCatEngineUnityProject/P
 
 | Package | Version | Used for |
 |---|---|---|
-| [Configs](../Configs/README.md) | 1.1.0 | value configs, `VariableConfig` |
-| [Dependency Injection](../DependencyInjection/README.md) | 1.2.0 | values read services from the container |
-| [Common services](../UniversalServices/README.md) | 2.0.0 | `IRedComponent`, `FloatDeltaChangeValue` |
+| [Configs](../Configs/README.md) | 1.1.1 | value configs, `VariableConfig` |
+| [Dependency Injection](../DependencyInjection/README.md) | 1.2.1 | values read services from the container |
+| [Common services](../UniversalServices/README.md) | 2.0.1 | `IRedComponent`, `FloatDeltaChangeValue` |
 | [Serialize Reference Editor](https://github.com/elmortem/serializereferenceeditor) | git | the `[SR]` type picker for `[SerializeReference]` fields — add it to the project manually |
 
 Common services additionally requires [Pools](../Pools/README.md).
@@ -254,7 +254,7 @@ Value assets let several configs share one expression: create it once from **Con
 
 ### Curves
 
-Both take an `AnimationCurve` and an X value (any float value) and return the curve evaluated at X. They differ in what happens when X is outside the curve's time range:
+Both take an `AnimationCurve` and an X value (any float value) and return the curve evaluated at X. The range of X is set by *Min X Value* / *Max X Value*; when they are not set (Max ≤ Min), the times of the first and last keys are used. The two values differ in what happens when X is outside the range:
 
 | Picker name | Type | X outside the range |
 |---|---|---|
@@ -269,7 +269,7 @@ Example: damage growing with the player level along a designer-drawn curve — *
 |---|---|---|
 | Comparisons/More | `MoreValue` | `Base > Other` |
 | Comparisons/Less | `LessValue` | `Base < Other` |
-| Comparisons/Equals | `EqualsValue` | the absolute difference between `Base` and `Other` is less than `Tolerance`. Tolerance defaults to `0`, which makes the result always `false` — set it, for example to `0.001` |
+| Comparisons/Equals | `EqualsValue` | the absolute difference between `Base` and `Other` is less than `Tolerance` (default `Mathf.Epsilon`, i.e. exact equality — set a larger tolerance for calculated values, for example `0.001`) |
 | Comparisons/InInterval | `InIntervalValue` | `Min < Check < Max`; with *Is Equals* the edges count too (within *Tolerance*, default `Mathf.Epsilon`) |
 
 ### Logic
@@ -304,7 +304,3 @@ Example: damage growing with the player level along a designer-drawn curve — *
 | `BaseValueConfig<T>` | a new kind of value asset |
 | `CurveValue` | a curve value with your own handling of X (`FilterXAxis`) |
 | `IContextFloatValue<TContext>` | a float value that also needs runtime data, calculated with `ValueCalculationService.GetValue(value, context)`; there are no built-in implementations |
-
-## Known limitations
-
-- `CurveValue.MaxXValue` is marked `[SerializeReference]` instead of `[SerializeField]`, so it is not saved with the asset: a curve value set up in the Inspector has a maximum X of `0`. *Curve/Clamp* then clamps X to `[Min, 0]`, and *Curve/Repeat* can loop forever. Until this is fixed, create curve values in code (`new ClampCurveValue(curve, x)`) or through `CurveValueData.Make()`, which read the range from the curve keys.

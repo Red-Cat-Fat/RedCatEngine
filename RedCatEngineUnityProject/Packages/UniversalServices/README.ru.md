@@ -7,7 +7,7 @@
 | | |
 |---|---|
 | Идентификатор пакета | `com.boronnikov.games.red-cat-engine.services` |
-| Версия | 2.0.0 ([список изменений](CHANGELOG.md)) |
+| Версия | 2.0.1 ([список изменений](CHANGELOG.md)) |
 | Unity | 2021.3+ |
 | Сборка | `CommonServices` |
 | Пространство имён | `RedCatEngine.CommonServices` |
@@ -26,8 +26,8 @@ https://github.com/Red-Cat-Fat/RedCatEngine.git?path=/RedCatEngineUnityProject/P
 
 | Пакет | Версия | Для чего |
 |---|---|---|
-| [Configs](../Configs/README.ru.md) | 1.1.0 | `TagConfig`, `BaseItemConfig`, `TimeSettingsConfig` |
-| [Dependency Injection](../DependencyInjection/README.ru.md) | 1.2.0 | конструкторы с `[Inject]`, компоненты `MonoConstruct` |
+| [Configs](../Configs/README.ru.md) | 1.1.1 | `TagConfig`, `BaseItemConfig`, `TimeSettingsConfig` |
+| [Dependency Injection](../DependencyInjection/README.ru.md) | 1.2.1 | конструкторы с `[Inject]`, компоненты `MonoConstruct` |
 | [Pools](../Pools/README.ru.md) | 1.1.0 | `DiPoolInstanceCreatorFactory` |
 
 Опционально: `DoTweenExtensions` компилируется только при заданном символе компиляции `DOTWEEN` (установлен DOTween).
@@ -376,7 +376,7 @@ public class Turret : IDisposable
 - **Несколько токенов одного владельца** можно хранить в `List<IDisposable>` и уничтожать в цикле.
 - **Проверяйте `IsEnable`**, чтобы узнать, ждёт ли колбэк выполнения; после выполнения или отмены он становится `false`.
 - Уничтожение `DisposableCallbackService` уничтожает все созданные им токены: обычные колбэки отменяются, колбэки *always invoke* выполняются. Поэтому сервис, зарегистрированный в дочернем контейнере (например, на уровень), очищает свои колбэки вместе с уровнем.
-- Колбэки, созданные через `MakeCallback` / `MakeAlwaysInvokeCallback`, остаются в сервисе до его уничтожения, даже после выполнения. Для множества короткоживущих колбэков лучше использовать сервис в короткоживущей области.
+- Выполненные и отменённые колбэки сервис освобождает, поэтому множество короткоживущих колбэков не накапливается.
 
 ### Случайные числа
 
@@ -487,7 +487,7 @@ container.BindAsArray<ISaved>(tags);
 Здесь важны две детали:
 
 - аргумент-тип `BindAsArray` должен быть именно `ISaved` — по этому ключу сборщик ждёт сервисы;
-- `BindArrayType<ISaved, WalletService>()` **не доходит** до сборщика: он оповещает ожидающих `WalletService`, а не `ISaved`. Сначала зарегистрируйте экземпляр, затем вызовите `BindAsArray<ISaved>(instance)`. Сервис можно присоединить и напрямую: `saveApplier.Attach(service)`.
+- `container.BindArrayType<ISaved, WalletService>()` тоже регистрирует сервис, но только как `ISaved`: подходит для сервисов, которые никто не запрашивает по их собственному интерфейсу. Сервис можно присоединить и напрямую: `saveApplier.Attach(service)`.
 
 #### 3. Загрузка и сохранение
 
@@ -499,12 +499,7 @@ saves.RemoveSave();  // перезаписать сохранение пусты
 
 `Load` читает сохранение и вызывает `Load` у каждого зарегистрированного сервиса.
 
-При самом первом запуске под ключом ещё ничего нет. Тогда `Load` записывает текущее состояние сервисов, но после этого всё равно разбирает прочитанную пустую строку, а `JsonUtility` отвергает пустой документ исключением. Пока это не исправлено, сначала проверяйте наличие сохранения:
-
-```csharp
-if (reader.LoadData("Saves") != null)  // reader — ISaveLoadReaderService
-	saves.Load();                       // иначе сервисы остаются со значениями по умолчанию
-```
+При самом первом запуске под ключом ещё ничего нет: каждый сервис получает `Load(null)` и начинает со значений по умолчанию, а начальное состояние записывается, чтобы при следующем запуске сохранение уже было.
 
 `PlayerSaveService` всегда использует ключ `"Saves"`. Для нескольких слотов или профилей вызывайте `ISaveLoadReaderService` напрямую со своими ключами:
 
