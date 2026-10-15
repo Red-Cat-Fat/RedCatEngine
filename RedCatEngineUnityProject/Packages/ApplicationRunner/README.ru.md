@@ -7,7 +7,7 @@
 | | |
 |---|---|
 | Идентификатор пакета | `com.boronnikov.games.red-cat-engine.aplication.runner` |
-| Версия | 1.1.0 ([список изменений](CHANGELOG.md)) |
+| Версия | 1.1.1 ([список изменений](CHANGELOG.md)) |
 | Unity | 2021.3+ |
 | Сборка | `ApplicationRunner` |
 | Пространство имён | `RedCatEngine.ApplicationRunner` |
@@ -24,8 +24,8 @@ https://github.com/Red-Cat-Fat/RedCatEngine.git?path=/RedCatEngineUnityProject/P
 
 | Пакет | Версия | Для чего |
 |---|---|---|
-| [Dependency Injection](../DependencyInjection/README.ru.md) | 1.2.0 | создание состояний, регистрация модели игрока |
-| [State Machine](../StateMachine/README.ru.md) | 2.0.0 | `BaseTypedStateMachine`, интерфейсы состояний |
+| [Dependency Injection](../DependencyInjection/README.ru.md) | 1.2.1 | создание состояний, регистрация модели игрока |
+| [State Machine](../StateMachine/README.ru.md) | 2.0.1 | `BaseTypedStateMachine`, интерфейсы состояний |
 | [Localization](https://github.com/elmortem/localization) | git | `LocalizeSystem` в состояниях локализации — добавляется в проект вручную |
 
 Опционально: `YandexInitializeLocalizationState` и `YandexModelLoader` компилируются только с символом компиляции `YANDEX_GAME` и требуют плагин YandexGame.
@@ -137,8 +137,3 @@ public class Wallet
 ```
 
 Чтобы хранить модель в другом месте, реализуйте `IModelLoader<TModel>` и укажите его вторым типом-аргументом `LoadPlayerModelState`.
-
-## Известные ограничения
-
-- `EditorModelLoader.Load` и `YandexModelLoader.Load` вызывают колбэк с загруженной моделью, а затем ещё раз — с новой пустой моделью, поэтому сохранённая модель заменяется пустой. Пока это не исправлено, используйте собственный `IModelLoader<TModel>`, если сохранения должны восстанавливаться.
-- `BaseInitializeCheatState.Enter` создаёт префаб консоли, но не вызывает абстрактный метод `AttachCheats()`.

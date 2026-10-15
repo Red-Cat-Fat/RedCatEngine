@@ -4,7 +4,8 @@
     "references": [
         "UnityEngine.TestRunner",
         "UnityEditor.TestRunner",
-        "Values"
+        "Values",
+        "DependencyInjection"
     ],
     "includePlatforms": [
         "Editor"

@@ -1,6 +1,6 @@
 {
   "name": "com.boronnikov.games.red-cat-engine.state-machine",
-  "version": "2.0.0",
+  "version": "2.0.1",
   "displayName": "Red Cat Engine: State Machine",
   "description": "Simple State Machine",
   "unity": "2021.3",

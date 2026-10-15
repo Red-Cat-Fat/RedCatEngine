@@ -22,7 +22,7 @@ namespace RedCatEngine.Values.Variants.Logics.Comparisons
 
 		[SR]
 		[SerializeReference]
-		private IFloatValue _tolerance = new ConstantFloatValue(0);
+		private IFloatValue _tolerance = new ConstantFloatValue(Mathf.Epsilon);
 
 		public bool GetValue(IGetterApplicationContainer getterContainer)
 			=> Math.Abs(_baseComparison.GetValue(getterContainer) - _otherValue.GetValue(getterContainer))

@@ -7,7 +7,7 @@
 | | |
 |---|---|
 | Идентификатор пакета | `com.boronnikov.games.red-cat-engine.values` |
-| Версия | 1.1.0 ([список изменений](CHANGELOG.md)) |
+| Версия | 1.1.1 ([список изменений](CHANGELOG.md)) |
 | Unity | 2021.3+ |
 | Сборка | `Values` |
 | Пространство имён | `RedCatEngine.Values` |
@@ -24,9 +24,9 @@ https://github.com/Red-Cat-Fat/RedCatEngine.git?path=/RedCatEngineUnityProject/P
 
 | Пакет | Версия | Для чего |
 |---|---|---|
-| [Configs](../Configs/README.ru.md) | 1.1.0 | конфиги значений, `VariableConfig` |
-| [Dependency Injection](../DependencyInjection/README.ru.md) | 1.2.0 | значения читают сервисы из контейнера |
-| [Common services](../UniversalServices/README.ru.md) | 2.0.0 | `IRedComponent`, `FloatDeltaChangeValue` |
+| [Configs](../Configs/README.ru.md) | 1.1.1 | конфиги значений, `VariableConfig` |
+| [Dependency Injection](../DependencyInjection/README.ru.md) | 1.2.1 | значения читают сервисы из контейнера |
+| [Common services](../UniversalServices/README.ru.md) | 2.0.1 | `IRedComponent`, `FloatDeltaChangeValue` |
 | [Serialize Reference Editor](https://github.com/elmortem/serializereferenceeditor) | git | выбор типа `[SR]` для полей с `[SerializeReference]` — добавляется в проект вручную |
 
 Пакету Common services дополнительно нужен [Pools](../Pools/README.ru.md).
@@ -254,7 +254,7 @@ var sword = container.Create<Weapon>(swordConfig); // IPlayerHealth должен
 
 ### Кривые
 
-Обе принимают `AnimationCurve` и значение X (любое числовое значение) и возвращают значение кривой в точке X. Различаются тем, что происходит, если X вне временного диапазона кривой:
+Обе принимают `AnimationCurve` и значение X (любое числовое значение) и возвращают значение кривой в точке X. Диапазон X задаётся полями *Min X Value* / *Max X Value*; если они не заданы (Max ≤ Min), используется время первого и последнего ключей. Различаются тем, что происходит, если X вне диапазона:
 
 | Имя в списке выбора | Тип | X вне диапазона |
 |---|---|---|
@@ -269,7 +269,7 @@ var sword = container.Create<Weapon>(swordConfig); // IPlayerHealth должен
 |---|---|---|
 | Comparisons/More | `MoreValue` | `Base > Other` |
 | Comparisons/Less | `LessValue` | `Base < Other` |
-| Comparisons/Equals | `EqualsValue` | модуль разности `Base` и `Other` меньше `Tolerance`. По умолчанию *Tolerance* равен `0`, и результат всегда `false` — задайте его, например `0.001` |
+| Comparisons/Equals | `EqualsValue` | модуль разности `Base` и `Other` меньше `Tolerance` (по умолчанию `Mathf.Epsilon`, то есть точное равенство — для вычисляемых значений задайте больший допуск, например `0.001`) |
 | Comparisons/InInterval | `InIntervalValue` | `Min < Check < Max`; с *Is Equals* учитываются и границы (с точностью *Tolerance*, по умолчанию `Mathf.Epsilon`) |
 
 ### Логика
@@ -304,7 +304,3 @@ var sword = container.Create<Weapon>(swordConfig); // IPlayerHealth должен
 | `BaseValueConfig<T>` | новый вид ассета-значения |
 | `CurveValue` | значение-кривая со своей обработкой X (`FilterXAxis`) |
 | `IContextFloatValue<TContext>` | числовое значение, которому нужны ещё и данные времени выполнения; вычисляется через `ValueCalculationService.GetValue(value, context)`; встроенных реализаций нет |
-
-## Известные ограничения
-
-- `CurveValue.MaxXValue` помечен `[SerializeReference]` вместо `[SerializeField]`, поэтому не сохраняется в ассете: у значения-кривой, настроенного в инспекторе, максимальный X равен `0`. Тогда *Curve/Clamp* прижимает X к `[Min, 0]`, а *Curve/Repeat* может зациклиться. Пока это не исправлено, создавайте значения-кривые в коде (`new ClampCurveValue(curve, x)`) или через `CurveValueData.Make()` — они берут диапазон из ключей кривой.

@@ -7,7 +7,7 @@
 | | |
 |---|---|
 | Идентификатор пакета | `com.boronnikov.games.red-cat-engine.configs` |
-| Версия | 1.1.0 ([список изменений](CHANGELOG.md)) |
+| Версия | 1.1.1 ([список изменений](CHANGELOG.md)) |
 | Unity | 2021.3+ |
 | Сборка | `Configs` |
 | Пространство имён | `RedCatEngine.Configs` |
@@ -29,7 +29,7 @@ https://github.com/Red-Cat-Fat/RedCatEngine.git?path=/RedCatEngineUnityProject/P
 - **`BaseConfig`** — `ScriptableObject` с полем `uint Id`. Идентификатор один раз вычисляется из GUID ассета (хеш FNV-1a) в `OnValidate` и сохраняется в ассете. Два конфига равны, если совпадают их тип и `Id`.
 - **`ConfigID<TConfig>`** — сериализуемая ссылка на конфиг по идентификатору. Неявно создаётся из конфига и сравнивается с конфигами напрямую; `ConfigID<T>.Invalid` — пустое значение.
 - **`BaseAllConfigContainerConfig<TConfig>`** — ассет со списком всех конфигов одного типа и поиском по идентификатору. В редакторе `CollectLinks()` находит все ассеты этого типа и заполняет список.
-- **`BaseSingleConfig<TConfig>`** — конфиг со статическим `Instance`, который загружается из `Resources`.
+- **`BaseSingleConfig<TConfig>`** — конфиг со статическим `Instance`, который загружается из `Resources/Configs/<ИмяТипа>` (или `Resources/<ИмяТипа>`). В редакторе отсутствующий ассет создаётся в `Assets/Resources/Configs/<ИмяТипа>.asset`.
 
 ## Использование
 
@@ -81,7 +81,3 @@ if (allWeaponsConfig.TryGetById(weaponId, out WeaponConfig weapon)) { /* ... */ 
 ```
 
 Чтобы обновить список, вызовите `CollectLinks()` из редакторного скрипта или контекстного меню.
-
-## Известные ограничения
-
-- `BaseSingleConfig<TConfig>.Instance` ищет ассет по буквальному имени `TConfig` (`Resources.Load<TConfig>("TConfig")`), а не по имени реального типа конфига. Пока это не исправлено, ассет нужно положить в папку `Resources` именно под таким именем.

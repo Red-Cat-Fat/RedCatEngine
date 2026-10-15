@@ -13,6 +13,8 @@ namespace Infrastructure.Windows.Services
 	public class WindowService : IWindowService, IDisposable
 	{
 		private readonly List<WindowConfig> _hiddenWindows = new();
+		// windows whose opening is in progress: used to stop a cyclic Parent chain
+		private readonly HashSet<WindowConfig> _openingChain = new();
 		private readonly ILogService _logService;
 		private readonly Dictionary<WindowConfig, List<WindowConfig>> _parentHierarchy;
 
@@ -171,6 +173,19 @@ namespace Infrastructure.Windows.Services
 
 		private IWindowData PrepareWindowData(WindowConfig windowConfig, object[] context)
 		{
+			_openingChain.Add(windowConfig);
+			try
+			{
+				return PrepareWindowDataInChain(windowConfig, context);
+			}
+			finally
+			{
+				_openingChain.Remove(windowConfig);
+			}
+		}
+
+		private IWindowData PrepareWindowDataInChain(WindowConfig windowConfig, object[] context)
+		{
 			var windowData = GetWindowData(windowConfig, context);
 			var isHasParent = TryOpenParent(
 					windowConfig,
@@ -275,7 +290,15 @@ namespace Infrastructure.Windows.Services
 				value.Add(windowConfig);
 			}
 
-			if(!IsOpen(parentWindowConfig))
+			if(_openingChain.Contains(parentWindowConfig))
+			{
+				_logService.LogErrorFormat(
+						"Cyclic parent windows: {0} is a parent of {1} and is already being opened",
+						parentWindowConfig.name,
+						windowConfig.name
+				);
+			}
+			else if(!IsOpen(parentWindowConfig))
 			{
 				Open(parentWindowConfig, context);
 			}

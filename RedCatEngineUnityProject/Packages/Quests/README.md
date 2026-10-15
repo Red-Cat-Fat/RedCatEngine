@@ -7,7 +7,7 @@ A quest framework: quests are described by configs, created by factories, tracke
 | | |
 |---|---|
 | Package id | `com.boronnikov.games.red-cat-engine.quests` |
-| Version | 1.1.0 ([changelog](CHANGELOG.md)) |
+| Version | 1.2.0 ([changelog](CHANGELOG.md)) |
 | Unity | 2021.3+ |
 | Assembly | `Quests` |
 | Namespace | `RedCatEngine.Quests` |
@@ -24,11 +24,11 @@ https://github.com/Red-Cat-Fat/RedCatEngine.git?path=/RedCatEngineUnityProject/P
 
 | Package | Version | Used for |
 |---|---|---|
-| [Conditions](../Conditions/README.md) | 1.1.0 | `ConditionalQuestConfig` |
-| [Configs](../Configs/README.md) | 1.1.0 | quest configs, `ConfigID<QuestConfig>` |
-| [Dependency Injection](../DependencyInjection/README.md) | 1.2.0 | quests are created with the application container |
-| [Rewards](../Rewards/README.md) | 1.0.1 | quest rewards |
-| [Values](../Values/README.md) | 1.1.0 | value fields in quest configs |
+| [Conditions](../Conditions/README.md) | 1.1.1 | `ConditionalQuestConfig` |
+| [Configs](../Configs/README.md) | 1.1.1 | quest configs, `ConfigID<QuestConfig>` |
+| [Dependency Injection](../DependencyInjection/README.md) | 1.2.1 | quests are created with the application container |
+| [Rewards](../Rewards/README.md) | 1.0.2 | quest rewards |
+| [Values](../Values/README.md) | 1.1.1 | value fields in quest configs |
 | [Serialize Reference Editor](https://github.com/elmortem/serializereferenceeditor) | git | the `[SR]` type picker — add it to the project manually |
 
 Values additionally requires [Common services](../UniversalServices/README.md) and [Pools](../Pools/README.md).
@@ -296,7 +296,7 @@ Restore the save **before** `director.Begin()`, so the director sees which quest
 
 - `StartQuest` does not check whether the quest is already running; calling it twice creates two copies. Check `GetActiveQuests()` first, as `IsKnown` does above.
 - Finished quests stay in `GetActiveQuests()` and in the save with the `Finished` state. This is how the story remembers what has been done; filter by `QuestState` when showing the quest log.
-- Only quests derived from `BaseCollectProgressQuest` or `BaseDeltaChangeProgressQuest` can be saved: `QuestsDataContainer` stores only their data types and throws for any other.
+- Quests of any type can be saved. The data of `BaseCollectProgressQuest` and `BaseDeltaChangeProgressQuest` is stored in typed lists; any other `IQuestData` is stored with `[SerializeReference]`, so mark your data class `[Serializable]`.
 
 ### Daily quests and achievements
 

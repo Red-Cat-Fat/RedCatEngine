@@ -23,7 +23,8 @@ namespace RedCatEngine.ApplicationRunner.Infrastructure.States.CheatSettingsStat
 		{
 			Debug.Log("Enter to SpawnCheatConsoleState");
 			Object.Instantiate(_cheatsPayload.ConsolePrefab);
-			
+			AttachCheats();
+
 			_gameStateMachine
 				.EnterNextFromQueue();
 		}

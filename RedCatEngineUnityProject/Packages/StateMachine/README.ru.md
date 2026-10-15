@@ -7,7 +7,7 @@
 | | |
 |---|---|
 | Идентификатор пакета | `com.boronnikov.games.red-cat-engine.state-machine` |
-| Версия | 2.0.0 ([список изменений](CHANGELOG.md)) |
+| Версия | 2.0.1 ([список изменений](CHANGELOG.md)) |
 | Unity | 2021.3+ |
 | Сборка | `StateMachine` |
 | Пространство имён | `RedCatEngine.StateMachine` |
@@ -123,4 +123,4 @@ machine
 
 - `AlreadyContainStateException` — состояние такого типа уже зарегистрировано.
 - `NotFoundStateException` — вход в незарегистрированное состояние.
-- `EnterNextFromQueue()` при пустой очереди сейчас бросает `InvalidOperationException`; перед вызовом убедитесь, что в очереди что-то есть.
+- `EnterNextFromQueue()` при пустой очереди — не ошибка: ничего не происходит, текущее состояние остаётся активным.

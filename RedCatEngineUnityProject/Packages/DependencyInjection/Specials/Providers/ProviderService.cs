@@ -56,45 +56,70 @@ namespace RedCatEngine.DependencyInjection.Specials.Providers
 
 		public TBindType BindAsSingle<TBindType>(TBindType instance)
 		{
-			if (instance is IWaiter instanceWaiter)
-			{
-				if (instanceWaiter is ISingleWaiter singleWaiter)
-					foreach (var expectedType in singleWaiter.ExpectedTypes)
-						AddWaiter(
-							_singleWaits,
-							expectedType,
-							singleWaiter
-						);
-				if (instanceWaiter is IArrayWaiter arrayWaiter)
-					foreach (var expectedType in arrayWaiter.ExpectedTypes)
-						AddWaiter(
-							_arrayWaits,
-							expectedType,
-							arrayWaiter
-						);
-			}
-
-			if (!_singleWaits.TryGetValue(typeof(TBindType), out var waiterList))
-				return instance;
-
-			foreach (var waiter in waiterList)
-				waiter.Attach(instance);
+			BindAsSingle(typeof(TBindType), instance);
 			return instance;
+		}
+
+		/// <summary>
+		/// Notifies the single waiters of <paramref name="bindType"/>. The key is passed explicitly, because the
+		/// container binds instances under a type that can differ from the static type of the instance
+		/// (BindType&lt;IService, Service&gt;, BindType(Type), auto-create).
+		/// </summary>
+		public void BindAsSingle(Type bindType, object instance)
+		{
+			RegisterInstanceAsWaiter(instance);
+			NotifyWaiters(_singleWaits, bindType, instance);
 		}
 
 		public TBindType ReBindAsSingle<TBindType>(TBindType newInstance)
 		{
-			return BindAsArray(newInstance);
+			ReBindAsSingle(typeof(TBindType), newInstance);
+			return newInstance;
 		}
+
+		public void ReBindAsSingle(Type bindType, object newInstance)
+			=> NotifyWaiters(_singleWaits, bindType, newInstance);
 
 		public TBindType BindAsArray<TBindType>(TBindType instance)
 		{
-			if (!_arrayWaits.TryGetValue(typeof(TBindType), out var waiterList))
-				return instance;
+			BindAsArray(typeof(TBindType), instance);
+			return instance;
+		}
+
+		/// <summary>
+		/// Notifies the array waiters of <paramref name="bindType"/>; see <see cref="BindAsSingle(Type, object)"/>.
+		/// </summary>
+		public void BindAsArray(Type bindType, object instance)
+			=> NotifyWaiters(_arrayWaits, bindType, instance);
+
+		private void RegisterInstanceAsWaiter(object instance)
+		{
+			if (instance is not IWaiter)
+				return;
+
+			if (instance is ISingleWaiter singleWaiter)
+				foreach (var expectedType in singleWaiter.ExpectedTypes)
+					AddWaiter(
+						_singleWaits,
+						expectedType,
+						singleWaiter
+					);
+			if (instance is IArrayWaiter arrayWaiter)
+				foreach (var expectedType in arrayWaiter.ExpectedTypes)
+					AddWaiter(
+						_arrayWaits,
+						expectedType,
+						arrayWaiter
+					);
+		}
+
+		private static void NotifyWaiters(IDictionary<Type, List<IWaiter>> waiters, Type bindType, object instance)
+		{
+			if (!waiters.TryGetValue(bindType, out var waiterList))
+				return;
 
 			foreach (var waiter in waiterList)
 				waiter.Attach(instance);
-			return instance;
 		}
 
 		private void AddWaiter(

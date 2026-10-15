@@ -7,7 +7,7 @@ A small reflection-based DI container. It binds services, builds objects through
 | | |
 |---|---|
 | Package id | `com.boronnikov.games.red-cat-engine.di` |
-| Version | 1.2.0 ([changelog](CHANGELOG.md)) |
+| Version | 1.2.1 ([changelog](CHANGELOG.md)) |
 | Unity | 2021.3+ |
 | Assembly | `DependencyInjection` |
 | Namespace | `RedCatEngine.DependencyInjection` |

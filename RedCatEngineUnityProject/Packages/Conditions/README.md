@@ -7,7 +7,7 @@ Data-driven conditions: a check is assembled in the Inspector from ready blocks 
 | | |
 |---|---|
 | Package id | `com.boronnikov.games.red-cat-engine.conditions` |
-| Version | 1.1.0 ([changelog](CHANGELOG.md)) |
+| Version | 1.1.1 ([changelog](CHANGELOG.md)) |
 | Unity | 2021.3+ |
 | Assembly | `Conditions` |
 | Namespace | `RedCatEngine.Conditions` |
@@ -24,9 +24,9 @@ https://github.com/Red-Cat-Fat/RedCatEngine.git?path=/RedCatEngineUnityProject/P
 
 | Package | Version | Used for |
 |---|---|---|
-| [Configs](../Configs/README.md) | 1.1.0 | `ConditionConfig` |
-| [Dependency Injection](../DependencyInjection/README.md) | 1.2.0 | conditions read services from the container |
-| [Values](../Values/README.md) | 1.1.0 | `CheckValueCondition`, `ConditionValue` |
+| [Configs](../Configs/README.md) | 1.1.1 | `ConditionConfig` |
+| [Dependency Injection](../DependencyInjection/README.md) | 1.2.1 | conditions read services from the container |
+| [Values](../Values/README.md) | 1.1.1 | `CheckValueCondition`, `ConditionValue` |
 | [Serialize Reference Editor](https://github.com/elmortem/serializereferenceeditor) | git | the `[SR]` type picker — add it to the project manually |
 
 Values additionally requires [Common services](../UniversalServices/README.md) and [Pools](../Pools/README.md).
@@ -127,7 +127,7 @@ The condition throws if `IWallet` is not bound in the container.
 
 ### A condition as an asset
 
-`ConditionConfig` is abstract, so declare a concrete type once and create assets from it:
+Create a condition asset from **Configs/Condition/Config container** and reference it with *Links/Condition Config*. A subclass can add its own menu item or fields:
 
 ```csharp
 [CreateAssetMenu(menuName = "Configs/Condition")]

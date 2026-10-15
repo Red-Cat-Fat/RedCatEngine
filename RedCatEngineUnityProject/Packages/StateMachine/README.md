@@ -7,7 +7,7 @@ A typed state machine: states are addressed by their type, may receive a payload
 | | |
 |---|---|
 | Package id | `com.boronnikov.games.red-cat-engine.state-machine` |
-| Version | 2.0.0 ([changelog](CHANGELOG.md)) |
+| Version | 2.0.1 ([changelog](CHANGELOG.md)) |
 | Unity | 2021.3+ |
 | Assembly | `StateMachine` |
 | Namespace | `RedCatEngine.StateMachine` |
@@ -123,4 +123,4 @@ Only one state can be registered under a key; registering a second one throws `A
 
 - `AlreadyContainStateException` — a state of this type is already registered.
 - `NotFoundStateException` — entering a state that was not registered.
-- `EnterNextFromQueue()` on an empty queue currently throws `InvalidOperationException`; make sure something is queued before calling it.
+- `EnterNextFromQueue()` on an empty queue is not an error: it does nothing and the current state stays active.

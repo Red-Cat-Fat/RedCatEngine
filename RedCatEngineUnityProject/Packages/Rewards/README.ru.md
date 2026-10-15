@@ -7,7 +7,7 @@
 | | |
 |---|---|
 | Идентификатор пакета | `com.boronnikov.games.red-cat-engine.rewards` |
-| Версия | 1.0.1 ([список изменений](CHANGELOG.md)) |
+| Версия | 1.0.2 ([список изменений](CHANGELOG.md)) |
 | Unity | 2021.3+ |
 | Сборка | `Rewards` |
 | Пространство имён | `RedCatEngine.Rewards` |
@@ -24,10 +24,10 @@ https://github.com/Red-Cat-Fat/RedCatEngine.git?path=/RedCatEngineUnityProject/P
 
 | Пакет | Версия | Для чего |
 |---|---|---|
-| [Conditions](../Conditions/README.ru.md) | 1.1.0 | `ConditionReward` |
-| [Configs](../Configs/README.ru.md) | 1.1.0 | `RewardConfig` |
-| [Dependency Injection](../DependencyInjection/README.ru.md) | 1.2.0 | награды читают сервисы из контейнера |
-| [Values](../Values/README.ru.md) | 1.1.0 | поля-значения в наградах |
+| [Conditions](../Conditions/README.ru.md) | 1.1.1 | `ConditionReward` |
+| [Configs](../Configs/README.ru.md) | 1.1.1 | `RewardConfig` |
+| [Dependency Injection](../DependencyInjection/README.ru.md) | 1.2.1 | награды читают сервисы из контейнера |
+| [Values](../Values/README.ru.md) | 1.1.1 | поля-значения в наградах |
 | [Serialize Reference Editor](https://github.com/elmortem/serializereferenceeditor) | git | выбор типа `[SR]` — добавляется в проект вручную |
 
 Пакету Values дополнительно нужны [Common services](../UniversalServices/README.ru.md) и [Pools](../Pools/README.ru.md).

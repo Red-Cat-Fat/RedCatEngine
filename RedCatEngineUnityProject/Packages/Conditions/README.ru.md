@@ -7,7 +7,7 @@
 | | |
 |---|---|
 | Идентификатор пакета | `com.boronnikov.games.red-cat-engine.conditions` |
-| Версия | 1.1.0 ([список изменений](CHANGELOG.md)) |
+| Версия | 1.1.1 ([список изменений](CHANGELOG.md)) |
 | Unity | 2021.3+ |
 | Сборка | `Conditions` |
 | Пространство имён | `RedCatEngine.Conditions` |
@@ -24,9 +24,9 @@ https://github.com/Red-Cat-Fat/RedCatEngine.git?path=/RedCatEngineUnityProject/P
 
 | Пакет | Версия | Для чего |
 |---|---|---|
-| [Configs](../Configs/README.ru.md) | 1.1.0 | `ConditionConfig` |
-| [Dependency Injection](../DependencyInjection/README.ru.md) | 1.2.0 | условия читают сервисы из контейнера |
-| [Values](../Values/README.ru.md) | 1.1.0 | `CheckValueCondition`, `ConditionValue` |
+| [Configs](../Configs/README.ru.md) | 1.1.1 | `ConditionConfig` |
+| [Dependency Injection](../DependencyInjection/README.ru.md) | 1.2.1 | условия читают сервисы из контейнера |
+| [Values](../Values/README.ru.md) | 1.1.1 | `CheckValueCondition`, `ConditionValue` |
 | [Serialize Reference Editor](https://github.com/elmortem/serializereferenceeditor) | git | выбор типа `[SR]` — добавляется в проект вручную |
 
 Пакету Values дополнительно нужны [Common services](../UniversalServices/README.ru.md) и [Pools](../Pools/README.ru.md).
@@ -127,7 +127,7 @@ public class HasCoinsCondition : BaseSingleServiceCondition<IWallet>
 
 ### Условие как ассет
 
-`ConditionConfig` — абстрактный класс, поэтому один раз объявите конкретный тип и создавайте ассеты от него:
+Создайте ассет условия из меню **Configs/Condition/Config container** и ссылайтесь на него через *Links/Condition Config*. В наследнике можно добавить свой пункт меню или поля:
 
 ```csharp
 [CreateAssetMenu(menuName = "Configs/Condition")]

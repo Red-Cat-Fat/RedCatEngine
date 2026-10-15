@@ -7,7 +7,7 @@ Data-driven rewards: what the player receives is described in a config as a rewa
 | | |
 |---|---|
 | Package id | `com.boronnikov.games.red-cat-engine.rewards` |
-| Version | 1.0.1 ([changelog](CHANGELOG.md)) |
+| Version | 1.0.2 ([changelog](CHANGELOG.md)) |
 | Unity | 2021.3+ |
 | Assembly | `Rewards` |
 | Namespace | `RedCatEngine.Rewards` |
@@ -24,10 +24,10 @@ https://github.com/Red-Cat-Fat/RedCatEngine.git?path=/RedCatEngineUnityProject/P
 
 | Package | Version | Used for |
 |---|---|---|
-| [Conditions](../Conditions/README.md) | 1.1.0 | `ConditionReward` |
-| [Configs](../Configs/README.md) | 1.1.0 | `RewardConfig` |
-| [Dependency Injection](../DependencyInjection/README.md) | 1.2.0 | rewards read services from the container |
-| [Values](../Values/README.md) | 1.1.0 | value fields in rewards |
+| [Conditions](../Conditions/README.md) | 1.1.1 | `ConditionReward` |
+| [Configs](../Configs/README.md) | 1.1.1 | `RewardConfig` |
+| [Dependency Injection](../DependencyInjection/README.md) | 1.2.1 | rewards read services from the container |
+| [Values](../Values/README.md) | 1.1.1 | value fields in rewards |
 | [Serialize Reference Editor](https://github.com/elmortem/serializereferenceeditor) | git | the `[SR]` type picker — add it to the project manually |
 
 Values additionally requires [Common services](../UniversalServices/README.md) and [Pools](../Pools/README.md).

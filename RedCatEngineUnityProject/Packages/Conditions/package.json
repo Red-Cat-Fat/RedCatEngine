@@ -1,6 +1,6 @@
 {
   "name": "com.boronnikov.games.red-cat-engine.conditions",
-  "version": "1.1.0",
+  "version": "1.1.1",
   "displayName": "Red Cat Engine: Conditions",
   "description": "Simple Conditions system",
   "unity": "2021.3",
@@ -9,8 +9,8 @@
     "url": "https://github.com/Red-Cat-Fat"
   },
   "dependencies": {
-    "com.boronnikov.games.red-cat-engine.configs": "1.1.0",
-    "com.boronnikov.games.red-cat-engine.di": "1.2.0",
-    "com.boronnikov.games.red-cat-engine.values": "1.1.0"
+    "com.boronnikov.games.red-cat-engine.configs": "1.1.1",
+    "com.boronnikov.games.red-cat-engine.di": "1.2.1",
+    "com.boronnikov.games.red-cat-engine.values": "1.1.1"
   }
 }

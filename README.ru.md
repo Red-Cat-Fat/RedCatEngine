@@ -10,19 +10,19 @@ RedCatEngine — набор пакетов Unity, закрывающих тип�
 
 | Пакет | Для чего | Версия | Документация |
 |---|---|---|---|
-| Dependency Injection | DI-контейнер: регистрации, конструкторы с `[Inject]`, дочерние контейнеры, внедрение в `MonoBehaviour` | 1.2.0 | [RU](RedCatEngineUnityProject/Packages/DependencyInjection/README.ru.md) · [EN](RedCatEngineUnityProject/Packages/DependencyInjection/README.md) |
-| State Machine | Типизированная машина состояний с данными при входе и очередью состояний | 2.0.0 | [RU](RedCatEngineUnityProject/Packages/StateMachine/README.ru.md) · [EN](RedCatEngineUnityProject/Packages/StateMachine/README.md) |
-| Application runner | Запуск игры: состояния, создаваемые через DI, локализация, загрузка и сохранение модели игрока | 1.1.0 | [RU](RedCatEngineUnityProject/Packages/ApplicationRunner/README.ru.md) · [EN](RedCatEngineUnityProject/Packages/ApplicationRunner/README.md) |
-| Configs | Конфиги на `ScriptableObject` со стабильными идентификаторами и типизированными ссылками по ним | 1.1.0 | [RU](RedCatEngineUnityProject/Packages/Configs/README.ru.md) · [EN](RedCatEngineUnityProject/Packages/Configs/README.md) |
+| Dependency Injection | DI-контейнер: регистрации, конструкторы с `[Inject]`, дочерние контейнеры, внедрение в `MonoBehaviour` | 1.2.1 | [RU](RedCatEngineUnityProject/Packages/DependencyInjection/README.ru.md) · [EN](RedCatEngineUnityProject/Packages/DependencyInjection/README.md) |
+| State Machine | Типизированная машина состояний с данными при входе и очередью состояний | 2.0.1 | [RU](RedCatEngineUnityProject/Packages/StateMachine/README.ru.md) · [EN](RedCatEngineUnityProject/Packages/StateMachine/README.md) |
+| Application runner | Запуск игры: состояния, создаваемые через DI, локализация, загрузка и сохранение модели игрока | 1.1.1 | [RU](RedCatEngineUnityProject/Packages/ApplicationRunner/README.ru.md) · [EN](RedCatEngineUnityProject/Packages/ApplicationRunner/README.md) |
+| Configs | Конфиги на `ScriptableObject` со стабильными идентификаторами и типизированными ссылками по ним | 1.1.1 | [RU](RedCatEngineUnityProject/Packages/Configs/README.ru.md) · [EN](RedCatEngineUnityProject/Packages/Configs/README.md) |
 | Pools | Пулы объектов для префабов, настраиваемые в инспекторе или из кода | 1.1.0 | [RU](RedCatEngineUnityProject/Packages/Pools/README.ru.md) · [EN](RedCatEngineUnityProject/Packages/Pools/README.md) |
-| Common services | Логи, время, цикл обновления, отложенные вызовы, случайные числа, сохранения, теги, звук, хранилища | 2.0.0 | [RU](RedCatEngineUnityProject/Packages/UniversalServices/README.ru.md) · [EN](RedCatEngineUnityProject/Packages/UniversalServices/README.md) |
-| Windows | Система окон на MVP со слоями и родительскими окнами | 2.0.1 | [RU](RedCatEngineUnityProject/Packages/Windows/README.ru.md) · [EN](RedCatEngineUnityProject/Packages/Windows/README.md) |
-| Values | Числа и флаги, собираемые в инспекторе из констант, переменных, кривых и операций | 1.1.0 | [RU](RedCatEngineUnityProject/Packages/Values/README.ru.md) · [EN](RedCatEngineUnityProject/Packages/Values/README.md) |
-| Conditions | Проверки, собираемые в инспекторе из логических блоков и собственных проверок сервисов | 1.1.0 | [RU](RedCatEngineUnityProject/Packages/Conditions/README.ru.md) · [EN](RedCatEngineUnityProject/Packages/Conditions/README.md) |
-| Rewards | Награды, описанные в конфигах и выдаваемые одним сервисом | 1.0.1 | [RU](RedCatEngineUnityProject/Packages/Rewards/README.ru.md) · [EN](RedCatEngineUnityProject/Packages/Rewards/README.md) |
-| Quests | Конфиги квестов, системы сюжетных и ежедневных квестов и достижений, сохранение | 1.1.0 | [RU](RedCatEngineUnityProject/Packages/Quests/README.ru.md) · [EN](RedCatEngineUnityProject/Packages/Quests/README.md) |
+| Common services | Логи, время, цикл обновления, отложенные вызовы, случайные числа, сохранения, теги, звук, хранилища | 2.0.1 | [RU](RedCatEngineUnityProject/Packages/UniversalServices/README.ru.md) · [EN](RedCatEngineUnityProject/Packages/UniversalServices/README.md) |
+| Windows | Система окон на MVP со слоями и родительскими окнами | 2.0.2 | [RU](RedCatEngineUnityProject/Packages/Windows/README.ru.md) · [EN](RedCatEngineUnityProject/Packages/Windows/README.md) |
+| Values | Числа и флаги, собираемые в инспекторе из констант, переменных, кривых и операций | 1.1.1 | [RU](RedCatEngineUnityProject/Packages/Values/README.ru.md) · [EN](RedCatEngineUnityProject/Packages/Values/README.md) |
+| Conditions | Проверки, собираемые в инспекторе из логических блоков и собственных проверок сервисов | 1.1.1 | [RU](RedCatEngineUnityProject/Packages/Conditions/README.ru.md) · [EN](RedCatEngineUnityProject/Packages/Conditions/README.md) |
+| Rewards | Награды, описанные в конфигах и выдаваемые одним сервисом | 1.0.2 | [RU](RedCatEngineUnityProject/Packages/Rewards/README.ru.md) · [EN](RedCatEngineUnityProject/Packages/Rewards/README.md) |
+| Quests | Конфиги квестов, системы сюжетных и ежедневных квестов и достижений, сохранение | 1.2.0 | [RU](RedCatEngineUnityProject/Packages/Quests/README.ru.md) · [EN](RedCatEngineUnityProject/Packages/Quests/README.md) |
 | Resources | Обёртка над Addressables: загрузка с кешем, создание экземпляров, очистка | 1.0.1 | [RU](RedCatEngineUnityProject/Packages/ResourceSystem/README.ru.md) · [EN](RedCatEngineUnityProject/Packages/ResourceSystem/README.md) |
-| Game Settings | Графические настройки как данные с сохранением изменений игрока | 2.0.0 | [RU](RedCatEngineUnityProject/Packages/GameSettings/README.ru.md) · [EN](RedCatEngineUnityProject/Packages/GameSettings/README.md) |
+| Game Settings | Графические настройки как данные с сохранением изменений игрока | 2.0.1 | [RU](RedCatEngineUnityProject/Packages/GameSettings/README.ru.md) · [EN](RedCatEngineUnityProject/Packages/GameSettings/README.md) |
 | Benchmark | Замер FPS и памяти игрового сценария с записью отчёта в файл | 1.1.0 | [RU](RedCatEngineUnityProject/Packages/Benchmark/README.ru.md) · [EN](RedCatEngineUnityProject/Packages/Benchmark/README.md) |
 
 На странице каждого пакета есть его описание, зависимости со ссылками и примеры использования.

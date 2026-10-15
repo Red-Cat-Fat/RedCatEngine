@@ -7,7 +7,7 @@ namespace RedCatEngine.GameSettings
 	{
 		public event Action<BaseGameSetting> GameSettingChangeEvent;
 
-		private readonly OverrideSettingsData _overrideSettingsData;
+		private readonly OverrideSettingsData _overrideSettingsData = new();
 		
 		public void OverrideGameSetting(BaseGameSetting gameSetting)
 		{

@@ -13,11 +13,13 @@ namespace RedCatEngine.Quests.Mechanics.Data
 
 		private bool _isEmpty;
 
-		//todo: make generic serialization for union lists
 		[SerializeField]
 		private List<DeltaChangeProgressQuestData> _deltaChangeActiveQuests = new();
 		[SerializeField]
 		private List<CollectProgressQuestData> _collectActiveQuests = new();
+		// data of any other quest type; the two lists above stay for compatibility with existing saves
+		[SerializeReference]
+		private List<IQuestData> _otherActiveQuests = new();
 
 		private QuestsDataContainer(bool isEmpty)
 			=> _isEmpty = isEmpty;
@@ -35,8 +37,11 @@ namespace RedCatEngine.Quests.Mechanics.Data
 				case CollectProgressQuestData collectProgressQuestData:
 					_collectActiveQuests.Add(collectProgressQuestData);
 					break;
+				case null:
+					throw new ArgumentNullException(nameof(questData));
 				default:
-					throw new Exception("Not supported quest data type");
+					_otherActiveQuests.Add(questData);
+					break;
 			}
 		}
 
@@ -45,6 +50,8 @@ namespace RedCatEngine.Quests.Mechanics.Data
 			var result = new List<IQuestData>();
 			result.AddRange(_deltaChangeActiveQuests);
 			result.AddRange(_collectActiveQuests);
+			if (_otherActiveQuests != null)
+				result.AddRange(_otherActiveQuests);
 			return result;
 		}
 		
@@ -62,7 +69,9 @@ namespace RedCatEngine.Quests.Mechanics.Data
 			if (_isEmpty && container._isEmpty)
 				return true;
 
-			if (container._deltaChangeActiveQuests.Count != _deltaChangeActiveQuests.Count)
+			if (container._deltaChangeActiveQuests.Count != _deltaChangeActiveQuests.Count
+			    || container._collectActiveQuests.Count != _collectActiveQuests.Count
+			    || OtherCount(container) != OtherCount(this))
 				return false;
 
 			for (var i = 0; i < _deltaChangeActiveQuests.Count; i++)
@@ -75,9 +84,17 @@ namespace RedCatEngine.Quests.Mechanics.Data
 				if (!container._collectActiveQuests[i].Equals(_collectActiveQuests[i]))
 					return false;
 			}
+			for (var i = 0; i < OtherCount(this); i++)
+			{
+				if (!Equals(container._otherActiveQuests[i], _otherActiveQuests[i]))
+					return false;
+			}
 
 			return true;
 		}
+
+		private static int OtherCount(QuestsDataContainer container)
+			=> container._otherActiveQuests?.Count ?? 0;
 
 		protected bool Equals(QuestsDataContainer other)
 		{

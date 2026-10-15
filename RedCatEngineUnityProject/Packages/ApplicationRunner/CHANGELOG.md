@@ -5,6 +5,13 @@ All notable changes to this package will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.1.1] - 2026-10-14
+
+### Fixed
+
+- `EditorModelLoader` and `YandexModelLoader` invoked the load callback twice, replacing a loaded model with an empty one. The callback is now invoked once.
+- `BaseInitializeCheatState.Enter` now calls `AttachCheats()` after spawning the console.
+
 ## [1.1.0] - 2026-10-12
 
 ### Added
